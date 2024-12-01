@@ -44,11 +44,28 @@ router.post("/register", async (req:Request, res:Response) => {
   
 });
 
-router.post("/login", forwardAuthenticated, (req, res) => {
+router.post("/login", forwardAuthenticated, async(req, res) => {
 	const messages = (req.session as any).messages || [];
 	(req.session as any).messages = [];
 
-	
+	const { email, password } = req.body;
+	if (!email || !password) {
+		(req.session as any).messages = ["All fields are required"];
+		return res.status(400).json({errorLogin:'All fields are required'}) as any
+	}
+	const stm = 'SELECT * FROM public.users WHERE email = $1';
+	const user = await client.query(stm,[email])
+	if(user.rows.length === 0){
+		console.log(`${email} does not exist.`)
+		return res.status(400).json({errorLogin:`${email} does not exist.`}) as any
+	}
+	const userPassword = user.rows[0].password
+	if(!(bcrypt.compareSync(password,userPassword))){
+		console.log('Incorrect password.')
+		return res.status(400).json({errorPassword:'Incorrect password.'}) as any
+	}
+	return res.status(200).json({successMsg:'Success. Redirecting ... '}) as any
+
  });
 router.post("/login", (req, res, next) => {
 	passport.authenticate(
@@ -90,15 +107,24 @@ router.post("/login", (req, res, next) => {
 // 	}
 //  );
 
- router.get("/logout", (req, res) => {
+//  router.get("/logout", (req, res) => {
+// 	req.logout((err) => {
+// 	  if (err) {
+// 		 console.log(err);
+// 		 return res.redirect("/auth/login");
+// 	  }
+// 	  res.redirect("/auth/login");
+// 	});
+//  });
+router.post('/logout', (req: Request, res: Response) => {
 	req.logout((err) => {
-	  if (err) {
-		 console.log(err);
-		 return res.redirect("/auth/login");
-	  }
-	  res.redirect("/auth/login");
+		 if (err) {
+			  console.error('Error logging out:', err);
+			  return res.status(500).json({ message: 'Logout failed. Please try again.' });
+		 }
+		 res.status(200).json({ message: 'Successfully logged out.' });
 	});
- });
+});
  
  
 

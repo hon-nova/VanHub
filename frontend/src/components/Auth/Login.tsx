@@ -1,8 +1,9 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import '../../styles/css/login-style.css';
 import { useState } from 'react';
-const Login =()=>{
 
+const Login =()=>{
+	const navigate = useNavigate()
 	const [formData,setFormData] = useState({
 		email:'',
 		password:''
@@ -12,6 +13,39 @@ const Login =()=>{
 		errorPassword:'',
 		successLogin:''
 	})
+	async function sendRequestLogin(){
+		try {
+			const response = await fetch('http://localhost:8000/auth/login',{
+				method:'POST',
+				headers:{
+					'Content-Type':'application/json'
+				},
+				body:JSON.stringify(formData)
+			})
+			const data = await response.json()
+			if(data.errorLogin){
+				setMsg((msgObj)=>({...msgObj,errorLogin:data.errorLogin}))
+				
+			}
+			if(data.errorPassword){
+				setMsg((msgObj)=>({...msgObj,errorPassword:data.errorPassword}))
+				
+			}
+			if(data.successMsg){
+				
+				setMsg((msgObj)=>({...msgObj,successLogin:data.successMsg}))
+				setTimeout(()=>{
+					navigate('/posts')
+				},2000)
+			}
+		} catch(error){
+			console.error('Error in sending login request: ',error)
+		}
+	}
+	async function handleSubmitLogin(e:any){
+		e.preventDefault()
+		await sendRequestLogin()
+	}
 	const handleInputChange = (e:any) => {
 		const {name,value} = e.target
 		setFormData({...formData, [name]:value})
@@ -23,7 +57,7 @@ const Login =()=>{
 			<div className="login-form">
 				{msg.errorLogin && <p className="alert alert-danger">{msg.errorLogin}</p>}
 				{msg.errorPassword && <p className="alert alert-danger">{msg.errorPassword}</p>}
-				<form action="/auth/login" method="POST">					
+				<form action="/auth/login" method="POST" onSubmit={handleSubmitLogin}>					
 					<div className="mt-5 mb-1">
 						<label htmlFor="email" className="form-label">Email:</label>
 						<input 
@@ -43,6 +77,10 @@ const Login =()=>{
 					</div>
 					<p>Forgot password? Reset <Link to="/auth/forgot">here</Link></p>				
 				</form>
+				<div>
+					<p>Or</p> 
+					<button><i className="bi bi-github mx-2"></i>Login with GitHub</button>
+				</div>
 			</div>
 			
 		</div>

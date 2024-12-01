@@ -1,7 +1,7 @@
 // import passport from 'passport'
 // import { Strategy as LocalStrategy } from 'passport-local'
-// import { getUserByEmail, getUserById,isUserValid } from "../../controllers/userController"
-// import { PassportStrategy } from '../../interfaces/index'
+// // import { getUserByEmail, getUserById,isUserValid } from "../../controllers/userController"
+// import { PassportStrategy } from '../../shared/interfaces/index'
 
 
 // const localStrategy = new LocalStrategy({

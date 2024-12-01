@@ -5,6 +5,7 @@ import path from "path";
 import bcrypt from 'bcrypt'
 import client from './db/supabaseClient'
 import cors from 'cors'
+import { getUsers, getUserById, getUserByUname } from "./controllers/userController";
 
 const saltValue =16
 // const hash = bcrypt.hashSync('jessstephenson',saltValue)
@@ -46,16 +47,17 @@ declare global{
 client.connect()
   .then(() => console.log('Connected to Supabase PostgreSQL'))
   .catch((err) => console.error('Error connecting to PostgreSQL:', err));
-// (async()=>{	
-// 	try {
-// 		const email='jessstephenson@gmail.com'
-// 		const stm = 'SELECT * FROM public.users WHERE email = $1';
-// 		const result = await client.query(stm, [email]);
-// 		console.log(`result:: `, result.rows[0])
-// 	 } catch (err) {
-// 		console.error('Error in Supabase query:', err);
-// 	 }	
-// })()
+(async()=>{	
+	try {
+		// const {data,error} = await client.from('public.users').select()
+    const users = await getUsers()
+    // console.log(`users @app: `, users)
+    const uniqueUser = await getUserById('4be98560-c532-437c-9f29-54c75d30a228')
+    // console.log(`user @app: `, uniqueUser)
+	 } catch (err) {
+		console.error('Error in Supabase query:', err);
+	 }	
+})()
 
 import authRoute from "./routes/authRoute";
 import indexRoute from "./routes/indexRoute";
