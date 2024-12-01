@@ -17,9 +17,9 @@ export const forwardAuthenticated = (req: Request, res: Response, next: NextFunc
 	res.redirect('dashboard')
 }
 
-// export const isAdmin = (req: Request) =>{
-// 	if(req.user){
-// 		const thisUser = req.user as Express.User
-// 		return thisUser.role === 'admin'
-// 	}
-// }
+export const isAdmin = (req: Request) =>{
+	if(req.user){
+		const thisUser = req.user as Express.User
+		return thisUser.role === 'admin'
+	}
+}

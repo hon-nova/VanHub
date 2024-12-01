@@ -1,6 +1,7 @@
 import express from "express";
-// import passport from "../middleware/passportMiddeleware";
-// import passport from '../middleware/passportMiddleware'
+import passport from "passport";
+import { forwardAuthenticated, isAdmin } from "../middleware/checkAuth";
+import { IVerifyOptions } from "passport-local";
 const router = express.Router();
 import {Request, Response} from 'express'
 import client from '../db/supabaseClient'
@@ -38,14 +39,68 @@ router.post("/register", async (req:Request, res:Response) => {
 	const newUser = await client.query(stm3,[uname,email,hashedPassword])	
 	if(newUser.rows.length > 0){
 		console.log('Registered successfully.')
-		return res.status(200).json({successMsg:'Registered successfully.'}) as any
+		return res.status(200).json({successMsg:'registered successfully.'}) as any
 	}
   
 });
 
-router.get("/login", async (req, res) => {
-  res.render("login");
-});
+router.post("/login", forwardAuthenticated, (req, res) => {
+	const messages = (req.session as any).messages || [];
+	(req.session as any).messages = [];
+
+	
+ });
+router.post("/login", (req, res, next) => {
+	passport.authenticate(
+	  "local",
+	  { failureRedirect: "auth/login", failureMessage: true },
+	  (err: Error, user: Express.User, info: IVerifyOptions) => {
+			if (err) {
+			return next(err);
+			}
+ 
+			if (!user) {
+				(req.session as any).messages = info
+				? [info.message]
+				: ["Login failed"];
+				return res.redirect("/auth/login");
+			}
+			req.logIn(user, (err) => {
+				if (err) {
+				return next(err);
+				}
+				if (isAdmin(req)) {
+				return res.redirect("/auth/admin");
+				} else {
+				return res.redirect("/");
+				}
+			});
+	  }
+	)(req, res, next);
+ });
+ 
+//  router.get("/github", passport.authenticate("github"));
+ 
+//  router.get(
+// 	"/github/callback",
+// 	passport.authenticate("github", { failureRedirect: "/auth/login" }),
+ 
+// 	function (req: Request, res: Response) {
+// 	  res.redirect("/dashboard");
+// 	}
+//  );
+
+ router.get("/logout", (req, res) => {
+	req.logout((err) => {
+	  if (err) {
+		 console.log(err);
+		 return res.redirect("/auth/login");
+	  }
+	  res.redirect("/auth/login");
+	});
+ });
+ 
+ 
 
 // router.post(
 //   "/login",
@@ -56,12 +111,12 @@ router.get("/login", async (req, res) => {
 // );
 
 router.get("/logout", (req, res, next) => {
-  req.logout(function (err) {
-    if (err) {
-      return next(err);
-    }
-  });
-  res.redirect("/");
+  	req.logout(function (err) {
+		if (err) {
+			return next(err);
+		}
+  	});
+  	res.redirect("/");
 });
 
 export default router;
