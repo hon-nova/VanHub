@@ -49,8 +49,8 @@ client.connect()
 // (async()=>{	
 // 	try {
 // 		const email='jessstephenson@gmail.com'
-// 		const query = 'SELECT * FROM public.users WHERE email = $1';
-// 		const result = await client.query(query, [email]);
+// 		const stm = 'SELECT * FROM public.users WHERE email = $1';
+// 		const result = await client.query(stm, [email]);
 // 		console.log(`result:: `, result.rows[0])
 // 	 } catch (err) {
 // 		console.error('Error in Supabase query:', err);

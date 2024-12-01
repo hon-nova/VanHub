@@ -1,5 +1,5 @@
 
-div.register-container {
+div.login-container {
 	border: 1px solid black;
 	/* display:flex; */
 	/* flex-direction: row; */
@@ -8,7 +8,7 @@ div.register-container {
 	/* align-items: center; */
 	text-align: center;
 }
-div.register-form {
+div.login-form {
 	margin: 0 auto;
 	width: 40%;
 	border: 2px solid #d0d0d5;
@@ -30,7 +30,7 @@ div.form-btn {
 	justify-content: center;
 	margin: 10px;
 }
-button.register-btn {
+button.login-btn {
 	padding:10px;
 	border-radius: 10px;
 	border: 1px solid #d0d0d5;
