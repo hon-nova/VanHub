@@ -1,11 +1,7 @@
 
 div.register-container {
 	border: 1px solid black;
-	/* display:flex; */
-	/* flex-direction: row; */
 	margin:10px auto;
-	/* justify-content: center; */
-	/* align-items: center; */
 	text-align: center;
 }
 div.register-form {
@@ -23,6 +19,7 @@ input.form-input {
 	height:35px;
 	border-radius: 5px;
 	border: 1px solid #d0d0d5;
+	padding-left:10px;
 }
 div.form-btn {
 	display:flex;
