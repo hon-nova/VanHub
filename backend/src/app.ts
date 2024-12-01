@@ -57,8 +57,9 @@ client.connect()
 // 	 }	
 // })()
 
-// import authRoute from "./routes/authRoute";
+import authRoute from "./routes/authRoute";
 import indexRoute from "./routes/indexRoute";
+
 
 
 // Middleware for express
@@ -74,7 +75,7 @@ app.use(express.urlencoded({ extended: true }));
 // });
 
 app.use("/", indexRoute);
-// app.use("/auth", authRoute);
+app.use("/auth", authRoute);
 
 app.listen(port, () => {
   console.log(`🚀 Social Media Server has started at http://localhost:${port}`);
