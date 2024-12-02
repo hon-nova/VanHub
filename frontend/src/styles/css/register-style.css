@@ -7,9 +7,11 @@ div.register-container {
 div.register-form {
 	margin: 0 auto;
 	width: 40%;
-	border: 2px solid #d0d0d5;
+	border: 2px solid  rgb(177, 177, 177);
 	border-radius: 5px;
 	padding:10px;
+	/* background-color:rgb(239, 245, 245) */
+	background-color:lightgray;
 }
 label.form-label {
 	width:30%;

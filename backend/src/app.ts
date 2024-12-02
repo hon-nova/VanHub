@@ -7,8 +7,8 @@ import client from './db/supabaseClient'
 import cors from 'cors'
 import { getUsers, getUserById, getUserByUname, getUserByEmail,getUserByEmailAndPassword } from "./controllers/userController";
 
-const saltValue =16
-// const hash = bcrypt.hashSync('jessstephenson',saltValue)
+const saltValue =8
+// const hash = bcrypt.hashSync('adminadmin',saltValue)
 // if(hash){
 // 	console.log(`hash: `, hash)
 // }

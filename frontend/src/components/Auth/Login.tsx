@@ -28,12 +28,17 @@ const Login =()=>{
 			if(data.errorLogin){
 				console.log(`data.errorLogin: `, data.errorLogin)
 				setMsg((msgObj)=>({...msgObj, errorLogin:data.errorLogin}))
+				setTimeout(()=>{
+					setMsg((msgObj)=>({...msgObj, errorLogin:''}))
+				},3000)
 			}
 			if(data.errorEmail){
 				console.log(`data.errorEmail: `, data.errorEmail)					
 				setMsg((msgObj)=>({...msgObj, errorLogin:data.errorEmail}))
-			}
-							
+				setTimeout(()=>{
+					setMsg((msgObj)=>({...msgObj, errorLogin:''}))
+				},3000)
+			}							
 			//success
 		if(data.successMsg){
 			console.log(`data.successMsg: `, data.successMsg)
@@ -87,9 +92,9 @@ const Login =()=>{
 					</div>
 					<p>Forgot password? Reset <Link to="/auth/forgot">here</Link></p>				
 				</form>
-				<div>
+				<div className="login-btn">
 					<p>Or</p> 
-					<button><i className="bi bi-github mx-2"></i>Login with GitHub</button>
+					<button className="github-btn"><i className="bi bi-github mx-2"></i>Login with GitHub</button>
 				</div>
 			</div>
 			

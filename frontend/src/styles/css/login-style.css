@@ -1,19 +1,16 @@
 
 div.login-container {
 	border: 1px solid black;
-	/* display:flex; */
-	/* flex-direction: row; */
 	margin:10px auto;
-	/* justify-content: center; */
-	/* align-items: center; */
 	text-align: center;
 }
 div.login-form {
 	margin: 0 auto;
 	width: 40%;
-	border: 2px solid #d0d0d5;
+	border: 2px solid rgb(177, 177, 177);
 	border-radius: 5px;
 	padding:10px;
+	background-color:lightgray;
 }
 label.form-label {
 	width:30%;
@@ -36,4 +33,13 @@ button.login-btn {
 	border: 1px solid #d0d0d5;
 	background-color: #003e6b;
 	color:white;
+}
+button.github-btn {
+	padding:10px;
+	border-radius: 10px;
+	border: 1px solid #d0d0d5;
+	width: 300px;
+	font-weight:bolder
+	/* background-color: #003e6b; */
+	/* color:white; */
 }

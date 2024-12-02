@@ -4,7 +4,24 @@ import bcrypt from 'bcrypt'
 
 const saltValue =8
 
-async function getUsers():Promise<Express.User[]>{
+async function addUser(uname:string,email:string,password:string):Promise<User>{
+	try {
+		const hashedPassword = bcrypt.hashSync(password,saltValue)
+		const stm = 'INSERT INTO public.users (uname,email,password) VALUES ($1,$2,$3) RETURNING *';
+		const newUser = await client.query(stm,[uname,email,hashedPassword])
+		if(newUser.rowCount = 0){
+			throw new Error(`Couldn't add user`)
+		}
+		return newUser.rows[0]
+		
+	} catch(error){
+		if(error instanceof Error) {
+			console.error('addUser - Error in adding user: ',error.message)
+		}		
+		return {} as User
+	}
+}
+async function getUsers():Promise<Express.User[] |null>{
 	try {		
 		const stm = await client.query(`SELECT * FROM public.users`)
 		const users = stm.rows
@@ -12,45 +29,45 @@ async function getUsers():Promise<Express.User[]>{
 		if(!users){
 			throw new Error(`Couldn't get users`)
 		}
-		return users ?? []
+		return users
 		// return users ?? [] //fallback to empty array if data is null
 	} catch(error){
 		if(error instanceof Error) {
 			console.error('getUsers - Error in getting users: ',error.message)
 		}		
-		return []
+		return null
 	}
 }
-async function getUserById(userid:string):Promise<Express.User>{
+async function getUserById(userid:string):Promise<Express.User |null>{
 	try {
 		const stm = `SELECT * FROM public.users WHERE id=$1`
 		const user = await client.query(stm,[userid])
 		if(user.rowCount = 0){
 			throw new Error(`Couldn't get user`)
 		}
-		return user.rows[0] ?? {} as User
+		return user.rows[0]
 
 	} catch(error){
 		if(error instanceof Error) {
 			console.error('getUserById - Error in getting user: ',error.message)
 		}		
-		return {} as User
+		return null
 	}
 }
-async function getUserByUname(uname:string):Promise<Express.User>{
+async function getUserByUname(uname:string):Promise<Express.User |null>{
 	try {
 		const stm = `SELECT * FROM public.users WHERE id=$1`
 		const user = await client.query(stm,[uname])
 		if(user.rowCount = 0){
 			throw new Error(`Couldn't get user`)
 		}
-		return user.rows[0] ?? {} as User
+		return user.rows[0]
 
 	} catch(error){
 		if(error instanceof Error) {
 			console.error('getUserByUname - Error in getting user: ',error.message)
 		}		
-		return {} as User
+		return null
 	}
 }
 async function getUserByEmail(email:string):Promise<Express.User|null>{
@@ -99,10 +116,10 @@ async function getUserByEmailAndPassword(email:string,password:string):Promise<E
 }
 
 
-async function resetPassword(info:string,newbarepassword:string):Promise<User>{
+async function resetPassword(info:string,newbarepassword:string):Promise<User|null>{
 	try {
 		//step 1: get user by info: email or uname
-		const user = await getUserById(info) ?? await getUserByUname(info)
+		const user = await getUserById(info) ?? await getUserByUname(info) as User
 	
 		const hashedPassword = bcrypt.hashSync(newbarepassword,saltValue)	
 		//step 2: update user password
@@ -121,4 +138,4 @@ async function resetPassword(info:string,newbarepassword:string):Promise<User>{
 		return {} as User
 	}
 }
-export { getUsers, getUserById, getUserByUname,resetPassword,getUserByEmailAndPassword,getUserByEmail, isUserValid }
+export { getUsers, getUserById, getUserByUname,resetPassword,getUserByEmailAndPassword,getUserByEmail, isUserValid, addUser }
