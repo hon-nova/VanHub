@@ -1,11 +1,16 @@
 import 'dotenv/config'
 require('dotenv').config()
 import { Strategy as GitHubStrategy, Profile }  from 'passport-github2'
-
 import { PassportStrategy } from '../../shared/interfaces/index'
-import { addUser } from '../../controllers/userController';
+import { addUser, getUserByEmail,getUserByUname,getUserByUnameOrEmail } from '../../controllers/userController';
+import { v5 as uuidv5 } from 'uuid';
+
+
+
 // import { User, database } from '../../models/userModel'
 
+// console.log(`process.env.GITHUB_CLIENT_ID: `, process.env.GITHUB_CLIENT_ID)
+// console.log(`process.env.GITHUB_CLIENT_SECRET: `, process.env.GITHUB_CLIENT_SECRET)
 if (!process.env.GITHUB_CLIENT_ID || !process.env.GITHUB_CLIENT_SECRET) {
    throw new Error("Missing GitHub client ID or secret");
 }
@@ -26,17 +31,22 @@ async(req: Express.Request, accessToken: string, refreshToken: string, profile: 
       console.log("GitHub email not available.");
       return done(new Error("GitHub email not available"), false);
    }  
+	
    let githubUser:Express.User = {
-      id: profile.id,
-      uname: profile.displayName,
+      id:uuidv5(profile.id, uuidv5.URL), 		
+      uname: profile.username as string,
       email: email,
 		password:'',
       role: 'user'
    };
-   console.log(`githubUser: ${githubUser}`)
+   console.log(`githubUser:`,githubUser)
    // const foundUser = userModel.findUserById(githubUser.id)  
-	await addUser(githubUser.uname,githubUser.email,githubUser.password)
-   return done(null, githubUser);   
+	const getUser = await getUserByUnameOrEmail(githubUser.uname,email) as Express.User
+
+	if(!getUser){
+		await addUser(githubUser.uname,githubUser.email,githubUser.password)     
+	}
+	return done(null, githubUser); 	
 });
 
 const passportGitHubStrategy: PassportStrategy = {

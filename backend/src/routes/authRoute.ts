@@ -18,18 +18,18 @@ router.post("/register", async (req:Request, res:Response) => {
 	}
 	const hashedPassword = bcrypt.hashSync(password,saltValue)
 	
-	const getUser = await getUserByEmail(email) as Express.User
+	const getUser = await getUserByEmail(uname) as Express.User
 	if(getUser !== null){
-		console.log('Email already exists. Please use another email.')
+		console.log('Username already existed. Please use another username.')
 		return res.status(400).json({errorEmail:'Email already exists. Please use another email.'}) as any
 	}
 
-	const stm2 = 'SELECT * FROM public.users WHERE uname = $1';
+	// const stm2 = 'SELECT * FROM public.users WHERE uname = $1';
 	// const getUser2 = await client.query(stm2,[uname])
 	const getUser2 = await getUserByEmail(email) as Express.User
 	if(getUser2 !== null){
 		console.log('Username already exists.')
-		return res.status(400).json({errorUname:'Username already exists. Please use another username.'}) as any
+		return res.status(400).json({errorUname:'Email already existed. Please use another email.'}) as any
 	}
 	const newUser = await addUser(uname,email,hashedPassword)
 	if(newUser){
@@ -73,20 +73,19 @@ router.get("/github", passport.authenticate("github"));
  
 router.get(
 	"/github/callback",
-	passport.authenticate("github", { failureRedirect: "/auth/login" }),
- 
+	passport.authenticate("github", { failureRedirect: "/auth/login" }), 
 	function (req: Request, res: Response) {
-	  res.redirect("/dashboard");
+	  res.redirect("http://localhost:3000/posts");
 	}
- );
+);
 
 router.post('/logout', (req: Request, res: Response) => {
 	req.logout((err) => {
-		 if (err) {
-			  console.error('Error logging out:', err);
-			  return res.status(500).json({ message: 'Logout failed. Please try again.' });
-		 }
-		 res.status(200).json({ message: 'Successfully logged out.' });
+		if (err) {
+			console.error('Error logging out:', err);
+			return res.status(500).json({ message: 'Logout failed. Please try again.' });
+		}
+		res.status(200).json({ message: 'Successfully logged out.' });
 	});
 });
 
