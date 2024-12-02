@@ -1,11 +1,13 @@
 import express from "express";
-// import passport from "../middleware/passportMiddeleware";
-// import passport from '../middleware/passportMiddleware'
+import passport from "passport";
+import { forwardAuthenticated, isAdmin } from "../middleware/checkAuth";
+import { IVerifyOptions } from "passport-local";
 const router = express.Router();
 import {Request, Response} from 'express'
 import client from '../db/supabaseClient'
 import bcrypt from 'bcrypt'
-const saltValue =16
+const saltValue =8
+import { getUserByEmail, getUserByEmailAndPassword } from '../controllers/userController'
 
 router.post("/register", async (req:Request, res:Response) => {
 	const { uname, email, password } = req.body
@@ -38,14 +40,73 @@ router.post("/register", async (req:Request, res:Response) => {
 	const newUser = await client.query(stm3,[uname,email,hashedPassword])	
 	if(newUser.rows.length > 0){
 		console.log('Registered successfully.')
-		return res.status(200).json({successMsg:'Registered successfully.'}) as any
+		return res.status(200).json({successMsg:'registered successfully.'}) as any
 	}
   
 });
 
-router.get("/login", async (req, res) => {
-  res.render("login");
+router.post("/login", (req, res, next) => {
+	passport.authenticate(
+	  "local",
+	  { failureRedirect: "/auth/login", failureMessage: true },
+	  (err: Error, user: Express.User, info: IVerifyOptions) => {
+			if (err) {
+				console.error('errorLogin:', err.message);
+				return res.status(500).json({errorLogin:`errorLogin ${err.message}`})
+			} 
+			if (!user) {
+				const errorE = info?.message || "backend /login: NO SUCH USER";
+				console.error('errorEmail:', info?.message);
+				return res.status(401).json({errorLogin:`${errorE}`})
+			}
+			req.logIn(user, (err) => {
+				if (err) {
+					console.error('req.logIn Error:', info?.message);
+					return res.status(500).json({ errorLogin: `req.logIn: ${err.message}` });
+				 }
+				//success
+				const successMsg = `Success. Redirecting ...`
+				if (isAdmin(req)) {
+					return res.status(200).json({user: user, isAdmin:true, successMsg})
+				} else {
+					return res.status(200).json({user: user, isAdmin:false, successMsg})
+				}
+			});
+	  }
+	)(req, res, next);
+ });
+ 
+//  router.get("/github", passport.authenticate("github"));
+ 
+//  router.get(
+// 	"/github/callback",
+// 	passport.authenticate("github", { failureRedirect: "/auth/login" }),
+ 
+// 	function (req: Request, res: Response) {
+// 	  res.redirect("/dashboard");
+// 	}
+//  );
+
+//  router.get("/logout", (req, res) => {
+// 	req.logout((err) => {
+// 	  if (err) {
+// 		 console.log(err);
+// 		 return res.redirect("/auth/login");
+// 	  }
+// 	  res.redirect("/auth/login");
+// 	});
+//  });
+router.post('/logout', (req: Request, res: Response) => {
+	req.logout((err) => {
+		 if (err) {
+			  console.error('Error logging out:', err);
+			  return res.status(500).json({ message: 'Logout failed. Please try again.' });
+		 }
+		 res.status(200).json({ message: 'Successfully logged out.' });
+	});
 });
+ 
+ 
 
 // router.post(
 //   "/login",
@@ -56,12 +117,12 @@ router.get("/login", async (req, res) => {
 // );
 
 router.get("/logout", (req, res, next) => {
-  req.logout(function (err) {
-    if (err) {
-      return next(err);
-    }
-  });
-  res.redirect("/");
+  	req.logout(function (err) {
+		if (err) {
+			return next(err);
+		}
+  	});
+  	res.redirect("/");
 });
 
 export default router;
