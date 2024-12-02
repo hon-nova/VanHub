@@ -65,6 +65,9 @@ const Login =()=>{
 		const {name,value} = e.target
 		setFormData((formDataObj)=>({...formDataObj, [name]:value}))
 	} 	
+	function handleGitHubLogin(){
+		window.location.href = 'http://localhost:8000/auth/github'
+	}
 	return (
 		<div className="login-container">
 			<h1>Login</h1>
@@ -84,20 +87,20 @@ const Login =()=>{
 						<input 
 						onChange={(e)=>handleInputChange(e)}
 						type="password" id="password" name="password" className="form-input"/>
-					</div>
-					
+					</div>					
 					<div className="my-2 form-btn">
-						<button type="submit" className="login-btn">Login</button>
-						
+						<button type="submit" className="login-btn">Login</button>						
 					</div>
 					<p>Forgot password? Reset <Link to="/auth/forgot">here</Link></p>				
 				</form>
 				<div className="login-btn">
 					<p>Or</p> 
-					<button className="github-btn"><i className="bi bi-github mx-2"></i>Login with GitHub</button>
+					<button
+					onClick={handleGitHubLogin}
+					className="btn btn-md btn-secondary">
+						<i className="bi bi-github mx-2"></i>Login with GitHub</button>		
 				</div>
-			</div>
-			
+			</div>			
 		</div>
 	)
 }

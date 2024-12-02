@@ -4,10 +4,10 @@ import bcrypt from 'bcrypt'
 
 const saltValue =8
 
-async function addUser(uname:string,email:string,password:string):Promise<User>{
+async function addUser(uname:string,email:string,password:string|''):Promise<User|null>{
 	try {
 		const hashedPassword = bcrypt.hashSync(password,saltValue)
-		const stm = 'INSERT INTO public.users (uname,email,password) VALUES ($1,$2,$3) RETURNING *';
+		const stm = 'INSERT INTO public.users (uname,email,password) VALUES ($1,$2,$3)';
 		const newUser = await client.query(stm,[uname,email,hashedPassword])
 		if(newUser.rowCount = 0){
 			throw new Error(`Couldn't add user`)
@@ -18,7 +18,7 @@ async function addUser(uname:string,email:string,password:string):Promise<User>{
 		if(error instanceof Error) {
 			console.error('addUser - Error in adding user: ',error.message)
 		}		
-		return {} as User
+		return null
 	}
 }
 async function getUsers():Promise<Express.User[] |null>{
@@ -114,8 +114,20 @@ async function getUserByEmailAndPassword(email:string,password:string):Promise<E
 		return {} as User
 	}
 }
-
-
+async function getUserByUnameOrEmail(
+	uname: string,
+	email: string
+ ): Promise<Express.User | null> {
+	try {
+	  const stm = 'SELECT * FROM public.users WHERE uname = $1 OR email = $2';
+	  const result = await client.query(stm, [uname, email]) as any;
+	  return result.rowCount > 0 ? result.rows[0] : null;
+	} catch (error) {
+	  console.error('getUserByUnameOrEmail - Error:', error);
+	  return null;
+	}
+ }
+ 
 async function resetPassword(info:string,newbarepassword:string):Promise<User|null>{
 	try {
 		//step 1: get user by info: email or uname
@@ -138,4 +150,4 @@ async function resetPassword(info:string,newbarepassword:string):Promise<User|nu
 		return {} as User
 	}
 }
-export { getUsers, getUserById, getUserByUname,resetPassword,getUserByEmailAndPassword,getUserByEmail, isUserValid, addUser }
+export { getUsers, getUserById, getUserByUname,resetPassword,getUserByEmailAndPassword,getUserByEmail, isUserValid, addUser,getUserByUnameOrEmail }

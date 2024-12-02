@@ -67,7 +67,6 @@ import authRoute from "./routes/authRoute";
 import indexRoute from "./routes/indexRoute";
 
 
-
 // Middleware for express
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
