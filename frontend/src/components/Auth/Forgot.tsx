@@ -1,82 +1,82 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import '../../styles/css/forgot-style.css';
 import { useNavigate } from 'react-router-dom'
 
 const Forgot = () => {
-  const navigate = useNavigate()
-  const [formData, setFormData] = useState({
-    info: "",
-    newpassword: "",
-    confirmnewpassword: "",
-  });
-  const [msg, setMsg] = useState({
-    errorEmpty: "",
-    errorEmail: "",
-    errorMatchPwd: "",
-    successReset:""
-  });
-  const handleForgotChange = (e: any) => {
-    const { name, value } = e.target;
-    setFormData((formDataObj) => ({ ...formDataObj, [name]: value }));
-  };
-  const handleSubmitForgot = async (e: any) => {
-    e.preventDefault();
-    await sendRequestForgot();
-  };
-  async function sendRequestForgot() {
-   const { info, newpassword, confirmnewpassword } = formData;
-   if (
-      info === "" ||
-      newpassword === "" ||
-      confirmnewpassword === ""
-    ) {
-      setMsg((msgObj) => ({
-        ...msgObj,
-        errorEmpty: "Please fill in all fields and try again.",
-      }));
-      setTimeout(() => {
-        setMsg((msgObj) => ({ ...msgObj, errorEmpty: "" }));
-      }, 3000);
-      return;
-    }
-   if (newpassword !== confirmnewpassword) {
-      setMsg((msgObj) => ({
-        ...msgObj,
-        errorMatchPwd: "Passwords do not match.",
-      }));
-      setTimeout(() => {
-        setMsg((msgObj) => ({ ...msgObj, errorMatchPwd: "" }));
-      }, 3000);
-      return;
-    }
-    try {
-      const response = await fetch("http://localhost:8000/auth/forgot", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ info, newpassword, confirmnewpassword }),
-      });
-      const data = await response.json();
-      console.log(`frontend forgot data: `, data);
-      if(data.errorEmail){
-        console.log(`data.errorEmail: `, data.errorEmail)					
-        setMsg((msgObj)=>({...msgObj, errorEmail:data.errorEmail}))
-        setTimeout(()=>{
-          setMsg((msgObj)=>({...msgObj, errorEmail:''}))
-        },3000)
+   const navigate = useNavigate()
+   const [formData, setFormData] = useState({
+      info: "",
+      newpassword: "",
+      confirmnewpassword: "",
+   });
+   const [msg, setMsg] = useState({
+      errorEmpty: "",
+      errorEmail: "",
+      errorMatchPwd: "",
+      successReset:""
+   });
+   const handleForgotChange = (e: any) => {
+      const { name, value } = e.target;
+      setFormData((formDataObj) => ({ ...formDataObj, [name]: value }));
+   };
+   const handleSubmitForgot = async (e: any) => {
+      e.preventDefault();
+      await sendRequestForgot();
+   };
+   async function sendRequestForgot() {
+      const { info, newpassword, confirmnewpassword } = formData;
+      if (
+         info === "" ||
+         newpassword === "" ||
+         confirmnewpassword === ""
+      ) {
+         setMsg((msgObj) => ({
+         ...msgObj,
+         errorEmpty: "Please fill in all fields and try again.",
+         }));
+         setTimeout(() => {
+         setMsg((msgObj) => ({ ...msgObj, errorEmpty: "" }));
+         }, 3000);
+         return;
       }
-      if(data.successReset){
-        console.log(`data.successReset: `, data.successReset)
-        setMsg((msgObj)=>({...msgObj, successReset:data.successReset}))
-        setTimeout(()=>{
-          setMsg((msgObj)=>({...msgObj, successReset:''}))
-          navigate('/auth/login')
-        },2000)
-      } 
-    } catch (error) {
-      console.error("Error in sendRequestForgot: ", error);
-    }
+      if (newpassword !== confirmnewpassword) {
+         setMsg((msgObj) => ({
+         ...msgObj,
+         errorMatchPwd: "Passwords do not match.",
+         }));
+         setTimeout(() => {
+         setMsg((msgObj) => ({ ...msgObj, errorMatchPwd: "" }));
+         }, 3000);
+         return;
+      }
+      try {
+         const response = await fetch("http://localhost:8000/auth/forgot", {
+         method: "POST",
+         headers: {
+            "Content-Type": "application/json",
+         },
+         body: JSON.stringify({ info, newpassword, confirmnewpassword }),
+         });
+         const data = await response.json();
+         // console.log(`frontend forgot data: `, data);
+         if(data.errorEmail){
+         //   console.log(`data.errorEmail: `, data.errorEmail)					
+         setMsg((msgObj)=>({...msgObj, errorEmail:data.errorEmail}))
+         setTimeout(()=>{
+            setMsg((msgObj)=>({...msgObj, errorEmail:''}))
+         },3000)
+         }
+         if(data.successReset){
+         console.log(`data.successReset: `, data.successReset)
+         setMsg((msgObj)=>({...msgObj, successReset:data.successReset}))
+         setTimeout(()=>{
+            setMsg((msgObj)=>({...msgObj, successReset:''}))
+            navigate('/auth/login')
+         },2000)
+         } 
+      } catch (error) {
+         console.error("Error in sendRequestForgot: ", error);
+      }
       
   }
   return (

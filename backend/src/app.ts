@@ -18,6 +18,7 @@ const port = process.env.PORT || 8000;
 const app = express();
 app.use(cors({
 	origin: 'http://localhost:3000', 
+  credentials: true
  }));
 
 app.use(
@@ -26,9 +27,9 @@ app.use(
 		resave: false,
 		saveUninitialized: false,
 		cookie: {
-		httpOnly: true,
-		secure: false,
-		maxAge: 24 * 60 * 60 * 1000,
+      httpOnly: true,
+      secure: false,
+      maxAge: 24 * 60 * 60 * 1000,
     },
   })
 );

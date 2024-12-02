@@ -98,8 +98,7 @@ async function getUserByEmailAndPassword(email:string,password:string):Promise<E
 
 		if(!user || !user.password){
 			throw new Error(`NO SUCH USER/EMAIL`)
-		}
-		
+		}		
 		const isPwdValid = bcrypt.compareSync(password,user.password)
 		if(isPwdValid){
 			return user as Express.User			

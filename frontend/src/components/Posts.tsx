@@ -1,30 +1,37 @@
-import { Link, useNavigate } from 'react-router-dom'
-
+import { useNavigate } from 'react-router-dom'
+import { useState } from 'react'
 const Posts = ()=>{
 	const navigate = useNavigate();
+	const [msg,setMsg] = useState('')
 
 	const handleLogout = async () => {
-		 try {
-			  const response = await fetch('http://localhost:8000/auth/logout', {
+		try {
+			console.log(`handleLogout started`)
+			const response = await fetch('http://localhost:8000/auth/logout', {
 					method: 'POST',
-					credentials: 'include', // Ensures cookies are sent with the request
-					headers: { 'Content-Type': 'application/json' },
+					credentials: 'include', 
 			  });
 
 			  if (response.ok) {
-					navigate('/'); // Redirect to login page after successful logout
+				const data = await response.json();
+				setMsg(data.message)
+				setTimeout(() => {
+					navigate('/auth/login');
+				},3000)
+					 
 			  } else {
-					const data = await response.json();
-					console.error('Logout error:', data.message);
-			  }
-		 } catch (error) {
+				const data = await response.json();
+            console.error('Failed to log out:', data.message);
+        }
+		} catch (error) {
 			  console.error('Error during logout:', error);
-		 }
+		}
 	};
 	 return (
-		  <div>
+		  <div className="container">
+			{msg && <div className="alert alert-success text-center">{msg}</div>}
 				<h1>All Posts live here ... </h1>
-				<button onClick={handleLogout} className="btn btn-danger">
+				<button onClick={handleLogout} className="btn btn-outline-danger">
                 Logout
             </button>
 		  </div>

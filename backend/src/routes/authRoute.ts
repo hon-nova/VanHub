@@ -101,14 +101,23 @@ router.post('/forgot', async (req: Request, res: Response) => {
 		console.error('Backend Error in forgot:', error)
 	}
 })
+
 router.post('/logout', (req: Request, res: Response) => {
 	req.logout((err) => {
 		if (err) {
-			console.error('Error logging out:', err);
-			return res.status(500).json({ message: 'Logout failed. Please try again.' });
+			  console.error('Error logging out:', err);
+			  return res.status(500).json({ message: 'Error logging out.' });
 		}
-		res.status(200).json({ message: 'Successfully logged out.' });
+		req.session.destroy((destroyErr) => {
+			  if (destroyErr) {
+					console.error('Error destroying session:', destroyErr);
+					return;
+			  }
+			  res.clearCookie('connect.sid'); 
+			  return res.status(200).json({ message: 'Successfully logged out.' });
+		});
 	});
 });
+
 
 export default router;
