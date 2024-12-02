@@ -5,7 +5,7 @@ import passportMiddleware from './middleware/passportMiddleware'
 import bcrypt from 'bcrypt'
 import client from './db/supabaseClient'
 import cors from 'cors'
-import { getUsers, getUserById, getUserByUname, getUserByEmail,getUserByEmailAndPassword } from "./controllers/userController";
+import { getUsers, getUserById, getUserByUname, getUserByEmail,getUserByEmailAndPassword,resetPassword } from "./controllers/userController";
 
 const saltValue =8
 // const hash = bcrypt.hashSync('adminadmin',saltValue)
@@ -58,6 +58,8 @@ client.connect()
     // console.log(`user by email @app: `, userByEmail)
     // const userEmailPwd = await getUserByEmailAndPassword('jimmy123@gmail.com','ji')
     // console.log(`userEmailPwd by email @app: `, userEmailPwd)
+    const userReset = await resetPassword('jimmy','newpassword')
+    console.log(`userReset: `, userReset)
 	 } catch (err) {
 		console.error('Error in Supabase query:', err);
 	 }	

@@ -131,8 +131,8 @@ async function getUserByUnameOrEmail(
 async function resetPassword(info:string,newbarepassword:string):Promise<User|null>{
 	try {
 		//step 1: get user by info: email or uname
-		const user = await getUserById(info) ?? await getUserByUname(info) as User
-	
+		const user = await getUserByEmail(info) ?? await getUserByUname(info) as User
+		console.log('Retrieved user from resetPassword:', user);
 		const hashedPassword = bcrypt.hashSync(newbarepassword,saltValue)	
 		//step 2: update user password
 		const stm=`UPDATE public.users
@@ -142,12 +142,12 @@ async function resetPassword(info:string,newbarepassword:string):Promise<User|nu
 		if(data.rowCount = 0){
 			throw new Error(`Couldn't reset password`)
 		}
-		return user ?? {} as User
+		return user 
 	} catch(error){
 		if(error instanceof Error) {
 			console.error('resetPassword - Error in resetting password: ',error.message)
 		}		
-		return {} as User
+		return null
 	}
 }
 export { getUsers, getUserById, getUserByUname,resetPassword,getUserByEmailAndPassword,getUserByEmail, isUserValid, addUser,getUserByUnameOrEmail }

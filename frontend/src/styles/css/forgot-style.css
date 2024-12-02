@@ -1,0 +1,35 @@
+div.forgot-container{
+	border: 1px solid black;
+	margin:10px auto;
+	text-align: center;
+}
+div.forgot-form {
+	margin: 0 auto;
+	width: 40%;
+	border: 2px solid rgb(177, 177, 177);
+	border-radius: 5px;
+	padding:10px;
+	background-color:lightgray;
+}
+label.form-label {
+	width:35%;
+}
+input.form-input {
+	width: 65%;
+	height:35px;
+	border-radius: 5px;
+	border: 1px solid #d0d0d5;
+}
+div.form-btn {
+	display:flex;
+	flex-direction: row;
+	justify-content: center;
+	margin: 10px;
+}
+button.reset-btn {
+	padding:10px;
+	border-radius: 10px;
+	border: 1px solid #d0d0d5;
+	background-color: #003e6b;
+	color:white;
+}
