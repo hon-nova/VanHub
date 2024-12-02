@@ -23,23 +23,33 @@ const Login =()=>{
 				body:JSON.stringify(formData)
 			})
 			const data = await response.json()
+			console.log(`frontend data: `,data)
+			
 			if(data.errorLogin){
-				setMsg((msgObj)=>({...msgObj,errorLogin:data.errorLogin}))
-				
+				console.log(`data.errorLogin: `, data.errorLogin)
+				setMsg((msgObj)=>({...msgObj, errorLogin:data.errorLogin}))
 			}
-			if(data.errorPassword){
-				setMsg((msgObj)=>({...msgObj,errorPassword:data.errorPassword}))
-				
+			if(data.errorEmail){
+				console.log(`data.errorEmail: `, data.errorEmail)					
+				setMsg((msgObj)=>({...msgObj, errorLogin:data.errorEmail}))
 			}
-			if(data.successMsg){
-				
-				setMsg((msgObj)=>({...msgObj,successLogin:data.successMsg}))
+							
+			//success
+		if(data.successMsg){
+			console.log(`data.successMsg: `, data.successMsg)
+			setMsg((msgObj)=>({...msgObj, successLogin:data.successMsg}))
+			if(data.isAdmin){
+				setTimeout(()=>{
+					navigate('/auth/admin')
+				},2000)					
+			} else {
 				setTimeout(()=>{
 					navigate('/posts')
-				},2000)
+				},2000)					
+			}
 			}
 		} catch(error){
-			console.error('Error in sending login request: ',error)
+			console.error('Frontend Login Error: ',error)
 		}
 	}
 	async function handleSubmitLogin(e:any){
@@ -48,15 +58,15 @@ const Login =()=>{
 	}
 	const handleInputChange = (e:any) => {
 		const {name,value} = e.target
-		setFormData({...formData, [name]:value})
-	}
-	
+		setFormData((formDataObj)=>({...formDataObj, [name]:value}))
+	} 	
 	return (
 		<div className="login-container">
 			<h1>Login</h1>
 			<div className="login-form">
 				{msg.errorLogin && <p className="alert alert-danger">{msg.errorLogin}</p>}
 				{msg.errorPassword && <p className="alert alert-danger">{msg.errorPassword}</p>}
+				{msg.successLogin && <p className="alert alert-success">{msg.successLogin}</p>}
 				<form action="/auth/login" method="POST" onSubmit={handleSubmitLogin}>					
 					<div className="mt-5 mb-1">
 						<label htmlFor="email" className="form-label">Email:</label>

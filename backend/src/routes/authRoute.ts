@@ -6,7 +6,8 @@ const router = express.Router();
 import {Request, Response} from 'express'
 import client from '../db/supabaseClient'
 import bcrypt from 'bcrypt'
-const saltValue =16
+const saltValue =8
+import { getUserByEmail, getUserByEmailAndPassword } from '../controllers/userController'
 
 router.post("/register", async (req:Request, res:Response) => {
 	const { uname, email, password } = req.body
@@ -44,52 +45,31 @@ router.post("/register", async (req:Request, res:Response) => {
   
 });
 
-router.post("/login", forwardAuthenticated, async(req, res) => {
-	const messages = (req.session as any).messages || [];
-	(req.session as any).messages = [];
-
-	const { email, password } = req.body;
-	if (!email || !password) {
-		(req.session as any).messages = ["All fields are required"];
-		return res.status(400).json({errorLogin:'All fields are required'}) as any
-	}
-	const stm = 'SELECT * FROM public.users WHERE email = $1';
-	const user = await client.query(stm,[email])
-	if(user.rows.length === 0){
-		console.log(`${email} does not exist.`)
-		return res.status(400).json({errorLogin:`${email} does not exist.`}) as any
-	}
-	const userPassword = user.rows[0].password
-	if(!(bcrypt.compareSync(password,userPassword))){
-		console.log('Incorrect password.')
-		return res.status(400).json({errorPassword:'Incorrect password.'}) as any
-	}
-	return res.status(200).json({successMsg:'Success. Redirecting ... '}) as any
-
- });
 router.post("/login", (req, res, next) => {
 	passport.authenticate(
 	  "local",
-	  { failureRedirect: "auth/login", failureMessage: true },
+	  { failureRedirect: "/auth/login", failureMessage: true },
 	  (err: Error, user: Express.User, info: IVerifyOptions) => {
 			if (err) {
-			return next(err);
-			}
- 
+				console.error('errorLogin:', err.message);
+				return res.status(500).json({errorLogin:`errorLogin ${err.message}`})
+			} 
 			if (!user) {
-				(req.session as any).messages = info
-				? [info.message]
-				: ["Login failed"];
-				return res.redirect("/auth/login");
+				const errorE = info?.message || "backend /login: NO SUCH USER";
+				console.error('errorEmail:', info?.message);
+				return res.status(401).json({errorLogin:`${errorE}`})
 			}
 			req.logIn(user, (err) => {
 				if (err) {
-				return next(err);
-				}
+					console.error('req.logIn Error:', info?.message);
+					return res.status(500).json({ errorLogin: `req.logIn: ${err.message}` });
+				 }
+				//success
+				const successMsg = `Success. Redirecting ...`
 				if (isAdmin(req)) {
-				return res.redirect("/auth/admin");
+					return res.status(200).json({user: user, isAdmin:true, successMsg})
 				} else {
-				return res.redirect("/");
+					return res.status(200).json({user: user, isAdmin:false, successMsg})
 				}
 			});
 	  }

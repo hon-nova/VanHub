@@ -1,12 +1,11 @@
-import {Application } from 'express'
+import { Application } from 'express'
 import passport  from 'passport'
 import  PassportConfig from './PassportConfig'
 
 import localStrategy from './passportStrategies/localStrategy'
-import githubStrategy from './passportStrategies/githubStrategy'
+// import githubStrategy from './passportStrategies/githubStrategy'
 
-
-const strategies =[localStrategy,githubStrategy]
+const strategies =[localStrategy,/*githubStrategy*/]
 const passportConfig = new PassportConfig(strategies)
 
 passportConfig.addStrategies(strategies)
