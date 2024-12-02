@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 import '../../styles/css/forgot-style.css';
+import { useNavigate } from 'react-router-dom'
+
 const Forgot = () => {
+  const navigate = useNavigate()
   const [formData, setFormData] = useState({
     info: "",
     newpassword: "",
@@ -21,10 +24,11 @@ const Forgot = () => {
     await sendRequestForgot();
   };
   async function sendRequestForgot() {
-    if (
-      formData.info === "" ||
-      formData.newpassword === "" ||
-      formData.confirmnewpassword === ""
+   const { info, newpassword, confirmnewpassword } = formData;
+   if (
+      info === "" ||
+      newpassword === "" ||
+      confirmnewpassword === ""
     ) {
       setMsg((msgObj) => ({
         ...msgObj,
@@ -35,7 +39,7 @@ const Forgot = () => {
       }, 3000);
       return;
     }
-    if (formData.newpassword !== formData.confirmnewpassword) {
+   if (newpassword !== confirmnewpassword) {
       setMsg((msgObj) => ({
         ...msgObj,
         errorMatchPwd: "Passwords do not match.",
@@ -45,29 +49,35 @@ const Forgot = () => {
       }, 3000);
       return;
     }
-    const response = await fetch("http://localhost:8000/auth/forgot", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(formData),
-    });
-    const data = await response.json();
-    console.log(`frontend data: `, data);
-    if(data.errorEmail){
-      console.log(`data.errorEmail: `, data.errorEmail)					
-      setMsg((msgObj)=>({...msgObj, errorEmail:data.errorEmail}))
-      setTimeout(()=>{
-        setMsg((msgObj)=>({...msgObj, errorEmail:''}))
-      },3000)
+    try {
+      const response = await fetch("http://localhost:8000/auth/forgot", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ info, newpassword, confirmnewpassword }),
+      });
+      const data = await response.json();
+      console.log(`frontend forgot data: `, data);
+      if(data.errorEmail){
+        console.log(`data.errorEmail: `, data.errorEmail)					
+        setMsg((msgObj)=>({...msgObj, errorEmail:data.errorEmail}))
+        setTimeout(()=>{
+          setMsg((msgObj)=>({...msgObj, errorEmail:''}))
+        },3000)
+      }
+      if(data.successReset){
+        console.log(`data.successReset: `, data.successReset)
+        setMsg((msgObj)=>({...msgObj, successReset:data.successReset}))
+        setTimeout(()=>{
+          setMsg((msgObj)=>({...msgObj, successReset:''}))
+          navigate('/auth/login')
+        },2000)
+      } 
+    } catch (error) {
+      console.error("Error in sendRequestForgot: ", error);
     }
-    if(data.successReset){
-      console.log(`data.successReset: `, data.successReset)
-      setMsg((msgObj)=>({...msgObj, successReset:data.successReset}))
-      setTimeout(()=>{
-        setMsg((msgObj)=>({...msgObj, successReset:''}))
-      },3000)
-    }   
+      
   }
   return (
     <div className="forgot-container">

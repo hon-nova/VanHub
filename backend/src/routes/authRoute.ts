@@ -87,8 +87,7 @@ router.post('/forgot', async (req: Request, res: Response) => {
 			console.log('Passwords do not match.')
 			return; 
 		}
-		// const hashedPassword = bcrypt.hashSync(newpassword, saltValue)
-		const user = await getUserByUnameOrEmail(info,'') as Express.User
+		const user = await getUserByUnameOrEmail(info,info) as Express.User
 		if(!user || !user.password){
 			console.log('NO SUCH USER/EMAIL')
 			return res.status(400).json({errorEmail:'NO SUCH USER/EMAIL'}) as any
@@ -98,7 +97,6 @@ router.post('/forgot', async (req: Request, res: Response) => {
 			console.log('Password reset successfully.')
 			return res.status(200).json({successReset:'Password reset successfully.'}) as any
 		}
-
 	} catch(error){
 		console.error('Backend Error in forgot:', error)
 	}

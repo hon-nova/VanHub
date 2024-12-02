@@ -49,25 +49,24 @@ client.connect()
   .catch((err) => console.error('Error connecting to PostgreSQL:', err));
 (async()=>{	
 	try {
-		// const {data,error} = await client.from('public.users').select()
-    const users = await getUsers()
-    // console.log(`users @app: `, users)
-    const uniqueUser = await getUserById('4be98560-c532-437c-9f29-54c75d30a228')
-    // console.log(`user @app: `, uniqueUser)
-    // const userByEmail = await getUserByEmail('jimmy123fdfdsfdsfsa@gmail.com')
-    // console.log(`user by email @app: `, userByEmail)
-    // const userEmailPwd = await getUserByEmailAndPassword('jimmy123@gmail.com','ji')
-    // console.log(`userEmailPwd by email @app: `, userEmailPwd)
-    const userReset = await resetPassword('jimmy','newpassword')
-    console.log(`userReset: `, userReset)
-	 } catch (err) {
-		console.error('Error in Supabase query:', err);
-	 }	
+      // const {data,error} = await client.from('public.users').select()
+      const users = await getUsers()
+      // console.log(`users @app: `, users)
+      const uniqueUser = await getUserById('4be98560-c532-437c-9f29-54c75d30a228')
+      // console.log(`user @app: `, uniqueUser)
+      // const userByEmail = await getUserByEmail('jimmy123fdfdsfdsfsa@gmail.com')
+      // console.log(`user by email @app: `, userByEmail)
+      // const userEmailPwd = await getUserByEmailAndPassword('jimmy123@gmail.com','ji')
+      // console.log(`userEmailPwd by email @app: `, userEmailPwd)
+      // const userReset = await resetPassword('jimmy123@gmail.com','newpassword')
+      // console.log(`userReset: `, userReset)
+    } catch (err) {
+      console.error('Error in Supabase query:', err);
+    }	
 })()
 
 import authRoute from "./routes/authRoute";
 import indexRoute from "./routes/indexRoute";
-
 
 // Middleware for express
 app.use(express.json());

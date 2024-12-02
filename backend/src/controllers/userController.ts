@@ -131,18 +131,28 @@ async function getUserByUnameOrEmail(
 async function resetPassword(info:string,newbarepassword:string):Promise<User|null>{
 	try {
 		//step 1: get user by info: email or uname
-		const user = await getUserByEmail(info) ?? await getUserByUname(info) as User
+		const user =
+						(await getUserByEmail(info)) ||
+						(await getUserByUname(info)) as User
+		if(!user){
+			throw new Error(`Couldn't find user with ${info}`)
+		}
+		console.log(`userId: `,user.id)
 		console.log('Retrieved user from resetPassword:', user);
+		//old password: $2b$08$uWHlQZgxwPSGeJKCmJLq8e5kOBRd3kSzykX/84EJ6VK95m6iQK45i
 		const hashedPassword = bcrypt.hashSync(newbarepassword,saltValue)	
 		//step 2: update user password
 		const stm=`UPDATE public.users
 						SET password=$1 
-						WHERE id=$2`
+						WHERE id=$2
+						RETURNING *`
 		const data = await client.query(stm,[hashedPassword,user.id])
-		if(data.rowCount = 0){
+		if(data.rowCount === 0){
 			throw new Error(`Couldn't reset password`)
 		}
-		return user 
+		// console.log(`updated user: `, data.rows[0])
+		//new password: $2b$08$LkS37TUdx0C6bV9pZK2jxeDDq4zJf8g4v0uC8lpUGLZmhaQRkmv6u
+		return data.rows[0]
 	} catch(error){
 		if(error instanceof Error) {
 			console.error('resetPassword - Error in resetting password: ',error.message)
