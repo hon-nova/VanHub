@@ -68,6 +68,7 @@ client.connect()
 
 import authRoute from "./routes/authRoute";
 import indexRoute from "./routes/indexRoute";
+import postRoute from "./routes/postRoute";
 
 // Middleware for express
 app.use(express.json());
@@ -82,8 +83,9 @@ passportMiddleware(app);
 //   next();
 // });
 
-app.use("/", indexRoute);
+// app.use("/", indexRoute);
 app.use("/auth", authRoute);
+app.use("/posts", postRoute);
 
 app.listen(port, () => {
   console.log(`🚀 Social Media Server has started at http://localhost:${port}`);

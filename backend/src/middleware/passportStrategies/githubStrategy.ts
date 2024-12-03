@@ -6,11 +6,6 @@ import { addUser, getUserByEmail,getUserByUname,getUserByUnameOrEmail } from '..
 import { v5 as uuidv5 } from 'uuid';
 
 
-
-// import { User, database } from '../../models/userModel'
-
-// console.log(`process.env.GITHUB_CLIENT_ID: `, process.env.GITHUB_CLIENT_ID)
-// console.log(`process.env.GITHUB_CLIENT_SECRET: `, process.env.GITHUB_CLIENT_SECRET)
 if (!process.env.GITHUB_CLIENT_ID || !process.env.GITHUB_CLIENT_SECRET) {
    throw new Error("Missing GitHub client ID or secret");
 }
@@ -23,10 +18,8 @@ const githubStrategy: GitHubStrategy = new GitHubStrategy({
    scope: ['user:email']
 },
 async(req: Express.Request, accessToken: string, refreshToken: string, profile: Profile, done: Function): Promise<void> => {
-   // console.log(`accessToken: `, accessToken);
-   console.log(`profile: `, profile);
+   
    const email = profile.emails && profile.emails[0]?.value ? profile.emails[0].value : null;
-   // console.log(`email:: `,email)
    if (!email) {
       console.log("GitHub email not available.");
       return done(new Error("GitHub email not available"), false);
@@ -38,10 +31,9 @@ async(req: Express.Request, accessToken: string, refreshToken: string, profile: 
       email: email,
 		password:'',
       role: 'user'
-   };
-   console.log(`githubUser:`,githubUser)
-   // const foundUser = userModel.findUserById(githubUser.id)  
+   }; 
 	const getUser = await getUserByUnameOrEmail(githubUser.uname,email) as Express.User
+   // console.log('githubStrategy getUser:',getUser)
 
 	if(!getUser){
 		await addUser(githubUser.uname,githubUser.email,githubUser.password)     

@@ -18,7 +18,7 @@ function App() {
         <Route path="/auth/forgot" element={<Forgot />}/>
         <Route path="/auth/admin" element={<Admin />}/>       
 
-        <Route path="/posts" element={<Posts />}/>
+        <Route path="/public/posts" element={<Posts />}/>
       </Routes>
     </Router>
   );

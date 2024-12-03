@@ -72,7 +72,7 @@ router.get(
 	"/github/callback",
 	passport.authenticate("github", { failureRedirect: "/auth/login" }), 
 	function (req: Request, res: Response) {
-	  res.redirect("http://localhost:3000/posts");
+	  res.redirect("http://localhost:3000/public/posts");
 	}
 );
 
@@ -102,20 +102,23 @@ router.post('/forgot', async (req: Request, res: Response) => {
 	}
 })
 
-router.post('/logout', (req: Request, res: Response) => {
+router.post('/logout', forwardAuthenticated, (req: Request, res: Response) => {
+	console.log('Logout initiated.');
 	req.logout((err) => {
-		if (err) {
-			  console.error('Error logging out:', err);
-			  return res.status(500).json({ message: 'Error logging out.' });
-		}
-		req.session.destroy((destroyErr) => {
+		console.log('User attempting to log out:', req.user); // Log user data
+		 if (err) {
+			  console.error('Error during req.logout:', err);
+			  return res.status(500).json({ errorMsg: 'Error logging out.' });
+		 }
+		 req.session.destroy((destroyErr) => {
 			  if (destroyErr) {
 					console.error('Error destroying session:', destroyErr);
-					return;
+					return res.status(500).json({ errorMsg: 'Error destroying session.' });
 			  }
-			  res.clearCookie('connect.sid'); 
+			  res.clearCookie('connect.sid', { path: '/' }); 
+			  console.log('Successfully logged out.');
 			  return res.status(200).json({ message: 'Successfully logged out.' });
-		});
+		 });
 	});
 });
 

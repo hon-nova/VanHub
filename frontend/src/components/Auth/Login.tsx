@@ -49,8 +49,8 @@ const Login =()=>{
 				},2000)					
 			} else {
 				setTimeout(()=>{
-					navigate('/posts')
-				},2000)					
+					navigate('/public/posts')
+				},3000)					
 			}
 			}
 		} catch(error){

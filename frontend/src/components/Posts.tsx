@@ -1,9 +1,12 @@
 import { useNavigate } from 'react-router-dom'
 import { useState } from 'react'
+
 const Posts = ()=>{
 	const navigate = useNavigate();
-	const [msg,setMsg] = useState('')
-
+	const [msg,setMsg] = useState({
+		errorMsg:'',
+		successMsg:''
+	})
 	const handleLogout = async () => {
 		try {
 			console.log(`handleLogout started`)
@@ -11,17 +14,15 @@ const Posts = ()=>{
 					method: 'POST',
 					credentials: 'include', 
 			  });
-
-			  if (response.ok) {
-				const data = await response.json();
-				setMsg(data.message)
+			  const data = await response.json();
+			  if (response.ok) {				
+				setMsg((msgObj)=>({...msgObj, successMsg:data.successMsg}))
 				setTimeout(() => {
 					navigate('/auth/login');
-				},3000)
-					 
+				},2000)					 
 			  } else {
-				const data = await response.json();
-            console.error('Failed to log out:', data.message);
+            console.error('Failed to log out:', data.errorMsg);
+				setMsg((msgObj)=>({...msgObj, errorMsg:data.errorMsg}))
         }
 		} catch (error) {
 			  console.error('Error during logout:', error);
@@ -29,7 +30,8 @@ const Posts = ()=>{
 	};
 	 return (
 		  <div className="container">
-			{msg && <div className="alert alert-success text-center">{msg}</div>}
+			{msg.errorMsg && <div className="alert alert-danger text-center">{msg.errorMsg}</div>}
+			{msg.successMsg && <div className="alert alert-success text-center">{msg.successMsg}</div>}
 				<h1>All Posts live here ... </h1>
 				<button onClick={handleLogout} className="btn btn-outline-danger">
                 Logout
