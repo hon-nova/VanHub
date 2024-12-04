@@ -18,5 +18,5 @@ export type Post = {
 	description:string,
 	creator:string,
 	subgroup: string,
-	timestamp: number
+	timestamp: number|null
 }

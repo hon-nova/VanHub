@@ -1,10 +1,12 @@
 import React from 'react';
+import { User } from '../../../backend/src/shared/interfaces/index'
 
 interface NavbarProps {
-	username:string,
+	user:User,
 	handleLogout:()=>void
 }
-const Navbar:React.FC<NavbarProps> = ({ username, handleLogout }) => {
+
+const Navbar:React.FC<NavbarProps> = ({ user, handleLogout }) => {
   return (
     <nav
       className="navbar navbar-expand-lg navbar-dark"
@@ -54,7 +56,7 @@ const Navbar:React.FC<NavbarProps> = ({ username, handleLogout }) => {
               <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
                 <li>
                   <span className="dropdown-item-text text-muted">
-                    {username || 'Guest'}
+                    {user?.email || 'Guest'}
                   </span>
                 </li>
                 <li>
