@@ -37,12 +37,11 @@ passport.serializeUser(function (user:Express.User,done: (err: any, id?: string)
 
 passport.deserializeUser(async(id:string,done: (err: any, user?: Express.User | false | null) => void)=>{
    try {
-      console.log(`DESERIALIZEUSER GOT TRIGGERED at last`)
-      console.log('Deserializing user with ID:', id);
+      // console.log(`DESERIALIZEUSER GOT TRIGGERED at last`)
       let user = await getUserById(id) as Express.User
-      console.log(`user @deserializeUser: `, user)
+      // console.log(`user @deserializeUser: `, user)
       if (user){
-         console.log(`user inside user: `, user)
+         console.log(`user inside user deserializeUser: `, user)         
          done(null,user)
       } else {
          done({message: "User not found"},null)

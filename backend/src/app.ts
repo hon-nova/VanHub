@@ -32,7 +32,7 @@ app.use(
       httpOnly: true,
       secure: false,
       maxAge: 24 * 60 * 60 * 1000,
-      sameSite: 'none',
+      sameSite: 'lax',
     },
   })
 );
@@ -42,20 +42,20 @@ passportMiddleware(app);
 // Middleware for express
 app.use((req, res, next) => { 
   if (req.session && (req.session as any).passport && (req.session as any).passport.user) {
-    console.log('Session exists:', (req.session as any).passport.user);
+    console.log('Session exists @app:', (req.session as any).passport.user);
   } else {
     console.log('No session found');
   }
-  console.log('AFTER Passport session:', ((req.session as any).passport));
+  console.log('passport.user @app:', ((req.session as any).passport?.user));
   next();
 });
 
 app.use(cookieParser());
 app.use(express.json());
 // parse application/x-www-form-urlencoded
-app.use(bodyParser.urlencoded({ extended: false }))
+// app.use(bodyParser.urlencoded({ extended: false }))
 // parse application/json
-app.use(bodyParser.json())
+// app.use(bodyParser.json())
 app.use(express.urlencoded({ extended: true }));
 
 

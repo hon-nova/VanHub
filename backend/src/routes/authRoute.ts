@@ -59,6 +59,9 @@ router.post("/login", (req, res, next) => {
 				if (isAdmin(req)) {
 					return res.status(200).json({user: user, isAdmin:true, successMsg})
 				} else {
+					console.log('@login User logged in:', user);
+      			console.log('@login Session after login session:', (req.session as any).passport.user);
+					// console.log('@login Session after login session.user:', req.session.user);
 					return res.status(200).json({user: user, isAdmin:false, successMsg})
 				}
 			});
@@ -127,10 +130,10 @@ router.post('/logout', forwardAuthenticated, (req: Request, res: Response) => {
 	console.log(`BACKEND user logged out: `, user)
 	console.log(`BACKEND session: `, (req.session as any).passport)
 	req.session.destroy((err) => {
-	  if (err) {
-		 console.error('Error destroying session:', err);
-		 return res.status(500).json({ errorMsg: 'Failed to log out.' });
-	  }
+		if (err) {
+			console.error('Error destroying session:', err);
+			return res.status(500).json({ errorMsg: 'Failed to log out.' });
+		}
  
 	  res.clearCookie('connect.sid'); // Remove the session cookie
 	  res.status(200).json({ successMsg: 'Successfully logged out.' });

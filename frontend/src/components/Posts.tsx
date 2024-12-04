@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom'
 import { useEffect, useState } from 'react'
-
+import PostItem from './PostItem'
+import { Post } from '../../../backend/src/shared/interfaces/index'
 
 const Posts = ()=>{
 	const navigate = useNavigate();
@@ -8,6 +9,7 @@ const Posts = ()=>{
 		errorMsg:'',
 		successMsg:''
 	})
+	const [posts, setPosts ]= useState([])
 	const getPosts = async ()=>{
 		try {
 			const response = await fetch('http://localhost:8000/public/posts', {
@@ -15,7 +17,7 @@ const Posts = ()=>{
 				credentials: "include",
 			 })
 			 const data = await response.json()
-			 
+			 setPosts(data.posts)
 			 console.log(`data public/posts @Posts: `,data)
 		} catch(error){
 			console.error(`error public/posts @Posts: `,error)
@@ -50,10 +52,15 @@ const Posts = ()=>{
 		  <div className="container">
 			{msg.errorMsg && <div className="alert alert-danger text-center">{msg.errorMsg}</div>}
 			{msg.successMsg && <div className="alert alert-success text-center">{msg.successMsg}</div>}
-				<h1>All Posts live here ... </h1>
-				<button onClick={handleLogout} className="btn btn-outline-danger">
+			<button onClick={handleLogout} className="btn btn-outline-danger">
                 Logout
-            </button>
+         </button>
+			<div>All Posts live here ...
+				{posts && posts.map((p:Post)=>(
+					<PostItem key={p.id} post={p} onDelete={()=>{}} onEdit={()=>{}}/>
+				))}
+			</div>
+				
 		  </div>
 	 )
 }

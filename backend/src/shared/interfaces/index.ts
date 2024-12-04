@@ -11,3 +11,12 @@ export interface User {
    password: string,
    role: string
 }
+export type Post = {
+	id: string,
+	title:string,
+	link:string,
+	description:string,
+	creator:string,
+	subgroup: string,
+	timestamp: number
+}
