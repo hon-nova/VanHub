@@ -2,6 +2,8 @@ import { useNavigate } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import PostItem from './PostItem'
 import { Post } from '../../../backend/src/shared/interfaces/index'
+import Navbar from './Navbar'
+import '../styles/css/posts-style.css'
 
 const Posts = ()=>{
 	const navigate = useNavigate();
@@ -18,15 +20,13 @@ const Posts = ()=>{
 			 })
 			 const data = await response.json()
 			 setPosts(data.posts)
-			 console.log(`data public/posts @Posts: `,data)
 		} catch(error){
 			console.error(`error public/posts @Posts: `,error)
 		}
 	}
 	useEffect(()=>{
 		getPosts()
-	},[])
-	 
+	},[])	 
 	const handleLogout = async () => {
 		try {
 			console.log(`handleLogout started`)
@@ -49,18 +49,18 @@ const Posts = ()=>{
 		}
 	};
 	return (
-		  <div className="container">
-			{msg.errorMsg && <div className="alert alert-danger text-center">{msg.errorMsg}</div>}
-			{msg.successMsg && <div className="alert alert-success text-center">{msg.successMsg}</div>}
-			<button onClick={handleLogout} className="btn btn-outline-danger">
-                Logout
-         </button>
-			<div>All Posts live here ...
-				{posts && posts.map((p:Post)=>(
-					<PostItem key={p.id} post={p} onDelete={()=>{}} onEdit={()=>{}}/>
-				))}
-			</div>
-				
+		  <div className="posts-container">
+				<Navbar username='' handleLogout={handleLogout}/>				
+				{msg.errorMsg && <div className="alert alert-danger text-center">{msg.errorMsg}</div>}
+				{msg.successMsg && <div className="alert alert-success text-center">{msg.successMsg}</div>}			
+				<div className="posts">All Posts live here ...
+					{/* <h3>Welcome {{ username }}</h3> */}
+					<ol>
+					{posts && posts.map((p:Post)=>(
+						<li><PostItem key={p.id} post={p} onDelete={()=>{}} onEdit={()=>{}}/></li>
+					))}
+					</ol>
+				</div>				
 		  </div>
 	 )
 }

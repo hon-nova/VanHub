@@ -1,12 +1,6 @@
-type Post = {
-	id: string,
-	title:string,
-	link:string,
-	description:string,
-	creator:string,
-	subgroup: string,
-	timestamp: number
-}
+import '../styles/css/post-item-style.css'
+import { Post } from '../../../backend/src/shared/interfaces/index'
+
 interface PostItemProps {
 	post: Post;
 	onDelete: (id: string) => void;
@@ -15,17 +9,16 @@ interface PostItemProps {
 }
 const PostItem: React.FC<PostItemProps> =({post,onEdit,onDelete})=>{
 	return (
-		<li className="post-item">
+		<div className="d-flex justify-content-between post-item">
 			<div>
-				<h2>{post.title}</h2>
-				<p>{post.description}</p>
-				<a href={post.link} target="_blank" rel="noreferrer">Link</a>
+				<span><a href={post.link}  className="mx-2" target="_blank" rel="noreferrer"><b>{post.title}</b></a>({post.link})</span>
+				<span><p>By <i>{post.creator} at {post.timestamp}</i></p></span>
 			</div>
-			<div>
-				<button onClick={()=>onEdit(post.id)}>Edit</button>
-				<button onClick={()=>onDelete(post.id)}>Delete</button>
+			<div className="">
+				<button onClick={()=>onEdit(post.id)} className="mx-2"><i className="bi bi-pencil mx-2"></i>Edit</button>
+				<button onClick={()=>onDelete(post.id)}><i className="bi bi-trash mx-2"></i>Delete</button>
 			</div>
-		</li>
+		</div>
 	)
 }
 export default PostItem;

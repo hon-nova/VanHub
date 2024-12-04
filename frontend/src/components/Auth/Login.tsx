@@ -99,7 +99,7 @@ const Login =()=>{
 					<button
 					onClick={handleGitHubLogin}
 					className="btn btn-md btn-secondary">
-						<i className="bi bi-github mx-2"></i>Login with GitHub</button>		
+						<i className="bi bi-github mx-2"></i>GitHub Login</button>		
 				</div>
 			</div>			
 		</div>

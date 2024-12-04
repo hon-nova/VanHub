@@ -3,6 +3,8 @@ div.register-container {
 	border: 1px solid black;
 	margin:10px auto;
 	text-align: center;
+	background-color: #004a77;
+	height: 100vh;
 }
 div.register-form {
 	margin: 0 auto;
@@ -11,7 +13,9 @@ div.register-form {
 	border-radius: 5px;
 	padding:10px;
 	/* background-color:rgb(239, 245, 245) */
-	background-color:lightgray;
+	/* background-color:lightgray; */
+	
+	background-color: rgb(154, 151, 151);
 }
 label.form-label {
 	width:30%;
@@ -35,4 +39,5 @@ button.register-btn {
 	border: 1px solid #d0d0d5;
 	background-color: #003e6b;
 	color:white;
+	width: 160px;
 }
