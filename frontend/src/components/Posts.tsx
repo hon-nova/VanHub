@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+
 
 const Posts = ()=>{
 	const navigate = useNavigate();
@@ -7,6 +8,23 @@ const Posts = ()=>{
 		errorMsg:'',
 		successMsg:''
 	})
+	const getPosts = async ()=>{
+		try {
+			const response = await fetch('http://localhost:8000/public/posts', {
+				method: "GET",
+				credentials: "include",
+			 })
+			 const data = await response.json()
+			 
+			 console.log(`data public/posts @Posts: `,data)
+		} catch(error){
+			console.error(`error public/posts @Posts: `,error)
+		}
+	}
+	useEffect(()=>{
+		getPosts()
+	},[])
+	 
 	const handleLogout = async () => {
 		try {
 			console.log(`handleLogout started`)
@@ -28,7 +46,7 @@ const Posts = ()=>{
 			  console.error('Error during logout:', error);
 		}
 	};
-	 return (
+	return (
 		  <div className="container">
 			{msg.errorMsg && <div className="alert alert-danger text-center">{msg.errorMsg}</div>}
 			{msg.successMsg && <div className="alert alert-success text-center">{msg.successMsg}</div>}

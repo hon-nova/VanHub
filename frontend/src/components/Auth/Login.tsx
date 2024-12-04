@@ -16,11 +16,12 @@ const Login =()=>{
 	async function sendRequestLogin(){
 		try {
 			const response = await fetch('http://localhost:8000/auth/login',{
-				method:'POST',
+				method:"POST",				
 				headers:{
-					'Content-Type':'application/json'
+					"Content-Type":"application/json"
 				},
-				body:JSON.stringify(formData)
+				body:JSON.stringify(formData),
+				credentials: "include", 
 			})
 			const data = await response.json()
 			console.log(`frontend data: `,data)

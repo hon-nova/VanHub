@@ -5,6 +5,8 @@ import passportMiddleware from './middleware/passportMiddleware'
 import bcrypt from 'bcrypt'
 import client from './db/supabaseClient'
 import cors from 'cors'
+import bodyParser from "body-parser";
+import cookieParser from 'cookie-parser'
 import { getUsers, getUserById, getUserByUname, getUserByEmail,getUserByEmailAndPassword,resetPassword } from "./controllers/userController";
 
 const saltValue =8
@@ -20,19 +22,42 @@ app.use(cors({
 	origin: 'http://localhost:3000', 
   credentials: true
  }));
-
+app.set('trust proxy', 1);
 app.use(
   session({
 		secret: "secret",
 		resave: false,
-		saveUninitialized: false,
+		saveUninitialized: true,
 		cookie: {
       httpOnly: true,
       secure: false,
       maxAge: 24 * 60 * 60 * 1000,
+      sameSite: 'none',
     },
   })
 );
+//crucial for Passport.js in this app
+passportMiddleware(app);
+
+// Middleware for express
+app.use((req, res, next) => { 
+  if (req.session && (req.session as any).passport && (req.session as any).passport.user) {
+    console.log('Session exists:', (req.session as any).passport.user);
+  } else {
+    console.log('No session found');
+  }
+  console.log('AFTER Passport session:', ((req.session as any).passport));
+  next();
+});
+
+app.use(cookieParser());
+app.use(express.json());
+// parse application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({ extended: false }))
+// parse application/json
+app.use(bodyParser.json())
+app.use(express.urlencoded({ extended: true }));
+
 
 declare global{
   namespace Express {
@@ -49,18 +74,11 @@ client.connect()
   .then(() => console.log('Connected to Supabase PostgreSQL'))
   .catch((err) => console.error('Error connecting to PostgreSQL:', err));
 (async()=>{	
-	try {
-      // const {data,error} = await client.from('public.users').select()
+	try {     
       const users = await getUsers()
       // console.log(`users @app: `, users)
       const uniqueUser = await getUserById('4be98560-c532-437c-9f29-54c75d30a228')
-      // console.log(`user @app: `, uniqueUser)
-      // const userByEmail = await getUserByEmail('jimmy123fdfdsfdsfsa@gmail.com')
-      // console.log(`user by email @app: `, userByEmail)
-      // const userEmailPwd = await getUserByEmailAndPassword('jimmy123@gmail.com','ji')
-      // console.log(`userEmailPwd by email @app: `, userEmailPwd)
-      // const userReset = await resetPassword('jimmy123@gmail.com','newpassword')
-      // console.log(`userReset: `, userReset)
+      
     } catch (err) {
       console.error('Error in Supabase query:', err);
     }	
@@ -70,22 +88,9 @@ import authRoute from "./routes/authRoute";
 import indexRoute from "./routes/indexRoute";
 import postRoute from "./routes/postRoute";
 
-// Middleware for express
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-//crucial for Passport.js in this app
-passportMiddleware(app);
-
-
-// app.use((req, res, next) => {
-//   console.log(`User details are: `);
-//   console.log(req.user);
-//   next();
-// });
-
 // app.use("/", indexRoute);
 app.use("/auth", authRoute);
-app.use("/posts", postRoute);
+app.use("/public", postRoute);
 
 app.listen(port, () => {
   console.log(`🚀 Social Media Server has started at http://localhost:${port}`);

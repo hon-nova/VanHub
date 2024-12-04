@@ -102,25 +102,40 @@ router.post('/forgot', async (req: Request, res: Response) => {
 	}
 })
 
+// router.post('/logout', forwardAuthenticated, (req: Request, res: Response) => {
+// 	console.log('Logout initiated.');
+// 	req.logout((err) => {
+// 		console.log('User attempting to log out:', req.user); // Log user data
+// 		 if (err) {
+// 			  console.error('Error during req.logout:', err);
+// 			  return res.status(500).json({ errorMsg: 'Error logging out.' });
+// 		 }
+// 		 req.session.destroy((destroyErr) => {
+// 			  if (destroyErr) {
+// 					console.error('Error destroying session:', destroyErr);
+// 					return res.status(500).json({ errorMsg: 'Error destroying session.' });
+// 			  }
+// 			  res.clearCookie('connect.sid', { path: '/' }); 
+// 			  console.log('Successfully logged out.');
+// 			  return res.status(200).json({ message: 'Successfully logged out.' });
+// 		 });
+// 	});
+// });
+
 router.post('/logout', forwardAuthenticated, (req: Request, res: Response) => {
-	console.log('Logout initiated.');
-	req.logout((err) => {
-		console.log('User attempting to log out:', req.user); // Log user data
-		 if (err) {
-			  console.error('Error during req.logout:', err);
-			  return res.status(500).json({ errorMsg: 'Error logging out.' });
-		 }
-		 req.session.destroy((destroyErr) => {
-			  if (destroyErr) {
-					console.error('Error destroying session:', destroyErr);
-					return res.status(500).json({ errorMsg: 'Error destroying session.' });
-			  }
-			  res.clearCookie('connect.sid', { path: '/' }); 
-			  console.log('Successfully logged out.');
-			  return res.status(200).json({ message: 'Successfully logged out.' });
-		 });
+	const user = req.user 
+	console.log(`BACKEND user logged out: `, user)
+	console.log(`BACKEND session: `, (req.session as any).passport)
+	req.session.destroy((err) => {
+	  if (err) {
+		 console.error('Error destroying session:', err);
+		 return res.status(500).json({ errorMsg: 'Failed to log out.' });
+	  }
+ 
+	  res.clearCookie('connect.sid'); // Remove the session cookie
+	  res.status(200).json({ successMsg: 'Successfully logged out.' });
 	});
-});
+ });
 
 
 export default router;
