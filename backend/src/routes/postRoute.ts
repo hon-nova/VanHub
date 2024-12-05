@@ -34,9 +34,20 @@ router.post("/posts", async (req:Request,res:Response)=>{
 			console.error(`error @/posts/add: `,error.message)
 			res.status(500).json({errorMsg:error.message})
 		}
-		
 	}
 	
+})
+
+router.post("/posts/edit/:id", async (req:Request,res:Response)=>{
+	try {
+		const id = Number(req.params.id)
+		const {title,link,description,subgroup} = req.body
+	} catch(error){
+		if(error instanceof Error){
+			console.error(`error @/posts/edit: `,error.message)
+			res.status(500).json({errorMsg:error.message})
+		}
+	}
 })
 
 export default router;

@@ -59,6 +59,11 @@ const Posts = ()=>{
 		setPosts((posts)=>[...posts,newPost])
 		getPosts()
 	}
+
+	const handleEditPost = (updatedPost:Post)=>{
+		setPosts((posts)=>({...posts, updatedPost}))
+		getPosts()
+	}
 	return (
 		  <div className="posts-container">
 				<Navbar user={user as User} handleLogout={handleLogout}/>				
@@ -88,7 +93,7 @@ const Posts = ()=>{
 					All Posts live here ...	
 					<ol>
 					{posts && posts.map((p:Post,index)=>(
-						<li key={index}><PostItem post={p} onDelete={()=>{}} onEdit={()=>{}}/></li>
+						<li key={index}><PostItem post={p} onDelete={()=>{}} onEdit={(id)=>handleEditPost(p)}/></li>
 					))}
 					</ol>
 				</div>	

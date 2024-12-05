@@ -1,80 +1,75 @@
 import React, { useState } from 'react';
 import { Post } from '../../../backend/src/shared/interfaces/index'
-import '../styles/css/post-create-style.css'
+import { useNavigate } from 'react-router-dom'
 
-interface PostCreateItemProps {
-	onAdd: (newPost:Post)=>void
+interface PostEditProps {
+	post:Post;
+	onEdit: (editedPost:Post)=>void
 }
-const PostCreateItem: React.FC<PostCreateItemProps> = ({onAdd})=>{
+const PostEdit: React.FC<PostEditProps> = ({post,onEdit})=>{
 
+	const navigate = useNavigate()
 	const [formData,setFormData]= useState({
-		title:'',
-		link:'',
-		description:'',
-		creator:'',
-		subgroup:''
+		title:post.title,
+		link:post.link,
+		description:post.description,
+		subgroup:post.subgroup
 	})
 	const [msg,setMsg] = useState({
 		successMsg:'',
 		errorMsg:''
 	})
-	
 	const handleInputChange = (e:React.ChangeEvent<HTMLInputElement|HTMLTextAreaElement>)=>{
 		const {name,value} = e.target
 		setFormData({
 			...formData,
 			[name]:value
 		})
-	}
-	const submitAddRequest = async ()=>{
-		try {
-			const response = await fetch('http://localhost:8000/public/posts', {
-				method: "POST",
-				headers: {
-					'Content-Type': 'application/json'
-				},
-				body: JSON.stringify(formData),
-				credentials:"include"
-			 })
-			 const data = await response.json()
-			 console.log(`data.post @submitAddRequest: `,data.post)
-			 onAdd(data.post)
-			 setFormData({
+	} 
+	const submitEditRequest =  async()=>{
+		const response = await fetch(`http://localhost:8000/public/posts/edit/${post.id}`,{
+			method: "POST",
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify(formData),
+			credentials:"include"
+		})
+		const data = await response.json()
+		if(data.post){
+			onEdit(data.post)
+			setFormData({
 				title:'',
 				link:'',
 				description:'',
-				creator:'',
 				subgroup:''
-			 })
-			 if(data.successMsg){
-				 setMsg((msgObj)=>({...msgObj, successMsg:data.successMsg}))
-				 setTimeout(()=>{
-					 setMsg((msgObj)=>({...msgObj, successMsg:''}))
-				 },3000)
-			 }
-			 if(data.errorMsg){
-				 setMsg((msgObj)=>({...msgObj, errorMsg:data.errorMsg}))
-				 setTimeout(()=>{
-					setMsg((msgObj)=>({...msgObj, errorMsg:''}))
-				},3000)
-			 }
-			
-		} catch(error){
-			console.error(`error @submitAddRequest: `,error)
+			})
+		}
+		if(data.successMsg){
+			setMsg((msgObj)=>({...msgObj, successMsg:data.successMsg}))
+			setTimeout(()=>{
+				navigate('/public/posts')
+			},3000)
+		}
+		if(data.errorMsg){
+			setMsg((msgObj)=>({...msgObj, errorMsg:data.errorMsg}))
+			setTimeout(()=>{
+				setMsg((msgObj)=>({...msgObj, errorMsg:''}))
+			},3000)
 		}
 	}
-	const handleSubmitAdd = async (e:React.FormEvent<HTMLFormElement>)=>{
+	const handleSubmitEdit = async (e:React.FormEvent<HTMLFormElement>)=>{
 		e.preventDefault()
-		await submitAddRequest()
+		await submitEditRequest()
 	}
 	return (
 		<>		
-		<div className="post-create-container">
+		<div className="post-edit-container">
 			<div>
 				{msg.successMsg && <h6 className="text-success">{msg.successMsg}</h6>}
 				{msg.errorMsg && <h6 className="text-danger">{msg.errorMsg}</h6>}
 			</div>
-			<form action="/public/posts" method="POST" onSubmit={handleSubmitAdd}>
+			<form action="/public/posts/edit/{post.id}" method="POST" onSubmit={handleSubmitEdit}>
 				<div>
 					<label htmlFor="title" className="form-label">Title:</label>
 					<input 
@@ -98,7 +93,8 @@ const PostCreateItem: React.FC<PostCreateItemProps> = ({onAdd})=>{
 						value={formData.description}
 						id="description" name="description"
 						className="form-input"
-						style={{ height:"200" }}></textarea>
+						style={{ height:"200" }}>
+					</textarea>
 				</div>				
 				<div>
 					<label htmlFor="subgroup" className="form-label">Subgroup:</label>
@@ -108,11 +104,12 @@ const PostCreateItem: React.FC<PostCreateItemProps> = ({onAdd})=>{
 						type="text" id="subgroup" name="subgroup"
 						className="form-input"/>
 				</div>
-				<button type="submit">Submit</button>
+				<button type="submit">Save Changes</button>
 			</form>
 		</div>
 		</>
 	)
+
 }
 
-export default PostCreateItem
+export default PostEdit;
