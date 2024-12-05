@@ -106,7 +106,7 @@ async function getPostById(id:number):Promise<Post|null>{
 async function editPost(id:number,changes:{title?:string,link?:string,description?:string,subgroup?:string}):Promise<Post|null>{
 	try {
 		const post = await getPostById(id)
-		console.log(`post @editPost in postController: `,post)
+		// console.log(`post @editPost in postController: `,post)
 		const updates: Partial<Post> = {}
 		if(post){
 			if(changes.title) {updates.title = changes.title}
@@ -116,13 +116,12 @@ async function editPost(id:number,changes:{title?:string,link?:string,descriptio
 
 			const {data,error} = await supabase.from('posts').update(updates).eq('id',id).select('*').single();
 			if (error) throw new Error(`@editPost: function error: ${error.message}`)
-			console.log(`data @editPost in postController: `,data)
+			// console.log(`data @editPost in postController: `,data)
 			return data as Post
 		} else {			
 			return null
 		}		
-		
-	}catch(error){
+	} catch(error){
 		if(error instanceof Error) {
 			console.error(`catch: `,error.message);
 		}		
@@ -130,6 +129,19 @@ async function editPost(id:number,changes:{title?:string,link?:string,descriptio
 	}
 }
 
+async function deletePost(id:number):Promise<boolean>{
+	try {
+		const {data,error} = await supabase.from('posts').delete().eq('id',id);
+		if (error) throw new Error('@deletePost: error deletePost: ')
+		console.log(`data @deletePost in postController: `,data)
+		return true
+	} catch(error){
+		if(error instanceof Error) {
+			console.error(`catch: `,error.message);
+		}		
+		return false
+	}
+}
 (async()=>{
 	// const post = {
 	// 	title:'New Post',

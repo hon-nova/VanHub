@@ -13,8 +13,7 @@ const Posts = ()=>{
 		successMsg:''
 	})
 	const [user,setUser] = useState<User>()
-	const [posts, setPosts ]= useState<Post[]>([])
-	
+	const [posts, setPosts ]= useState<Post[]>([])	
 	
 	const [isFormVisible,setIsFormVisible] = useState(false)
 	const getPosts = async ()=>{
@@ -60,8 +59,13 @@ const Posts = ()=>{
 		getPosts()
 	}
 
+	/** will revisit if delete */
 	const handleEditPost = (updatedPost:Post)=>{
 		setPosts((posts)=>({...posts, updatedPost}))
+		getPosts()
+	}
+	const handleDelPost = async (id:number)=>{
+		setPosts((posts)=>posts.filter((p)=>p.id !== id))
 		getPosts()
 	}
 	return (
@@ -87,13 +91,12 @@ const Posts = ()=>{
 						</div>	
 				   </div>
 				</div>
-				<div className="posts">
-									
+				<div className="posts">									
 					{/* all posts */}
 					All Posts live here ...	
 					<ol>
 					{posts && posts.map((p:Post,index)=>(
-						<li key={index}><PostItem post={p} onDelete={()=>{}} onEdit={(id)=>handleEditPost(p)}/></li>
+						<li key={index}><PostItem post={p} onDelete={(id)=>{handleDelPost(id)}} onEdit={(id)=>handleEditPost(p)}/></li>
 					))}
 					</ol>
 				</div>	

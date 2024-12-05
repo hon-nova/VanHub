@@ -12,25 +12,9 @@ import PostEdit from './components/PostEdit';
 import { Post } from '../../backend/src/shared/interfaces/index';
 
 function App() {
- // const [posts, setPosts] = useState<Post[]>([]);
+ 
   const [post, setPost] = useState<Post>();
-  // const getPosts = async ()=>{
-	// 	try {
-	// 		const response = await fetch('http://localhost:8000/public/posts', {
-	// 			method: "GET",
-	// 			credentials: "include",
-	// 		 })
-	// 		 const data = await response.json()
-	// 		 setPosts(data.posts)
-			 
-	// 	} catch(error){
-	// 		console.error(`error public/posts @Posts: `,error)
-	// 	}
-	// }
-	// useEffect(()=>{
-	// 	getPosts()
-	// },[])	  
-
+  
   const handleEdit = (editedPost: Post) => {
     setPost((post)=>({...post,...editedPost}))
   };
@@ -45,7 +29,6 @@ function App() {
         <Route path="/auth/admin" element={<Admin />}/>       
 
         <Route path="/public/posts" element={<Posts />}/>
-        {/* <Route path="/public/posts/edit/:id" element={<PostEditWrapper posts={posts} onEdit={handleEdit}/>} /> */}
         <Route path="/public/posts/edit/:id" element={<PostEdit post={post} onEdit={handleEdit}/>} />
       </Routes>
     </Router>

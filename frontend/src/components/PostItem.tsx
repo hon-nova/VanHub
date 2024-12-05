@@ -21,8 +21,7 @@ const PostItem: React.FC<PostItemProps> =({post,onEdit,onDelete})=>{
 				<span><a href={post?.link}  className="mx-2" target="_blank" rel="noreferrer"><b>{post?.title}</b></a>({hostname})</span>
 				<span><p>By <i>{post?.creator} at {post?.timestamp}</i></p></span>
 			</div>
-			<div className="">
-				{/* <button onClick={()=>onEdit(post.id)} className="mx-2"><i className="bi bi-pencil mx-2"></i>Edit</button> */}
+			<div className="">				
 				<Link 
 					to={`/public/posts/edit/${post.id}`}
 					state= {{ post }}><i className="bi bi-pencil mx-2"></i>Edit</Link>
