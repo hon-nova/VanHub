@@ -14,6 +14,10 @@ const PostCreateItem: React.FC<PostCreateItemProps> = ({onAdd})=>{
 		creator:'',
 		subgroup:''
 	})
+	const [msg,setMsg] = useState({
+		successMsg:'',
+		errorMsg:''
+	})
 	
 	const handleInputChange = (e:React.ChangeEvent<HTMLInputElement|HTMLTextAreaElement>)=>{
 		const {name,value} = e.target
@@ -24,16 +28,27 @@ const PostCreateItem: React.FC<PostCreateItemProps> = ({onAdd})=>{
 	}
 	const submitAddRequest = async ()=>{
 		try {
-			const response = await fetch('http://localhost:8000/posts/add', {
+			const response = await fetch('http://localhost:8000/public/posts', {
 				method: "POST",
 				headers: {
 					'Content-Type': 'application/json'
 				},
-				body: JSON.stringify(formData)
+				body: JSON.stringify(formData),
+				credentials:"include"
 			 })
 			 const data = await response.json()
 			 console.log(`data.post @submitAddRequest: `,data.post)
 			 onAdd(data.post)
+			 setFormData({
+				title:'',
+				link:'',
+				description:'',
+				creator:'',
+				subgroup:''
+			 })
+			 if(data.successMsg){
+				 setMsg((msgObj)=>({...msgObj, successMsg:data.successMsg}))
+			 }				
 			
 		} catch(error){
 			console.error(`error @submitAddRequest: `,error)
@@ -45,9 +60,9 @@ const PostCreateItem: React.FC<PostCreateItemProps> = ({onAdd})=>{
 	}
 	return (
 		<>
-		<h1>CREATE A POST FORM HERE</h1>
+		<div>{msg.successMsg && <h6 className="alert alert-success">{msg.successMsg}</h6>}</div>
 		<div className="post-create-container">
-			<form action="/public/posts/add" method="POST" onSubmit={handleSubmitAdd}>
+			<form action="/public/posts" method="POST" onSubmit={handleSubmitAdd}>
 				<div>
 					<label htmlFor="title">Title:</label>
 					<input 

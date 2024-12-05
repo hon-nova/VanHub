@@ -12,8 +12,11 @@ const Posts = ()=>{
 		errorMsg:'',
 		successMsg:''
 	})
-	const [posts, setPosts ]= useState<Post[]>([])
 	const [user,setUser] = useState<User>()
+	const [posts, setPosts ]= useState<Post[]>([])
+	
+	
+	const [isFormVisible,setIsFormVisible] = useState(false)
 	const getPosts = async ()=>{
 		try {
 			const response = await fetch('http://localhost:8000/public/posts', {
@@ -51,23 +54,42 @@ const Posts = ()=>{
 			  console.error('Error during logout:', error);
 		}
 	};
+
+	const handleAddPost = (newPost:Post)=>{		
+		setPosts((posts)=>[...posts,newPost])
+	}
 	return (
 		  <div className="posts-container">
 				<Navbar user={user as User} handleLogout={handleLogout}/>				
 				{msg.errorMsg && <div className="alert alert-danger text-center">{msg.errorMsg}</div>}
-				{msg.successMsg && <div className="alert alert-success text-center">{msg.successMsg}</div>}		
-				<div className="add-post-form">
-					<PostCreateItem onAdd={()=>{}}/>
+				{msg.successMsg && <div className="alert alert-success text-center">{msg.successMsg}</div>}						
+				
+				<div className="posts">
+					<div className="d-flex justify-content-space my-5">
+						{user && <h3>Welcome {user?.uname || "Guest"}</h3>}
+						<div className="add-post-form">					
+					<button  
+						onClick={()=>setIsFormVisible((isVisible)=>!isVisible)}
+						type="button" 
+						className="mx-5">
+							<i className="bi bi-plus-square mx-2"></i>{isFormVisible ? 'Hide Form':'Create Post'}
+					</button>
+					{isFormVisible && (						
+						<div className="card card-body">
+							<PostCreateItem onAdd={handleAddPost}/>
+						</div>					
+					)}										
 				</div>	
-				<div className="posts">All Posts live here ...
-					{/* <h3>Welcome {{ username }}</h3> */}
-					{user && <h3>Welcome {user?.uname || "Guest"}</h3>}
+				</div>				
+					{/* all posts */}
+					All Posts live here ...	
 					<ol>
-					{posts && posts.map((p:Post)=>(
-						<li><PostItem key={p.id} post={p} onDelete={()=>{}} onEdit={()=>{}}/></li>
+					{posts && posts.map((p:Post,index)=>(
+						<li key={index}><PostItem post={p} onDelete={()=>{}} onEdit={()=>{}}/></li>
 					))}
 					</ol>
-				</div>				
+				</div>	
+					{/* end all posts  */}
 		  </div>
 	 )
 }

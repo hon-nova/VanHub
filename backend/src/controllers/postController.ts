@@ -19,7 +19,7 @@ function formatTimestamp(timestamp:number|null):string|null{
   	}
 
 	const data = new Date(timestamp)
-	console.log(`date Object @formatTimestamp: `,data)
+	// console.log(`date Object @formatTimestamp: `,data)
 	const dataFormatted = data.toLocaleString('en-US', {
 		month:'long',
 		day:'numeric',
@@ -29,7 +29,7 @@ function formatTimestamp(timestamp:number|null):string|null{
 		second:'2-digit',
 		hour12:true
 	})
-	console.log(`dataFormatted @formatTimestamp: `,dataFormatted)
+	// console.log(`dataFormatted @formatTimestamp: `,dataFormatted)
 	return data.toLocaleString('en-US', {
 		month:'long',
 		day:'numeric',
@@ -40,11 +40,7 @@ function formatTimestamp(timestamp:number|null):string|null{
 		hour12:true
 	})
 } 
-(async()=>{
-	formatTimestamp(Date.now())
-	console.log(`getPosts @postController: `)
-	console.log(await getPosts())
-})()
+
 
 async function getPosts():Promise<Post[]>{
 	try {
@@ -84,8 +80,9 @@ async function addPost(post= {title:'',link:'',description:'',creator:'',subgrou
 	}
 	try {
 		const {data,error} = await supabase.from('posts').insert(newPost).single();
-		if (error) throw new Error('@addPost: error addPost: ')
-		return data
+		if (error) throw new Error('@addPost: error addPost ')
+		console.log(`data @addPost in postController: `,data)
+		return data as Post
 	} catch (error) {
 		if(error instanceof Error) {
 			console.error(`catch @addPost: `,error.message);
@@ -93,5 +90,15 @@ async function addPost(post= {title:'',link:'',description:'',creator:'',subgrou
 		return null
 	}
 }
+(async()=>{
+	// const post = {
+	// 	title:'New Post',
+	// 	link:'https://www.google.com',
+	// 	description:'This is a new post',
+	// 	creator:'4be98560-c532-437c-9f29-54c75d30a228',
+	// 	subgroup: 'google news'
+	// }
+	// await addPost(post)
+})()
 
  export { getPosts, addPost}
