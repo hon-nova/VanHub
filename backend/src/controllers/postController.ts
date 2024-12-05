@@ -40,8 +40,6 @@ function formatTimestamp(timestamp:number|null):string|null{
 		hour12:true
 	})
 } 
-
-
 async function getPosts():Promise<Post[]>{
 	try {
 		const {data,error} = await supabase.from('posts').select();
@@ -74,7 +72,7 @@ export type Post = {
 	timestamp: number
 }
 */
-async function addPost(post= {title:'',link:'',description:'',creator:'',subgroup:''}):Promise<Post|null>{
+async function addPost(post:{title:string,link:string,description:string,creator:string,subgroup:''}):Promise<Post|null>{
 	let newPost = {
 		...post,
 		timestamp: Date.now()
@@ -91,6 +89,47 @@ async function addPost(post= {title:'',link:'',description:'',creator:'',subgrou
 		return null
 	}
 }
+
+async function getPostById(id:number):Promise<Post|null>{
+	try {
+		const {data,error} = await supabase.from('posts').select().eq('id',id).single();
+		if (error) throw new Error('@getPostById: error getPostById: ')
+		// console.log(`data @getPostById in postController: `,data)
+		return data as Post
+	} catch(error){
+		if(error instanceof Error) {
+			console.error(`catch: `,error.message);
+		}		
+		return null
+	}
+}
+async function editPost(id:number,changes:{title?:string,link?:string,description?:string,subgroup?:string}):Promise<Post|null>{
+	try {
+		const post = await getPostById(id)
+		console.log(`post @editPost in postController: `,post)
+		const updates: Partial<Post> = {}
+		if(post){
+			if(changes.title) {updates.title = changes.title}
+			if(changes.link) {updates.link = changes.link}
+			if(changes.description) {updates.description = changes.description}
+			if(changes.subgroup) {updates.subgroup = changes.subgroup}
+
+			const {data,error} = await supabase.from('posts').update(updates).eq('id',id).select('*').single();
+			if (error) throw new Error(`@editPost: function error: ${error.message}`)
+			console.log(`data @editPost in postController: `,data)
+			return data as Post
+		} else {			
+			return null
+		}		
+		
+	}catch(error){
+		if(error instanceof Error) {
+			console.error(`catch: `,error.message);
+		}		
+		return null
+	}
+}
+
 (async()=>{
 	// const post = {
 	// 	title:'New Post',
@@ -102,4 +141,4 @@ async function addPost(post= {title:'',link:'',description:'',creator:'',subgrou
 	// await addPost(post)
 })()
 
- export { getPosts, addPost}
+ export { getPosts, addPost, getPostById,editPost}

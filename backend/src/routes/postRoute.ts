@@ -1,6 +1,6 @@
 import express ,{Request, Response} from "express";
 import { forwardAuthenticated } from "../middleware/checkAuth";
-import { getPosts, addPost } from "../controllers/postController";
+import { getPosts, addPost, editPost } from "../controllers/postController";
 import { Post } from '../shared/interfaces/index'
 const router = express.Router();
 
@@ -42,6 +42,14 @@ router.post("/posts/edit/:id", async (req:Request,res:Response)=>{
 	try {
 		const id = Number(req.params.id)
 		const {title,link,description,subgroup} = req.body
+		if(!title || !link || !description || !subgroup) throw new Error('@post Please fill in all required fields')
+
+		const updatedPost = await editPost(id,{title,link,description,subgroup})
+		console.log(`updatedPost @/posts/edit: `,updatedPost)
+		if(!updatedPost) throw new Error('@editPost: error updating post')
+
+		res.status(200).json({post:updatedPost,successMsg:'Post updated.'})
+
 	} catch(error){
 		if(error instanceof Error){
 			console.error(`error @/posts/edit: `,error.message)

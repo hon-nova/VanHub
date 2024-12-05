@@ -1,5 +1,6 @@
 import '../styles/css/post-item-style.css'
 import { Post } from '../../../backend/src/shared/interfaces/index'
+import { Link } from 'react-router-dom'
 
 interface PostItemProps {
 	post: Post;
@@ -21,7 +22,10 @@ const PostItem: React.FC<PostItemProps> =({post,onEdit,onDelete})=>{
 				<span><p>By <i>{post?.creator} at {post?.timestamp}</i></p></span>
 			</div>
 			<div className="">
-				<button onClick={()=>onEdit(post.id)} className="mx-2"><i className="bi bi-pencil mx-2"></i>Edit</button>
+				{/* <button onClick={()=>onEdit(post.id)} className="mx-2"><i className="bi bi-pencil mx-2"></i>Edit</button> */}
+				<Link 
+					to={`/public/posts/edit/${post.id}`}
+					state= {{ post }}><i className="bi bi-pencil mx-2"></i>Edit</Link>
 				<button onClick={()=>onDelete(post.id)}><i className="bi bi-trash mx-2"></i>Delete</button>
 			</div>
 		</div>
