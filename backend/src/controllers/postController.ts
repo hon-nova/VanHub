@@ -131,6 +131,9 @@ async function editPost(id:number,changes:{title?:string,link?:string,descriptio
 
 async function deletePost(id:number):Promise<boolean>{
 	try {
+		const post = await getPostById(id)
+		if(!post) throw new Error('@deletePost: post not found')
+			
 		const {data,error} = await supabase.from('posts').delete().eq('id',id);
 		if (error) throw new Error('@deletePost: error deletePost: ')
 		console.log(`data @deletePost in postController: `,data)
@@ -153,4 +156,4 @@ async function deletePost(id:number):Promise<boolean>{
 	// await addPost(post)
 })()
 
- export { getPosts, addPost, getPostById,editPost}
+ export { getPosts, addPost, getPostById, editPost, deletePost}

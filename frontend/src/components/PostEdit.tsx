@@ -53,7 +53,7 @@ const PostEdit: React.FC<PostEditProps> = ({post,onEdit})=>{
 			setMsg((msgObj)=>({...msgObj, successMsg:data.successMsg}))
 			setTimeout(()=>{
 				navigate('/public/posts')
-			},3000)
+			},2000)
 		}
 		if(data.errorMsg){
 			setMsg((msgObj)=>({...msgObj, errorMsg:data.errorMsg}))

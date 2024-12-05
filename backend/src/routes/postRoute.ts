@@ -1,6 +1,6 @@
 import express ,{Request, Response} from "express";
 import { forwardAuthenticated } from "../middleware/checkAuth";
-import { getPosts, addPost, editPost } from "../controllers/postController";
+import { getPosts, addPost, editPost, deletePost } from "../controllers/postController";
 import { Post } from '../shared/interfaces/index'
 const router = express.Router();
 
@@ -56,6 +56,20 @@ router.post("/posts/edit/:id", async (req:Request,res:Response)=>{
 			res.status(500).json({errorMsg:error.message})
 		}
 	}
+})
+router.delete("/posts/delete/:id", async (req:Request,res:Response)=>{
+	try {
+		const id = Number(req.params.id)
+		const isDeleted = await deletePost(id)
+		if(!isDeleted) throw new Error('@deletePost: error deleting post')
+
+		res.status(200).json({successMsg:'Post deleted.'})
+	} catch(error){
+		if(error instanceof Error){
+			console.error(`error @/posts/delete: `,error.message)
+			res.status(500).json({errorMsg:error.message})
+		}
+	}	
 })
 
 export default router;
