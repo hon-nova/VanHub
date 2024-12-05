@@ -48,7 +48,16 @@ const PostCreateItem: React.FC<PostCreateItemProps> = ({onAdd})=>{
 			 })
 			 if(data.successMsg){
 				 setMsg((msgObj)=>({...msgObj, successMsg:data.successMsg}))
-			 }				
+				 setTimeout(()=>{
+					 setMsg((msgObj)=>({...msgObj, successMsg:''}))
+				 },3000)
+			 }
+			 if(data.errorMsg){
+				 setMsg((msgObj)=>({...msgObj, errorMsg:data.errorMsg}))
+				 setTimeout(()=>{
+					setMsg((msgObj)=>({...msgObj, errorMsg:''}))
+				},3000)
+			 }
 			
 		} catch(error){
 			console.error(`error @submitAddRequest: `,error)
@@ -60,36 +69,45 @@ const PostCreateItem: React.FC<PostCreateItemProps> = ({onAdd})=>{
 	}
 	return (
 		<>
-		<div>{msg.successMsg && <h6 className="alert alert-success">{msg.successMsg}</h6>}</div>
+		
 		<div className="post-create-container">
+			<div>
+				{msg.successMsg && <h6 className="text-success">{msg.successMsg}</h6>}
+				{msg.errorMsg && <h6 className="text-danger">{msg.errorMsg}</h6>}
+			</div>
 			<form action="/public/posts" method="POST" onSubmit={handleSubmitAdd}>
 				<div>
-					<label htmlFor="title">Title:</label>
+					<label htmlFor="title" className="form-label">Title:</label>
 					<input 
 						onChange={(e)=>handleInputChange(e)}
 						value={formData.title}
-						type="text" id="title" name="title"/>
+						type="text" id="title" name="title"
+						className="form-input mt-2"/>
 				</div>
 				<div>
-					<label htmlFor="link">Link:</label>
+					<label htmlFor="link" className="form-label">Link:</label>
 					<input 
 						onChange={(e)=>handleInputChange(e)}
 						value={formData.link}
-						type="url" id="link" name="link"/>
+						type="url" id="link" name="link"
+						className="form-input"/>
 				</div>
 				<div>
-					<label htmlFor="description">Description:</label>
+					<label htmlFor="description" className="form-label">Description:</label>
 					<textarea 
 						onChange={(e)=>handleInputChange(e)}
 						value={formData.description}
-						id="description" name="description"></textarea>
+						id="description" name="description"
+						className="form-input"
+						style={{ height:"200" }}></textarea>
 				</div>				
 				<div>
-					<label htmlFor="subgroup">Subgroup:</label>
+					<label htmlFor="subgroup" className="form-label">Subgroup:</label>
 					<input 
 						onChange={(e)=>handleInputChange(e)}
 						value={formData.subgroup}
-						type="text" id="subgroup" name="subgroup" required/>
+						type="text" id="subgroup" name="subgroup"
+						className="form-input"/>
 				</div>
 				<button type="submit">Submit</button>
 			</form>

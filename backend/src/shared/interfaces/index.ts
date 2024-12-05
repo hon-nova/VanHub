@@ -12,7 +12,7 @@ export interface User {
    role: string
 }
 export type Post = {
-	id: string,
+	id: number,
 	title:string,
 	link:string,
 	description:string,

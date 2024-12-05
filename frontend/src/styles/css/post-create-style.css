@@ -1,6 +1,25 @@
 div.post-create-container {
 	border: 1px solid black;
+	border-radius: 10px;
 	text-align: center;
 	margin:10px auto;
-	width:100%;	
+	padding:10px;
+	width:50%;	
+}
+label.form-label {
+	width:30%;
+}
+input.form-input  {
+	width: 70%;
+	height:35px;
+	border-radius: 5px;
+	border: 1px solid #d0d0d5;
+	padding-left:10px;
+}
+textarea.form-input {
+	width: 70%;
+	height:60px;
+	border-radius: 5px;
+	border: 1px solid #d0d0d5;
+	padding-left:10px;
 }

@@ -57,30 +57,33 @@ const Posts = ()=>{
 
 	const handleAddPost = (newPost:Post)=>{		
 		setPosts((posts)=>[...posts,newPost])
+		getPosts()
 	}
 	return (
 		  <div className="posts-container">
 				<Navbar user={user as User} handleLogout={handleLogout}/>				
 				{msg.errorMsg && <div className="alert alert-danger text-center">{msg.errorMsg}</div>}
-				{msg.successMsg && <div className="alert alert-success text-center">{msg.successMsg}</div>}						
-				
-				<div className="posts">
-					<div className="d-flex justify-content-space my-5">
+				{msg.successMsg && <div className="alert alert-success text-center">{msg.successMsg}</div>}	
+				<div>Create Post Section
+				<div className="my-5">
 						{user && <h3>Welcome {user?.uname || "Guest"}</h3>}
 						<div className="add-post-form">					
-					<button  
-						onClick={()=>setIsFormVisible((isVisible)=>!isVisible)}
-						type="button" 
-						className="mx-5">
-							<i className="bi bi-plus-square mx-2"></i>{isFormVisible ? 'Hide Form':'Create Post'}
-					</button>
-					{isFormVisible && (						
-						<div className="card card-body">
-							<PostCreateItem onAdd={handleAddPost}/>
-						</div>					
-					)}										
-				</div>	
-				</div>				
+							<button  
+								onClick={()=>setIsFormVisible((isVisible)=>!isVisible)}
+								type="button" 
+								className="mx-5">
+									<i className="bi bi-plus-square mx-2"></i>{isFormVisible ? 'Hide Form':'Create Post'}
+							</button>
+							{isFormVisible && (						
+								<div className="">
+									<PostCreateItem onAdd={handleAddPost}/>
+								</div>					
+							)}										
+						</div>	
+				   </div>
+				</div>
+				<div className="posts">
+									
 					{/* all posts */}
 					All Posts live here ...	
 					<ol>

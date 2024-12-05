@@ -53,8 +53,9 @@ async function getPosts():Promise<Post[]>{
 			}
 			return newPost
 		})
+		const sortedPosts = posts.sort((a,b)=>(Number(b.id) - Number(a.id)))
 			
-		return posts as Post[]
+		return sortedPosts as Post[]
 	} catch (error) {
 		if(error instanceof Error) {
 			console.error(`error @getPosts: `, error.message);
