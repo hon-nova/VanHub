@@ -13,7 +13,6 @@ const Posts = ()=>{
 		successMsg:''
 	})
 	const [user,setUser] = useState<User>()
-	const [githubUser,setGithubUser] = useState<User>()
 	const [posts, setPosts ]= useState<Post[]>([])	
 	
 	const [isFormVisible,setIsFormVisible] = useState(false)
@@ -33,28 +32,7 @@ const Posts = ()=>{
 	useEffect(()=>{
 		getPosts()
 	},[])	 
-	const fetchGitHubUserData = async () => {
-		try {
-		  const response = await fetch('http://localhost:8000/auth/github/user', {
-			 method: 'GET',
-			 credentials: 'include', // Include cookies for session
-		  });
-  
-		  if (!response.ok) {
-			 throw new Error('Failed to fetch GitHub user data');
-		  }
-  
-		  const userData = await response.json();
-		  setGithubUser(userData);
-		} catch (err) {
-		  console.error('Error fetching GitHub user data:', err);
-		//   setError('Unable to fetch user data. Please try again.');
-		}
-	 };
-  
-	 useEffect(() => {
-		fetchGitHubUserData();
-	 }, []);
+	
 	const handleLogout = async () => {
 		try {
 			console.log(`handleLogout started`)
@@ -109,38 +87,38 @@ const Posts = ()=>{
 		getPosts()
 	}
 	return (
-		  <div className="posts-container">
-				<Navbar user={user as User} handleLogout={handleLogout}/>				
-				{msg.errorMsg && <div className="alert alert-danger text-center">{msg.errorMsg}</div>}
-				{msg.successMsg && <div className="alert alert-success text-center">{msg.successMsg}</div>}	
-				<div>
+		<div className="posts-container">
+			<Navbar user={user as User} handleLogout={handleLogout}/>				
+			{msg.errorMsg && <div className="alert alert-danger text-center">{msg.errorMsg}</div>}
+			{msg.successMsg && <div className="alert alert-success text-center">{msg.successMsg}</div>}	
+			<div>
 				<div className="my-5">
-						{user && <h3>Welcome {user?.uname || "Guest"}</h3>}
-						<div className="add-post-form">					
-							<button  
-								onClick={()=>setIsFormVisible((isVisible)=>!isVisible)}
-								type="button" 
-								className="mx-5">
-									<i className="bi bi-plus-square mx-2"></i>{isFormVisible ? 'Hide Form':'Create Post'}
-							</button>
-							{isFormVisible && (						
-								<div className="">
-									<PostCreateItem onAdd={handleAddPost}/>
-								</div>					
-							)}										
-						</div>	
-				   </div>
+					{user && <h3>Welcome {user?.uname || "Guest"}</h3>}
+					<div className="add-post-form">					
+						<button  
+							onClick={()=>setIsFormVisible((isVisible)=>!isVisible)}
+							type="button" 
+							className="mx-5">
+								<i className="bi bi-plus-square mx-2"></i>{isFormVisible ? 'Hide Form':'Create Post'}
+						</button>
+						{isFormVisible && (						
+							<div className="">
+								<PostCreateItem onAdd={handleAddPost}/>
+							</div>					
+						)}										
+					</div>	
 				</div>
-				<div className="posts">									
-					{/* all posts */}
-					<ol>
-					{posts && posts.map((p:Post,index)=>(
-						<li key={index}><PostItem post={p} onDelete={(id)=>{handleDelPost(id)}} onEdit={(id)=>handleEditPost(p)} currentUser={user}/></li>
-					))}
-					</ol>
-				</div>	
-					{/* end all posts  */}
-		  </div>
+			</div>
+			<div className="posts">									
+				{/* all posts */}
+				<ol>
+				{posts && posts.map((p:Post,index)=>(
+					<li key={index}><PostItem post={p} onDelete={(id)=>{handleDelPost(id)}} onEdit={(id)=>handleEditPost(p)} currentUser={user}/></li>
+				))}
+				</ol>
+			</div>	
+				{/* end all posts  */}
+		</div>
 	 )
 }
 export default Posts

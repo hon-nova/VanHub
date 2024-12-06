@@ -82,7 +82,7 @@ async function addPost(post:{title:string,link:string,description:string,creator
 		timestamp: Date.now()
 	}
 	try {
-		const {data,error} = await supabase.from('posts').insert(newPost).single();
+		const {data,error} = await supabase.from('posts').insert(newPost).select().single();
 		if (error) throw new Error('@addPost: error addPost ')
 		console.log(`data @addPost in postController: `,data)
 		return data as Post

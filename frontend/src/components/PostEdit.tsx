@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Post } from '../../../backend/src/shared/interfaces/index'
 import { useNavigate, useLocation } from 'react-router-dom'
+import '../styles/css/post-edit-style.css'
 
 interface PostEditProps {
 	post?:Post;
@@ -66,15 +67,13 @@ const PostEdit: React.FC<PostEditProps> = ({post,onEdit})=>{
 		e.preventDefault()
 		await submitEditRequest()
 	}
-	return (
-		<>		
+	return (			
 		<div className="post-edit-container">
-			<div>
+			<div className="edit-form">
 				{msg.successMsg && <h6 className="text-success">{msg.successMsg}</h6>}
 				{msg.errorMsg && <h6 className="text-danger">{msg.errorMsg}</h6>}
-			</div>
-			<form action={`/public/posts/edit/${effectivePost.id}`} method="POST" onSubmit={handleSubmitEdit}>
-				<div>
+				<form action={`/public/posts/edit/${effectivePost.id}`} method="POST" onSubmit={handleSubmitEdit}>
+				<div className="mt-5">
 					<label htmlFor="title" className="form-label">Title:</label>
 					<input 
 						onChange={(e)=>handleInputChange(e)}
@@ -108,10 +107,15 @@ const PostEdit: React.FC<PostEditProps> = ({post,onEdit})=>{
 						type="text" id="subgroup" name="subgroup"
 						className="form-input"/>
 				</div>
-				<button type="submit">Save Changes</button>
+				<div className="my-2 form-btn">
+				<button type="submit" className="edit-btn">Save Changes</button>
+				</div>
+				
 			</form>
+			</div>
+			
 		</div>
-		</>
+		
 	)
 }
 export default PostEdit;

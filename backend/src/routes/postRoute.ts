@@ -29,7 +29,8 @@ router.post("/posts", async (req:Request,res:Response)=>{
 		if(!user) throw new Error('@post : user not found')
 		
 		if(!title || !link || !description || !subgroup) throw new Error('@post Please fill in all required fields')
-		const creator = user.id as string
+		const creator = user?.id as string
+		console.log(`creator: `,creator)
 		console.log(`req.body @/posts/add: `,req.body)
 		// {title:'',link:'',description:'',creator:'',subgroup:''}
 		const post = await addPost({title,link,description,creator,subgroup})

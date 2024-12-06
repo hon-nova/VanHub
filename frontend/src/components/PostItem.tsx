@@ -25,14 +25,11 @@ const PostItem: React.FC<PostItemProps> = ({ post, onEdit, onDelete, currentUser
     <div className="d-flex justify-content-between post-item">
       <div>
         <span>
-          <a
-            href={post?.title}
-            className="mx-2"
-            target="_blank"
-            rel="noreferrer"
-          >
-            <b>{post?.title}</b>
-          </a>
+          <Link
+            to={`/public/posts/show/${post.id}`}
+            state={{ post }}
+            className="mx-2"><b>{post?.title}</b>
+          </Link>
           ({hostname})
         </span>
         <span>
@@ -46,18 +43,19 @@ const PostItem: React.FC<PostItemProps> = ({ post, onEdit, onDelete, currentUser
       </div>
       {isCreator && (
          <div className="edit-delete-post">
-         <Link to={`/public/posts/edit/${post.id}`} state={{ post }}>
-           <i className="bi bi-pencil mx-2"></i>Edit
+         <Link to={`/public/posts/edit/${post.id}`} state={{ post }} type="button"
+           className="btn btn-outline-primary mx-2">
+           <i className="bi bi-pencil mx-2"></i>
          </Link>
          {/* button to trigger the modal */}
          <button
            type="button"
-           className="btn btn-primary"
+           className="btn btn-outline-primary"
            data-bs-toggle="modal"
            data-bs-target={`#deleteModal-${post.id}`}
          >
-           <i className="bi bi-trash mx-2"></i>
-           Delete
+           <i className="bi bi-trash mx-2 text-danger"></i>
+           
          </button>
          {/* Modal */}
          <div

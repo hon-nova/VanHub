@@ -1,0 +1,45 @@
+div.post-edit-container {
+	/* border: 1px solid black; */
+	margin:10px auto;
+	text-align: center;	
+	/* background-color:  #004a77; */
+	background-color: #bec1c3;
+	/* background-color: #e6f2ff; */
+	/* background-color: #00838F; */
+	height: 100vh;
+}
+div.edit-form {
+	margin: 0 auto;
+	width: 60%;
+	border: 2px solid rgb(177, 177, 177);
+	border-radius: 5px;
+	padding:10px;
+	/* background-color: #8e918f; */
+	/* background-color: #d1e7fd; */
+	/* background-color: #cce4ff; */
+	/* background-color: #00BCD4; */
+	background-color: #00838F;	
+}
+label.form-label {
+	width:30%;
+}
+input.form-input {
+	width: 70%;
+	height:35px;
+	border-radius: 5px;
+	border: 1px solid #d0d0d5;
+}
+div.form-btn {
+	display:flex;
+	flex-direction: row;
+	justify-content: center;
+	margin: 10px;
+}
+button.edit-btn {
+	padding:10px;
+	border-radius: 10px;
+	border: 1px solid #d0d0d5;
+	background-color: #003e6b;
+	color:white;
+	width: 160px;
+}

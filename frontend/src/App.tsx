@@ -7,7 +7,7 @@ import Login from './components/Auth/Login';
 import Forgot from './components/Auth/Forgot';
 import Admin from './components/Auth/Admin';
 import Posts from './components/Posts';
-// import PostEditWrapper from './components/PostEditWrapper';
+import PostDetail from './components/PostDetail';
 import PostEdit from './components/PostEdit';
 import { Post } from '../../backend/src/shared/interfaces/index';
 
@@ -30,6 +30,7 @@ function App() {
 
         <Route path="/public/posts" element={<Posts />}/>
         <Route path="/public/posts/edit/:id" element={<PostEdit post={post} onEdit={handleEdit}/>} />
+        <Route path="/public/posts/show/:id" element={<PostDetail />} />
       </Routes>
     </Router>
   );
