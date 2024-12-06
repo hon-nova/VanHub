@@ -24,23 +24,27 @@ const githubStrategy: GitHubStrategy = new GitHubStrategy({
    if (!email) {
       console.log("GitHub email not available.");
       return done(new Error("GitHub email not available"), false);
-   }  
-	
+   }  	
    let githubUser:Express.User = {
-      id:uuidv5(profile.id, uuidv5.URL), 		
+      id:uuidv5(profile.id, uuidv5.URL), 		//d953eb44-6c05-51ed-a979-d894d8b37ffb
       uname: profile.username as string,
       email: email,
 		password:'',
-      role: 'admin'
+      role: 'user'
    }; 
+   //db: 6325cf1a-8d56-4963-8129-c3b7eb3d2d90
    try {
       const getUser = await getUserByUnameOrEmail(githubUser.uname,email) as Express.User
       console.log(`getUser @githubStrategy: `,getUser)
       if(!getUser){
          console.log(`User not found. started to add the github user to database.`)
-         await addUser(githubUser.uname,githubUser.email,githubUser.password)     
-      }
-      return done(null, githubUser);
+         await addUser(githubUser.uname,githubUser.email,githubUser.password)   
+         const supabaseUser = await getUserByUname(githubUser.uname) as Express.User
+         console.log(`supabaseUser @githubStrategy: `,supabaseUser)
+         return done(null, supabaseUser);  
+      } else {
+         return done(null, getUser);
+      }      
    } catch(error){
       if(error instanceof Error){
          console.error('Error in GitHubStrategy:', error.message)         

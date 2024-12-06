@@ -73,21 +73,23 @@ router.get("/github", passport.authenticate("github",{ scope: ["user:email"] }))
  
 router.get("/github/callback",passport.authenticate("github", { session: true}), 
 	(req: Request, res: Response)=> {
-		console.log(`route backend/ github user logged in as: `,req.user)
-
-		 // Save the session explicitly
+		
+		console.log("route backend/ github user:", JSON.stringify(req.user, null, 2));
+		 
 		 req.session.save((err) => {
 			if (err) {
 			  console.error('Session save error:', err);
 			  return res.status(500).send({ error: 'Failed to save session.' });
 			}
 			if(req.user?.role === 'admin'){
-				return res.redirect("http://localhost:3000/auth/admin");
+				res.redirect("http://localhost:3000/auth/admin");
 			} else {
 				res.redirect("http://localhost:3000/public/posts");
 			}			  		
 	});
 })
+
+
 
 router.post('/forgot', async (req: Request, res: Response) => {
 	try {
@@ -135,7 +137,7 @@ router.get("/admin",(req: Request, res: Response)=>{
 		console.log(`user not authenticated @admin`)
 	 }
 	console.log(`@admin USER IS  AUTHENTICATED: `,req.isAuthenticated())
-	res.status(200).json({adminUser})
+	res.status(200).json({adminUser,successMsg:'Admin user is authenticated.'})
 })
 
 

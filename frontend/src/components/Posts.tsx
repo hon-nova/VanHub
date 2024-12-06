@@ -13,6 +13,7 @@ const Posts = ()=>{
 		successMsg:''
 	})
 	const [user,setUser] = useState<User>()
+	const [githubUser,setGithubUser] = useState<User>()
 	const [posts, setPosts ]= useState<Post[]>([])	
 	
 	const [isFormVisible,setIsFormVisible] = useState(false)
@@ -32,6 +33,28 @@ const Posts = ()=>{
 	useEffect(()=>{
 		getPosts()
 	},[])	 
+	const fetchGitHubUserData = async () => {
+		try {
+		  const response = await fetch('http://localhost:8000/auth/github/user', {
+			 method: 'GET',
+			 credentials: 'include', // Include cookies for session
+		  });
+  
+		  if (!response.ok) {
+			 throw new Error('Failed to fetch GitHub user data');
+		  }
+  
+		  const userData = await response.json();
+		  setGithubUser(userData);
+		} catch (err) {
+		  console.error('Error fetching GitHub user data:', err);
+		//   setError('Unable to fetch user data. Please try again.');
+		}
+	 };
+  
+	 useEffect(() => {
+		fetchGitHubUserData();
+	 }, []);
 	const handleLogout = async () => {
 		try {
 			console.log(`handleLogout started`)

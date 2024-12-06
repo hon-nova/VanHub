@@ -70,16 +70,6 @@ declare global{
 client.connect()
   .then(() => console.log('Connected to Supabase PostgreSQL'))
   .catch((err) => console.error('Error connecting to PostgreSQL:', err));
-(async()=>{	
-	try {     
-      const users = await getUsers()
-      // console.log(`users @app: `, users)
-      const uniqueUser = await getUserById('4be98560-c532-437c-9f29-54c75d30a228')
-      
-    } catch (err) {
-      console.error('Error in Supabase query:', err);
-    }	
-})()
 
 import authRoute from "./routes/authRoute";
 import indexRoute from "./routes/indexRoute";
@@ -89,6 +79,12 @@ import postRoute from "./routes/postRoute";
 app.use("/auth", authRoute);
 app.use("/public", postRoute);
 
+(async()=>{
+  //important
+  // console.log(req.user); // Outputs: [object Object]
+  // console.log(req.session); // Outputs: [object Object]
+
+})()
 app.listen(port, () => {
   console.log(`🚀 Social Media Server has started at http://localhost:${port}`);
 });
