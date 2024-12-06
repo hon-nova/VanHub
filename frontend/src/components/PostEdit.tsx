@@ -113,7 +113,5 @@ const PostEdit: React.FC<PostEditProps> = ({post,onEdit})=>{
 		</div>
 		</>
 	)
-
 }
-
 export default PostEdit;
