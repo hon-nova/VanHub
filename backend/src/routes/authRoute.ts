@@ -89,9 +89,7 @@ router.get("/github/callback",passport.authenticate("github", { session: true}),
 	});
 })
 
-
-
-router.post('/forgot', async (req: Request, res: Response) => {
+router.post('/forgot',forwardAuthenticated, async (req: Request, res: Response) => {
 	try {
 		const { info, newpassword, confirmnewpassword } = req.body
 		if (!info || !newpassword || !confirmnewpassword) {
@@ -129,14 +127,14 @@ router.post('/logout', forwardAuthenticated, (req: Request, res: Response) => {
 	  res.clearCookie('connect.sid'); 
 	  res.status(200).json({ successMsg: 'Successfully logged out.' });
 	});
- });
+});
 
 router.get("/admin",(req: Request, res: Response)=>{
 	const adminUser = req.user as Express.User
 	if (!req.isAuthenticated()) {
 		console.log(`user not authenticated @admin`)
 	 }
-	console.log(`@admin USER IS  AUTHENTICATED: `,req.isAuthenticated())
+	// console.log(`@admin USER IS  AUTHENTICATED: `,req.isAuthenticated())
 	res.status(200).json({adminUser,successMsg:'Admin user is authenticated.'})
 })
 

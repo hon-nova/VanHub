@@ -113,7 +113,7 @@ const Posts = ()=>{
 				<Navbar user={user as User} handleLogout={handleLogout}/>				
 				{msg.errorMsg && <div className="alert alert-danger text-center">{msg.errorMsg}</div>}
 				{msg.successMsg && <div className="alert alert-success text-center">{msg.successMsg}</div>}	
-				<div>Create Post Section
+				<div>
 				<div className="my-5">
 						{user && <h3>Welcome {user?.uname || "Guest"}</h3>}
 						<div className="add-post-form">					
@@ -133,10 +133,9 @@ const Posts = ()=>{
 				</div>
 				<div className="posts">									
 					{/* all posts */}
-					All Posts live here ...	
 					<ol>
 					{posts && posts.map((p:Post,index)=>(
-						<li key={index}><PostItem post={p} onDelete={(id)=>{handleDelPost(id)}} onEdit={(id)=>handleEditPost(p)}/></li>
+						<li key={index}><PostItem post={p} onDelete={(id)=>{handleDelPost(id)}} onEdit={(id)=>handleEditPost(p)} currentUser={user}/></li>
 					))}
 					</ol>
 				</div>	

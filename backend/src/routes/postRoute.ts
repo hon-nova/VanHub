@@ -11,8 +11,8 @@ router.get('/posts', async (req:Request,res:Response)=>{
 		console.log(`user not authenticated @public/posts`)
 	 }
 	//  console.log('Authenticated User:', req.user);
-	console.log(`user @public/posts: `,user)
-	console.log('Session exists @public/posts:', (req.session as any).passport.user);
+	// console.log(`user @public/posts: `,user)
+	// console.log('Session exists @public/posts:', (req.session as any).passport.user);
 
 	const posts = await getPosts()
 	// const sortedPosts = posts.sort((a:Post,b:Post)=>b.id - a.id)
