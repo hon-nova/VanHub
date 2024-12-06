@@ -153,4 +153,4 @@ async function deletePost(id:number):Promise<boolean>{
 	// await addPost(post)
 })()
 
- export { getPosts, addPost, getPostById,editPost}
+ export { getPosts, addPost, getPostById,editPost, deletePost}
