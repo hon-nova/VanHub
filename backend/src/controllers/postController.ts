@@ -1,5 +1,6 @@
 import { supabase } from '../db/supabaseClient'
 import { Post } from '../shared/interfaces/index'
+import { getUserById } from './userController'
 
 // const getPosts = async () => {
 // 	try {
@@ -40,19 +41,22 @@ function formatTimestamp(timestamp:number|null):string|null{
 		hour12:true
 	})
 } 
-async function getPosts():Promise<Post[]>{
+async function getPosts():Promise<any>{
 	try {
 		const {data,error} = await supabase.from('posts').select();
 		if (error) throw new Error('@getPosts: error getPosts: ')
-		const posts = data.map((p:Post)=> {
+		const posts = await Promise.all(
+			data.map(async(p:Post)=> {
+			// const user = Promise.all(await getUserById(p.creator))
 			let newPost = {
 				...p,
+				creator: await getUserById(p.creator as string) || null,
 				timestamp: formatTimestamp(p.timestamp) ||null
 			}
 			return newPost
-		})
-		const sortedPosts = posts.sort((a,b)=>(Number(b.id) - Number(a.id)))
-			
+		}))
+		const sortedPosts = posts.sort((a:any,b:any)=>(Number(b.id) - Number(a.id))) as any
+		// console.log(`all sortedPostes @getPosts in postController: `,sortedPosts)	
 		return sortedPosts as Post[]
 	} catch (error) {
 		if(error instanceof Error) {

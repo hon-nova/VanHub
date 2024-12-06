@@ -16,7 +16,7 @@ export type Post = {
 	title:string,
 	link:string,
 	description:string,
-	creator:string,
+	creator:string | User,
 	subgroup: string,
 	timestamp: number|null
 }

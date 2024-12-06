@@ -30,8 +30,8 @@ const localStrategy = new LocalStrategy({
 })
 
 passport.serializeUser(function (user:Express.User,done: (err: any, id?: string) => void){
-   console.log('Serializing user:', user);
-   console.log('Serializing user with ID:', user.id); 
+   // console.log('Serializing user:', user);
+   // console.log('Serializing user with ID:', user.id); 
    done(null,user.id)
 })
 
@@ -41,7 +41,7 @@ passport.deserializeUser(async(id:string,done: (err: any, user?: Express.User | 
       let user = await getUserById(id) as Express.User
       // console.log(`user @deserializeUser: `, user)
       if (user){
-         console.log(`user inside user deserializeUser: `, user)         
+         // console.log(`user inside user deserializeUser: `, user)         
          done(null,user)
       } else {
          done({message: "User not found"},null)
@@ -57,21 +57,21 @@ passport.deserializeUser(async(id:string,done: (err: any, user?: Express.User | 
 });
 
 (async()=>{
-   passport.serializeUser(function (user:Express.User,done: (err: any, id?: string) => void){
-      console.log('Serializing user:', user);
-      done(null,user.id)
-   })
-   passport.deserializeUser(async function(id:string,done: (err: any, user?: Express.User | false | null) => void){
-      console.log('Deserializing user with ID:', id);
-      let user = await getUserById(id)
-      console.log(`user @deserializeUser: `, user)
-      if (user){
-         console.log(`user inside user: `, user)
-         done(null,user)
-      } else {
-         done({message: "User not found"},null)
-      }
-   });
+   // passport.serializeUser(function (user:Express.User,done: (err: any, id?: string) => void){
+   //    console.log('async Serializing user:', user);
+   //    done(null,user.id)
+   // })
+   // passport.deserializeUser(async function(id:string,done: (err: any, user?: Express.User | false | null) => void){
+   //    console.log('async Deserializing user with ID:', id);
+   //    let user = await getUserById(id)
+   //    console.log(`async user @deserializeUser: `, user)
+   //    if (user){
+   //       console.log(`async user inside user: `, user)
+   //       done(null,user)
+   //    } else {
+   //       done({message: "User not found"},null)
+   //    }
+   // });
 })()
 const passportLocalStrategy: PassportStrategy = {
    name:"local",

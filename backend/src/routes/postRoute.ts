@@ -6,11 +6,17 @@ const router = express.Router();
 
 router.get('/posts', async (req:Request,res:Response)=>{
 	const user = req.user as Express.User
+	if (!req.isAuthenticated()) {
+		// return res.status(401).send({ error: 'User not authenticated' });
+		console.log(`user not authenticated @public/posts`)
+	 }
+	//  console.log('Authenticated User:', req.user);
 	console.log(`user @public/posts: `,user)
 	console.log('Session exists @public/posts:', (req.session as any).passport.user);
 
 	const posts = await getPosts()
-	const sortedPosts = posts.sort((a:Post,b:Post)=>b.id - a.id)
+	// const sortedPosts = posts.sort((a:Post,b:Post)=>b.id - a.id)
+	// console.log(`all posts @/posts: `,posts)
 	res.status(200).json({ posts,user});
 })
 

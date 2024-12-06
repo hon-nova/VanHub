@@ -26,6 +26,7 @@ async function getUsers():Promise<Express.User[] |null>{
 		const stm = await client.query(`SELECT * FROM public.users`)
 		const users = stm.rows
 		// console.log(`users: `, users)
+		
 		if(!users){
 			throw new Error(`Couldn't get users`)
 		}

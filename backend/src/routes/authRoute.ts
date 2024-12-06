@@ -69,15 +69,25 @@ router.post("/login", (req, res, next) => {
 	)(req, res, next);
  });
  
-router.get("/github", passport.authenticate("github"));
+router.get("/github", passport.authenticate("github",{ scope: ["user:email"] }));
  
-router.get(
-	"/github/callback",
-	passport.authenticate("github", { failureRedirect: "/auth/login" }), 
-	function (req: Request, res: Response) {
-	  res.redirect("http://localhost:3000/public/posts");
-	}
-);
+router.get("/github/callback",passport.authenticate("github", { session: true}), 
+	(req: Request, res: Response)=> {
+		console.log(`route backend/ github user logged in as: `,req.user)
+
+		 // Save the session explicitly
+		 req.session.save((err) => {
+			if (err) {
+			  console.error('Session save error:', err);
+			  return res.status(500).send({ error: 'Failed to save session.' });
+			}
+			if(req.user?.role === 'admin'){
+				return res.redirect("http://localhost:3000/auth/admin");
+			} else {
+				res.redirect("http://localhost:3000/public/posts");
+			}			  		
+	});
+})
 
 router.post('/forgot', async (req: Request, res: Response) => {
 	try {
@@ -105,26 +115,6 @@ router.post('/forgot', async (req: Request, res: Response) => {
 	}
 })
 
-// router.post('/logout', forwardAuthenticated, (req: Request, res: Response) => {
-// 	console.log('Logout initiated.');
-// 	req.logout((err) => {
-// 		console.log('User attempting to log out:', req.user); // Log user data
-// 		 if (err) {
-// 			  console.error('Error during req.logout:', err);
-// 			  return res.status(500).json({ errorMsg: 'Error logging out.' });
-// 		 }
-// 		 req.session.destroy((destroyErr) => {
-// 			  if (destroyErr) {
-// 					console.error('Error destroying session:', destroyErr);
-// 					return res.status(500).json({ errorMsg: 'Error destroying session.' });
-// 			  }
-// 			  res.clearCookie('connect.sid', { path: '/' }); 
-// 			  console.log('Successfully logged out.');
-// 			  return res.status(200).json({ message: 'Successfully logged out.' });
-// 		 });
-// 	});
-// });
-
 router.post('/logout', forwardAuthenticated, (req: Request, res: Response) => {
 	const user = req.user 
 	console.log(`BACKEND user logged out: `, user)
@@ -133,12 +123,20 @@ router.post('/logout', forwardAuthenticated, (req: Request, res: Response) => {
 		if (err) {
 			console.error('Error destroying session:', err);
 			return res.status(500).json({ errorMsg: 'Failed to log out.' });
-		}
- 
-	  res.clearCookie('connect.sid'); // Remove the session cookie
+		} 
+	  res.clearCookie('connect.sid'); 
 	  res.status(200).json({ successMsg: 'Successfully logged out.' });
 	});
  });
+
+router.get("/admin",(req: Request, res: Response)=>{
+	const adminUser = req.user as Express.User
+	if (!req.isAuthenticated()) {
+		console.log(`user not authenticated @admin`)
+	 }
+	console.log(`@admin USER IS  AUTHENTICATED: `,req.isAuthenticated())
+	res.status(200).json({adminUser})
+})
 
 
 export default router;

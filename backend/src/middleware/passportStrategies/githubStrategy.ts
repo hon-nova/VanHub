@@ -1,8 +1,9 @@
 import 'dotenv/config'
 require('dotenv').config()
+import passport from 'passport'
 import { Strategy as GitHubStrategy, Profile }  from 'passport-github2'
 import { PassportStrategy } from '../../shared/interfaces/index'
-import { addUser, getUserByEmail,getUserByUname,getUserByUnameOrEmail } from '../../controllers/userController';
+import { addUser, getUserById, getUserByEmail,getUserByUname,getUserByUnameOrEmail } from '../../controllers/userController';
 import { v5 as uuidv5 } from 'uuid';
 
 
@@ -16,9 +17,9 @@ const githubStrategy: GitHubStrategy = new GitHubStrategy({
    callbackURL: "http://localhost:8000/auth/github/callback",
    passReqToCallback: true,
    scope: ['user:email']
-},
-async(req: Express.Request, accessToken: string, refreshToken: string, profile: Profile, done: Function): Promise<void> => {
-   
+}, async(req: Express.Request, accessToken: string, refreshToken: string, profile: Profile, done: Function): Promise<void> => {
+   // console.log('GitHub profile:', profile);
+   // console.log(`accessToken: `,accessToken)//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
    const email = profile.emails && profile.emails[0]?.value ? profile.emails[0].value : null;
    if (!email) {
       console.log("GitHub email not available.");
@@ -30,16 +31,49 @@ async(req: Express.Request, accessToken: string, refreshToken: string, profile: 
       uname: profile.username as string,
       email: email,
 		password:'',
-      role: 'user'
+      role: 'admin'
    }; 
-	const getUser = await getUserByUnameOrEmail(githubUser.uname,email) as Express.User
-   // console.log('githubStrategy getUser:',getUser)
-
-	if(!getUser){
-		await addUser(githubUser.uname,githubUser.email,githubUser.password)     
-	}
-	return done(null, githubUser); 	
+   try {
+      const getUser = await getUserByUnameOrEmail(githubUser.uname,email) as Express.User
+      console.log(`getUser @githubStrategy: `,getUser)
+      if(!getUser){
+         console.log(`User not found. started to add the github user to database.`)
+         await addUser(githubUser.uname,githubUser.email,githubUser.password)     
+      }
+      return done(null, githubUser);
+   } catch(error){
+      if(error instanceof Error){
+         console.error('Error in GitHubStrategy:', error.message)         
+      }  
+      return done(error)    
+   }		
 });
+
+passport.serializeUser(function (user:Express.User,done: (err: any, id?: string) => void){
+   console.log('github Serializing user:', user);
+   console.log('github Serializing user with ID:', user.id); 
+   done(null,user.id)
+})
+
+passport.deserializeUser(async(id:string,done: (err: any, user?: Express.User | false | null) => void)=>{
+   try {
+      // console.log(`DESERIALIZEUSER GOT TRIGGERED at last`)
+      let user = await getUserById(id) as Express.User
+      console.log(`github user @deserializeUser: `, user)
+      if (user){
+         console.log(`github user inside deserializeUser: `, user)         
+         done(null,user)
+      } else {
+         done({message: "User not found"},null)
+      }
+   }
+   catch(error){
+      if(error instanceof Error){
+          console.error("GitHubStrategy Error:", error.message)          
+      }
+      return done(error)
+   }   
+}); 
 
 const passportGitHubStrategy: PassportStrategy = {
    name:'github',

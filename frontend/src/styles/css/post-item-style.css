@@ -3,3 +3,7 @@ div.post-item {
 	margin: 5px;
 	padding:5px;
 }
+span.creator-name {
+	color: goldenrod;
+	font-weight:bolder;
+}

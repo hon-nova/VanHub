@@ -1,5 +1,5 @@
 import "../styles/css/post-item-style.css";
-import { Post } from "../../../backend/src/shared/interfaces/index";
+import { Post, User } from "../../../backend/src/shared/interfaces/index";
 import { Link } from "react-router-dom";
 
 interface PostItemProps {
@@ -14,6 +14,13 @@ const PostItem: React.FC<PostItemProps> = ({ post, onEdit, onDelete }) => {
   } catch (error) {
     console.error(`error @PostItem: `, error);
   }
+  // let creatorName =''
+  // creatorName = typeof post.creator === 'object' && post.creator?.uname : post.creator.uname : 'Unknown';
+  const creatorName =
+    typeof post.creator === "object" && post.creator?.uname
+      ? post.creator.uname
+      : "Unknown";
+
   return (
     <div className="d-flex justify-content-between post-item">
       <div>
@@ -32,7 +39,7 @@ const PostItem: React.FC<PostItemProps> = ({ post, onEdit, onDelete }) => {
           <p>
             By{" "}
             <i>
-              {post?.creator} at {post?.timestamp}
+              <span className="creator-name">{creatorName}</span> at {post?.timestamp}
             </i>
           </p>
         </span>

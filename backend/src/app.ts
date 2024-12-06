@@ -23,6 +23,12 @@ app.use(cors({
   credentials: true
  }));
 app.set('trust proxy', 1);
+app.use(cookieParser());
+app.use(express.json());
+app.use(bodyParser.urlencoded({ extended: false }))
+app.use(bodyParser.json())
+app.use(express.urlencoded({ extended: true }));
+
 app.use(
   session({
 		secret: "secret",
@@ -49,15 +55,6 @@ app.use((req, res, next) => {
   console.log('passport.user @app:', ((req.session as any).passport?.user));
   next();
 });
-
-app.use(cookieParser());
-app.use(express.json());
-// parse application/x-www-form-urlencoded
-// app.use(bodyParser.urlencoded({ extended: false }))
-// parse application/json
-// app.use(bodyParser.json())
-app.use(express.urlencoded({ extended: true }));
-
 
 declare global{
   namespace Express {
