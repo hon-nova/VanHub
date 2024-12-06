@@ -64,8 +64,25 @@ const Posts = ()=>{
 		setPosts((posts)=>({...posts, updatedPost}))
 		getPosts()
 	}
+	const sendDeleteRequest = async (id:number)=>{
+		try {
+			const response = await fetch(`http://localhost:8000/public/posts/delete/${id}`, {
+				method: "DELETE",
+				credentials: "include",
+			 })
+			 const data = await response.json()
+			 console.log(`data.post @sendDeleteRequest: `,data.successMsg)
+			 setPosts((posts)=>{
+				return posts.filter((p)=>p.id !== id)
+			})
+		} catch(error){
+			if (error instanceof Error){
+				console.error(`error @sendDeleteRequest: `,error.message)				
+			}			
+		}
+	}
 	const handleDelPost = async (id:number)=>{
-		setPosts((posts)=>posts.filter((p)=>p.id !== id))
+		await sendDeleteRequest(id)
 		getPosts()
 	}
 	return (
