@@ -47,11 +47,11 @@ const Login =()=>{
 			if(data.isAdmin){
 				setTimeout(()=>{
 					navigate('/auth/admin')
-				},2000)					
+				},1000)					
 			} else {
 				setTimeout(()=>{
 					navigate('/public/posts')
-				},3000)					
+				},1000)					
 			}
 			}
 		} catch(error){

@@ -1,5 +1,5 @@
 import { supabase } from '../db/supabaseClient'
-import { Post, Comment } from '../shared/interfaces/index'
+import { Post, Comment, Vote } from '../shared/interfaces/index'
 import { getUserById } from './userController'
 
 // const getPosts = async () => {
@@ -223,6 +223,68 @@ async function deleteComment(id:number):Promise<boolean>{
 		return false
 	}
 }
+
+async function addVote(vote: {post_id:number,user_id:string,value:number}):Promise<Vote|null>{
+	try {
+		// const newVote = {			
+		// 	...vote,
+		// 	timestamp: Date.now()
+		// }
+		const {data,error} = await supabase.from('votes').insert(vote).select().single();
+		if (error) throw new Error(`@addVote: error addVote ${error.message}`)
+		console.log(`data return @addVote in postController: `,data)
+		return data as Vote
+	} catch(error){
+		if(error instanceof Error) {
+			console.error(`catch: `,error.message);
+		}		
+		return null
+	}
+}
+
+async function getVotes():Promise<Vote[]|null>{
+	try {
+		const {data,error} = await supabase.from('votes').select();
+		if (error) throw new Error('@getVotes: error getVotes: ')
+		const votes = data as Vote[]
+		console.log(`all votes @getVotes in postController: `,votes)
+		return votes
+	} catch(error){
+		if(error instanceof Error) {
+			console.error(`catch: `,error.message);
+		}		
+		return null
+	}
+}
+async function getVotesByPostId(postId:number):Promise<Vote[]|null>{
+	try {
+		const {data,error} = await supabase.from('votes').select().eq('post_id',postId);
+		if (error) throw new Error('@getVotesByPostId: error getVotesByPostId: ')
+		const votes = data as Vote[]
+		// console.log(`all votes @getVotesByPostId in postController: `,votes)
+		return votes
+	} catch(error){
+		if(error instanceof Error) {
+			console.error(`catch: `,error.message);
+		}		
+		return null
+	}
+}
+
+async function getNetVotesByPostId(postId:number):Promise<number>{
+	try {
+		const votes = await getVotesByPostId(postId) as Vote[]
+		console.log(`all votes @getNetVotes in postController: `,votes)
+		const netVotes:number = votes.reduce((acc:number,{ value })=>acc + value,0) as number	
+
+		return netVotes		
+	} catch(error){
+		if(error instanceof Error) {
+			console.error(`catch: `,error.message);
+		}		
+		return 0
+	}
+}
 (async()=>{
 	// const post = {
 	// 	title:'New Post',
@@ -245,6 +307,16 @@ async function deleteComment(id:number):Promise<boolean>{
 	// console.log(`async(): `,comment)
 	// const commentToDelete = await deleteComment(2)
 	// console.log(`async(): `,commentToDelete)
+	// const votes = await getVotes()
+	// console.log(`async(): `,votes)
+	// const netVotes = await getNetVotesByPostId(20)
+	// console.log(`async(): `,netVotes)
+	// const newVote = {
+	// 	post_id:13,
+	// 	user_id:'52ee7094-de13-495b-83d5-13cd23c3e475', //admin
+	// 	value:1
+	// }
+	// await addVote(newVote)
 })()
 
- export { getPosts, addPost, getPostById, editPost, deletePost, getComments, addComment, deleteComment}
+ export { getPosts, addPost, getPostById, editPost, deletePost, getComments, addComment, deleteComment, getNetVotesByPostId, addVote}

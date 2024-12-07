@@ -4,13 +4,12 @@ import { useState,useEffect } from 'react';
 import '../styles/css/post-detail-style.css';
 import PostCommentItem from './PostCommentItem';
 import { Comment } from '../../../backend/src/shared/interfaces/index'
-import { get } from 'http';
+
 
 const PostDetail = ()=>{
 	const location = useLocation();
 	const post = location.state?.post
 	const user = location.state?.currentUser
-	// console.log(`@PostDetail current user: `,user)
 
 	const [isCommentBtnVisible,setisCommentBtnVisible] = useState(false)
 	const [comment, setComment] = useState<Comment>({
@@ -28,6 +27,32 @@ const PostDetail = ()=>{
 		successComment:'',
 		successDelComment:''
 	})
+	const [vote,setVote] =useState({
+		setvoteto:0,
+		currentNetVotes:0
+	})
+	console.log(`currentNetVotes: `,vote.currentNetVotes)
+	const getNetVotesDb = async (id:number)=>{
+		try {
+			// /posts/show/:postid
+			const response = await fetch(`http://localhost:8000/public/posts/show/${id}`,{
+				method:'GET',
+				credentials:'include'
+			})
+			const data = await response.json()
+			if(response.ok){
+				console.log(`@PostDetail getNetVotesDb data: `,data)
+				setVote((vote)=>({...vote,currentNetVotes:data.netVotesDb}))
+			}
+		} catch(error){
+			if(error instanceof Error){
+				console.error(`@PostDetail getNetVotesDb error: `,error.message)
+			}			
+		}
+	}
+	useEffect(()=>{
+		getNetVotesDb(post.id)
+	},[post.id])
 	const creatorName =
     typeof post.creator === "object" && post.creator?.uname
       ? post.creator.uname
@@ -70,8 +95,7 @@ const PostDetail = ()=>{
 			getComments(post.id)
 		},[post.id])
 		
-		const sendAddCommentRequest = async (id:number)=>{
-			
+		const sendAddCommentRequest = async (id:number)=>{			
 			const response = await fetch(`http://localhost:8000/public/posts/comment-create/${id}`,{
 				method:'POST',
 				credentials:'include',
@@ -125,28 +149,60 @@ const PostDetail = ()=>{
 				},3000)
 			}
 		}
+		const handleVote = async (postId:number)=>{			
+			const response = await fetch(`http://localhost/public/posts/vote/${postId}`,{
+				method:'POST',
+				credentials:'include',
+				headers:{
+					'Content-Type':'application/json'
+				},
+				body:JSON.stringify({setvoteto:vote.setvoteto})
+			})
+			const data = await response.json()
+			console.log(`data from handleVote: `,data)
+			if(data.setvoteto && data.netVotesDb){
+				setVote((vote)=>({...vote,currentNetVotes: vote.currentNetVotes+data.setvoteto}))
+			}
+		}
   return (
-	 <div className="post-detail-container">
+	<div className="post-detail-container">
 		<h1>Post Detail</h1>
 		<div className="post-header d-flex justify-content-between">
 			<h6>You are logged in as <span style={{ color:"#00BCD4" }}><b>{user?.uname}</b></span></h6>
 			<button
-                onClick={handleLogout}
-                className="btn btn-outline-danger ms-3"
-              >
-                Logout
-              </button>
+				onClick={handleLogout}
+				className="btn btn-outline-danger ms-3">
+				Logout
+			</button>
 		</div>
 		{/* each post */}
 		<div className="post-content justify-content-between">
+			{/* votes */}
 			<div className="d-flex justify-content-between">
 				<h2>{post?.title}</h2>			
 				<div className="d-flex">
-					<button className="mx-2" ><i className="bi bi-hand-thumbs-down" ></i></button>
-					<button className="mx-2"><i className="bi bi-hand-thumbs-up"></i></button>
-					<p>netVotes</p>
+					{/* /posts/vote/:postid/ */}
+					<form action={`/public/posts/vote/${post.id}`} method="POST" onSubmit={(e)=>{
+						e.preventDefault()
+						handleVote(post.id)}}>
+						<input type="hidden" name="setvoteto" value="-1" />
+						<button type="submit"
+							className="mx-2"><i className="bi bi-hand-thumbs-down" ></i>
+						</button>
+					</form>
+					<form action={`/public/posts/vote/${post.id}`} method="POST" onSubmit={(e)=>{ 
+						e.preventDefault()
+						handleVote(post.id)}}>
+						<input type="hidden" name="setvoteto" value="1" />
+						<button type="submit"
+							className="mx-2"><i className="bi bi-hand-thumbs-up" ></i>
+						</button>
+					</form>					
+					{vote.currentNetVotes && <p>{vote.currentNetVotes} </p>}
+					
 				</div>	
 			</div>	
+			{/* end votes */}
 			<p><span style={{ color:"goldenrod" }}><b>{creatorName}</b></span> {post?.timestamp}</p>		
 			<p>{post?.description}</p>
 			<Link to={post?.link} target="_blank">Link</Link>
@@ -173,11 +229,11 @@ const PostDetail = ()=>{
 						</div>
 						{/* show all comments */}
 						<div className="comments-list">							
-								{comments && comments.map((comment:Comment)=>(
-									<div className="comment" key={comment.id}>
-										<PostCommentItem comment={comment} currentUser={user} onDelete={()=>{handleDelComment(comment.id)}} />
-									</div>
-								))}							
+							{comments && comments.map((comment:Comment)=>(
+								<div className="comment" key={comment.id}>
+									<PostCommentItem comment={comment} currentUser={user} onDelete={()=>{handleDelComment(comment.id)}} />
+								</div>
+							))}							
 					 </div>
 			     </div>
 				)}	

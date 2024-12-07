@@ -1,6 +1,6 @@
 import express ,{Request, Response} from "express";
 import { forwardAuthenticated } from "../middleware/checkAuth";
-import { getPosts, addPost, editPost, deletePost, getComments, addComment, deleteComment } from "../controllers/postController";
+import { getPosts, addPost, editPost, deletePost, getComments, addComment, deleteComment, getNetVotesByPostId, addVote } from "../controllers/postController";
 import { Post } from '../shared/interfaces/index'
 const router = express.Router();
 
@@ -104,7 +104,9 @@ router.post('/posts/comment-create/:postid', async (req:Request,res:Response)=>{
 router.get('/posts/show/:postid', async (req:Request,res:Response)=>{
 	try {
 		const comments = await getComments()
-		res.status(200).json({comments})
+		const post_id = Number(req.params.postid)
+		const netVotesDb = await getNetVotesByPostId(post_id)
+		res.status(200).json({comments,netVotesDb})
 	} catch(error){
 		if(error instanceof Error){
 			console.error(`error @/posts/comments: `,error.message)
@@ -122,6 +124,32 @@ router.delete('/posts/comment-delete/:commentid', async (req:Request,res:Respons
 	} catch(error){
 		if(error instanceof Error){
 			console.error(`delete error @/posts/comments: `,error.message)
+			res.status(500).json({errorMsg:error.message})
+		}
+	}
+})
+router.post("/posts/vote/:postid", async (req:Request,res:Response)=>{
+	try {
+		const post_id = Number(req.params.postid)
+		const user = req.user as Express.User
+		const user_id = user?.id as string
+		const value  = Number(req.body.setvoteto)
+		console.log(`setvoteto: `,value)
+		console.log(`user_id: `,user_id)
+		console.log(`post_id: `,post_id)
+		if(!value) throw new Error('@post Please add your vote.')
+		
+		const newVote = await addVote({post_id,user_id,value})
+		console.log(`newVote: `,newVote)
+		if(newVote){
+			res.status(200).json({setvoteto:value,successMsg:'Vote working.'})
+		} else {
+			throw new Error('@addVote: error adding vote')
+		}
+		
+	} catch(error){
+		if(error instanceof Error){
+			console.error(`error @/posts/vote: `,error.message)
 			res.status(500).json({errorMsg:error.message})
 		}
 	}

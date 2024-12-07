@@ -27,3 +27,8 @@ export type Comment = {
 	description: string,
 	timestamp: number | null
 }
+export type Vote = {
+	post_id:number,
+	creator: string | User,
+	value:number
+}
