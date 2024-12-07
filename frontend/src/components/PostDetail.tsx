@@ -10,14 +10,14 @@ const PostDetail = ()=>{
 	const location = useLocation();
 	const post = location.state?.post
 	const user = location.state?.currentUser
-	console.log(`@PostDetail current user: `,user)
+	// console.log(`@PostDetail current user: `,user)
 
 	const [isCommentBtnVisible,setisCommentBtnVisible] = useState(false)
 	const [comment, setComment] = useState<Comment>({
 		id:0,
 		post_id:0,
-		description:'',
 		creator:'',
+		description:'',
 		timestamp:0
 	})
 	const [comments,setComments] = useState<Comment[]>([])
@@ -25,7 +25,8 @@ const PostDetail = ()=>{
 	const [msg,setMsg] = useState({
 		errorMsg:'',
 		successMsg:'',
-		successComment:''
+		successComment:'',
+		successDelComment:''
 	})
 	const creatorName =
     typeof post.creator === "object" && post.creator?.uname
@@ -68,11 +69,6 @@ const PostDetail = ()=>{
 		useEffect(()=>{
 			getComments(post.id)
 		},[post.id])
-
-		const handleInputChange = (e:React.ChangeEvent<HTMLTextAreaElement>)=>{
-			const { name,value } = e.target
-			setComment((comment)=>({...comment,[name]:value}) as Comment)
-		}
 		
 		const sendAddCommentRequest = async (id:number)=>{
 			///posts/comment-create/:postid
@@ -82,7 +78,7 @@ const PostDetail = ()=>{
 				headers:{
 					'Content-Type':'application/json'
 				},
-				body:JSON.stringify({description:comment.description})
+				body:JSON.stringify({description: comment.description})
 			})
 			const data = await response.json()
 			if(response.ok){
@@ -105,6 +101,26 @@ const PostDetail = ()=>{
 			e.preventDefault()
 			await sendAddCommentRequest(id)
 			getComments(id)
+		}
+		const handleDelComment  = async(id:number)=>{
+			const response = await fetch(`http://localhost:8000/public/posts/comment-delete/${id}`,{				
+				method:'DELETE',
+				credentials:'include'
+			})
+			const data = await response.json()
+			if(data.successMsg){
+				setMsg((msgObj)=>({...msgObj, successDelComment:data.successMsg}))
+				setTimeout(()=>{
+					setMsg((msgObj)=>({...msgObj, successDelComment:''}))
+				},2000)
+				getComments(post.id)
+			}
+			if(data.errorMsg){
+				setMsg((msgObj)=>({...msgObj, errorMsg:data.errorMsg}))
+				setTimeout(()=>{
+					setMsg((msgObj)=>({...msgObj, errorMsg:''}))
+				},3000)
+			}
 		}
   return (
 	 <div className="post-detail-container">
@@ -137,24 +153,28 @@ const PostDetail = ()=>{
 				> <i className="bi bi-chat-dots mx-1"></i>Comments({comments.length})</button>
 				{isCommentBtnVisible && (
 					<div className="comments-area">
-						{msg.errorMsg && <div className="text-warning">{msg.errorMsg}</div>}
-						{msg.successComment && <div className="text-success">{msg.successComment}</div>}
+						{msg.errorMsg && <div className="text-warning text-center">{msg.errorMsg}</div>}
+						{msg.successComment && <div className="text-success text-center">{msg.successComment}</div>}
+						{msg.successDelComment && <div className="text-success text-center">{msg.successDelComment}</div>}
+						{/* add comment */}
 						<div className="comment-form">
-							<form action={`/public/posts/comment-create/${post.id}`} method="POST" onSubmit={(e)=>handleAddComment(e,post.id)}>
+							{/* /posts/comment-create/:postid */}
+							<form action={`/public/posts/comment-create/${post.id}`} method="POST" onSubmit={(e)=>{handleAddComment(e,post.id)}}>
 								<textarea name="description"
-								onChange={(e)=>handleInputChange(e)}
+								onChange={(e)=>setComment((comment)=>({...comment,description:e.target.value}))}
 								value={comment.description}
 								id="description" 
 								cols={30} rows={3} placeholder='Write a comment ...'></textarea>
 								<button type="submit"><i className="bi bi-chat-dots mx-1"></i>Add Comment</button>
 							</form>
 						</div>
+						{/* show all comments */}
 						<div className="comments-list">							
 								{comments && comments.map((comment:Comment)=>(
-									<div className="comment" key={comment.id}><PostCommentItem comment={comment} currentUser={user} onDelete={()=>{}} />
+									<div className="comment" key={comment.id}>
+										<PostCommentItem comment={comment} currentUser={user} onDelete={()=>{handleDelComment(comment.id)}} />
 									</div>
-								))}
-							
+								))}							
 					 </div>
 			     </div>
 				)}	

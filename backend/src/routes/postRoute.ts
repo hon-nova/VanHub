@@ -1,6 +1,6 @@
 import express ,{Request, Response} from "express";
 import { forwardAuthenticated } from "../middleware/checkAuth";
-import { getPosts, addPost, editPost, deletePost, getComments, addComment } from "../controllers/postController";
+import { getPosts, addPost, editPost, deletePost, getComments, addComment, deleteComment } from "../controllers/postController";
 import { Post } from '../shared/interfaces/index'
 const router = express.Router();
 
@@ -41,8 +41,7 @@ router.post("/posts", async (req:Request,res:Response)=>{
 			console.error(`error @/posts/add: `,error.message)
 			res.status(500).json({errorMsg:error.message})
 		}
-	}
-	
+	}	
 })
 
 router.post("/posts/edit/:id", async (req:Request,res:Response)=>{
@@ -83,7 +82,7 @@ router.post('/posts/comment-create/:postid', async (req:Request,res:Response)=>{
 	try {
 		const { description } = req.body
 		const post_id = Number(req.params.postid)
-		// console.log(`comment @/posts/comments: `,comment)
+		console.log(`description @/posts/comment-create: `,description)
 		const user = req.user as Express.User
 		const creator = user?.id as string
 		console.log(`creator at /posts/comment-create/:postid: `,creator)
@@ -92,7 +91,7 @@ router.post('/posts/comment-create/:postid', async (req:Request,res:Response)=>{
 		} 
 		// addComment(comment: {post_id:number,description:string,creator:string})
 		const newComment = await addComment({post_id,description,creator})		
-		// console.log(`newComment: `,newComment)
+		console.log(`newComment: `,newComment)
 		res.status(200).json({comment:newComment,successMsg:'Comment added.'})		
 		
 	} catch(error){
@@ -106,11 +105,25 @@ router.post('/posts/comment-create/:postid', async (req:Request,res:Response)=>{
 router.get('/posts/show/:postid', async (req:Request,res:Response)=>{
 	try {
 		const comments = await getComments()
-		console.log(`backend route comments @/posts/comments: `,comments)
+		// console.log(`backend route comments @/post	s/comments: `,comments)
 		res.status(200).json({comments})
 	} catch(error){
 		if(error instanceof Error){
 			console.error(`error @/posts/comments: `,error.message)
+			res.status(500).json({errorMsg:error.message})
+		}
+	}
+})
+router.delete('/posts/comment-delete/:commentid', async (req:Request,res:Response)=>{
+	try {
+		const commentId = Number(req.params.commentid)
+		const isDeleted = await deleteComment(commentId)
+		if(isDeleted){
+			res.status(200).json({successMsg:'Comment deleted.'})
+		}
+	} catch(error){
+		if(error instanceof Error){
+			console.error(`delete error @/posts/comments: `,error.message)
 			res.status(500).json({errorMsg:error.message})
 		}
 	}

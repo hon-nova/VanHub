@@ -161,8 +161,22 @@ async function addComment(comment: {post_id:number,description:string,creator:st
 		}
 		const {data,error} = await supabase.from('comments').insert(newComment).select().single();
 		if (error) throw new Error('@addComment: error addComment ')
-		// console.log(`data return @addComment in postController: `,data)
+		console.log(`data return @addComment in postController: `,data)
 		return data as Comment
+	} catch(error){
+		if(error instanceof Error) {
+			console.error(`catch: `,error.message);
+		}		
+		return null
+	}
+}
+async function getCommentById(id:number):Promise<Comment|null>{
+	try {
+		let {data,error} = await supabase.from('comments').select().eq('id',id).single();
+		if (error) throw new Error('@getCommentById: error getCommentById: ')
+		console.log(`data @getCommentById in postController: `,data)
+		return data as Comment
+
 	} catch(error){
 		if(error instanceof Error) {
 			console.error(`catch: `,error.message);
@@ -182,14 +196,31 @@ async function getComments(): Promise<Comment[]>{
 				creator: await getUserById(c.creator as string) || null,
 				timestamp: formatTimestamp(c.timestamp) ||null
 			}
-		}))
-		console.log(`all decorated comments formatted @getComments in postController: `,decoratedComments)	
-		return decoratedComments as Comment[]
+		})) as Comment[]
+		const sortedComments = decoratedComments.sort((a:any,b:any)=>Number(b.id) - Number(a.id)) as Comment[]
+	
+		return sortedComments
+	} catch(error){
+		if(error instanceof Error) {		
+			console.error(`catch: `,error.message);
+		}		
+		return []
+	}
+}
+async function deleteComment(id:number):Promise<boolean>{
+	try {
+		const comment = await getCommentById(id)
+		if(!comment) throw new Error('@deleteComment: comment not found')
+			
+		const {data,error} = await supabase.from('comments').delete().eq('id',id);
+		if (error) throw new Error('@deleteComment: error deleteComment: ')
+		console.log(`data @deleteComment in postController: `,data)
+		return true
 	} catch(error){
 		if(error instanceof Error) {
 			console.error(`catch: `,error.message);
 		}		
-		return []
+		return false
 	}
 }
 (async()=>{
@@ -210,6 +241,10 @@ async function getComments(): Promise<Comment[]>{
 	// await addComment(comment)
 	// const comments = await getComments()
 	// console.log(`async(): `,comments)
+	// const comment = await getCommentById(4)
+	// console.log(`async(): `,comment)
+	// const commentToDelete = await deleteComment(2)
+	// console.log(`async(): `,commentToDelete)
 })()
 
- export { getPosts, addPost, getPostById, editPost, deletePost, getComments, addComment}
+ export { getPosts, addPost, getPostById, editPost, deletePost, getComments, addComment, deleteComment}
