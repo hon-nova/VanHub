@@ -88,10 +88,9 @@ router.post('/posts/comment-create/:postid', async (req:Request,res:Response)=>{
 		console.log(`creator at /posts/comment-create/:postid: `,creator)
 		if(!description)  {
 			throw new Error('@post Please add your comment content.')
-		} 
-		// addComment(comment: {post_id:number,description:string,creator:string})
+		} 		
 		const newComment = await addComment({post_id,description,creator})		
-		console.log(`newComment: `,newComment)
+		// console.log(`newComment: `,newComment)
 		res.status(200).json({comment:newComment,successMsg:'Comment added.'})		
 		
 	} catch(error){
@@ -105,7 +104,6 @@ router.post('/posts/comment-create/:postid', async (req:Request,res:Response)=>{
 router.get('/posts/show/:postid', async (req:Request,res:Response)=>{
 	try {
 		const comments = await getComments()
-		// console.log(`backend route comments @/post	s/comments: `,comments)
 		res.status(200).json({comments})
 	} catch(error){
 		if(error instanceof Error){

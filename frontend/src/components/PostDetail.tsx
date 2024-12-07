@@ -71,7 +71,7 @@ const PostDetail = ()=>{
 		},[post.id])
 		
 		const sendAddCommentRequest = async (id:number)=>{
-			///posts/comment-create/:postid
+			
 			const response = await fetch(`http://localhost:8000/public/posts/comment-create/${id}`,{
 				method:'POST',
 				credentials:'include',
@@ -83,12 +83,15 @@ const PostDetail = ()=>{
 			const data = await response.json()
 			if(response.ok){
 				console.log(`@PostDetail sendAddCommentRequest data: `,data)
-				setComment(data.comment)
+				setComment(data.comment)				
 				setMsg((msgObj)=>({...msgObj, successComment:data.successMsg}))
+
+				setComment((comment)=>({...comment,description:''}))
+
 				setTimeout(()=>{
 					setMsg((msgObj)=>({...msgObj, successComment:''}))
 				},2000)
-				//navigate here or not
+				
 			} else {
 				console.log(`@PostDetail sendAddCommentRequest data: `,data.errorMsg)
 				setMsg((msgObj)=>({...msgObj, errorMsg:data.errorMsg}))
