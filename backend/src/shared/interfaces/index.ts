@@ -29,6 +29,6 @@ export type Comment = {
 }
 export type Vote = {
 	post_id:number,
-	creator: string | User,
+	user_id: string | User,
 	value:number
 }

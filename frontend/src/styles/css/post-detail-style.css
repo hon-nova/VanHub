@@ -6,3 +6,10 @@ div.post-content {
 /* 1. post detail */
 /* 2. comment */
 /* 3. vote */
+
+i.bi.bi-hand-thumbs-down.btn-red {
+	color: red;
+}
+i.bi.bi-hand-thumbs-up.btn-yellow {
+	color:rgba(244, 225, 17, 0.84);
+}

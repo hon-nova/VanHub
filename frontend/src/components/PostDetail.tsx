@@ -10,7 +10,7 @@ const PostDetail = ()=>{
 	const location = useLocation();
 	const post = location.state?.post
 	const user = location.state?.currentUser
-
+	const [activeVote, setActiveVote] = useState<null|number>(null)
 	const [isCommentBtnVisible,setisCommentBtnVisible] = useState(false)
 	const [comment, setComment] = useState<Comment>({
 		id:0,
@@ -32,6 +32,7 @@ const PostDetail = ()=>{
 		currentNetVotes:0
 	})
 	console.log(`currentNetVotes: `,vote.currentNetVotes)
+	console.log(`activeVote: `,activeVote)
 	const getNetVotesDb = async (id:number)=>{
 		try {
 			// /posts/show/:postid
@@ -87,7 +88,7 @@ const PostDetail = ()=>{
 			})
 			const data = await response.json()
 			if(response.ok){
-				console.log(`@PostDetail getComments data: `,data.comments)
+				// console.log(`@PostDetail getComments data: `,data.comments)
 				setComments(data.comments)
 			}
 		}
@@ -149,19 +150,20 @@ const PostDetail = ()=>{
 				},3000)
 			}
 		}
-		const handleVote = async (postId:number)=>{			
-			const response = await fetch(`http://localhost/public/posts/vote/${postId}`,{
+		const handleVote = async (postId:number,value:number)=>{			
+			const response = await fetch(`http://localhost:8000/public/posts/vote/${postId}`,{
 				method:'POST',
 				credentials:'include',
 				headers:{
 					'Content-Type':'application/json'
 				},
-				body:JSON.stringify({setvoteto:vote.setvoteto})
+				body:JSON.stringify({setvoteto:value})
 			})
 			const data = await response.json()
 			console.log(`data from handleVote: `,data)
-			if(data.setvoteto && data.netVotesDb){
-				setVote((vote)=>({...vote,currentNetVotes: vote.currentNetVotes+data.setvoteto}))
+			if(data.setvoteto){
+				setVote((vote)=>({...vote,currentNetVotes: vote.currentNetVotes + data.currentNetVotes}))
+				setActiveVote(value)
 			}
 		}
   return (
@@ -181,25 +183,18 @@ const PostDetail = ()=>{
 			<div className="d-flex justify-content-between">
 				<h2>{post?.title}</h2>			
 				<div className="d-flex">
-					{/* /posts/vote/:postid/ */}
-					<form action={`/public/posts/vote/${post.id}`} method="POST" onSubmit={(e)=>{
-						e.preventDefault()
-						handleVote(post.id)}}>
-						<input type="hidden" name="setvoteto" value="-1" />
-						<button type="submit"
-							className="mx-2"><i className="bi bi-hand-thumbs-down" ></i>
-						</button>
-					</form>
-					<form action={`/public/posts/vote/${post.id}`} method="POST" onSubmit={(e)=>{ 
-						e.preventDefault()
-						handleVote(post.id)}}>
-						<input type="hidden" name="setvoteto" value="1" />
-						<button type="submit"
-							className="mx-2"><i className="bi bi-hand-thumbs-up" ></i>
-						</button>
-					</form>					
-					{vote.currentNetVotes && <p>{vote.currentNetVotes} </p>}
-					
+					{/* /posts/vote/:postid/ */}					
+					<button 
+						type="submit"
+						onClick={()=>handleVote(post.id,-1)}
+						className=""><i className={`bi bi-hand-thumbs-down ${activeVote ===-1 ?'btn-red':''}`}></i>
+					</button>
+					<button 
+						type="submit"
+						onClick={()=>handleVote(post.id,1)}
+						className=""><i className={`bi bi-hand-thumbs-up ${activeVote ===-1 ?'btn-yellow':''}`}></i>
+					</button>										
+					{vote.currentNetVotes && <p>{vote.currentNetVotes} </p>}					
 				</div>	
 			</div>	
 			{/* end votes */}
