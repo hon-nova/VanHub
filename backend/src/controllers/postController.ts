@@ -1,5 +1,5 @@
 import { supabase } from '../db/supabaseClient'
-import { Post } from '../shared/interfaces/index'
+import { Post, Comment } from '../shared/interfaces/index'
 import { getUserById } from './userController'
 
 // const getPosts = async () => {
@@ -149,6 +149,49 @@ async function deletePost(id:number):Promise<boolean>{
 		return false
 	}
 }
+
+async function addComment(comment: {post_id:number,description:string,creator:string}):Promise<Comment|null>{
+	try {
+		//post_id:number,
+	//creator: string | User,
+	//description: string,
+		const newComment = {			
+			...comment,
+			timestamp: Date.now()
+		}
+		const {data,error} = await supabase.from('comments').insert(newComment).select().single();
+		if (error) throw new Error('@addComment: error addComment ')
+		// console.log(`data return @addComment in postController: `,data)
+		return data as Comment
+	} catch(error){
+		if(error instanceof Error) {
+			console.error(`catch: `,error.message);
+		}		
+		return null
+	}
+}
+async function getComments(): Promise<Comment[]>{
+	try {
+		const {data,error} = await supabase.from('comments').select();
+		if (error) throw new Error('@getComments: error getComments: ')
+		const comments = data as Comment[]
+		
+		const decoratedComments = await Promise.all(comments.map(async(c:Comment)=>{
+			return {
+				...c,
+				creator: await getUserById(c.creator as string) || null,
+				timestamp: formatTimestamp(c.timestamp) ||null
+			}
+		}))
+		console.log(`all decorated comments formatted @getComments in postController: `,decoratedComments)	
+		return decoratedComments as Comment[]
+	} catch(error){
+		if(error instanceof Error) {
+			console.error(`catch: `,error.message);
+		}		
+		return []
+	}
+}
 (async()=>{
 	// const post = {
 	// 	title:'New Post',
@@ -158,6 +201,15 @@ async function deletePost(id:number):Promise<boolean>{
 	// 	subgroup: 'google news'
 	// }
 	// await addPost(post)
+	// addComment(comment: {post_id:number,description:string,creator:string})
+	// const comment = {
+	// 	post_id:27,
+	// 	description:'This is a new comment',
+	// 	creator:'6325cf1a-8d56-4963-8129-c3b7eb3d2d90'
+	// }
+	// await addComment(comment)
+	// const comments = await getComments()
+	// console.log(`async(): `,comments)
 })()
 
- export { getPosts, addPost, getPostById, editPost, deletePost}
+ export { getPosts, addPost, getPostById, editPost, deletePost, getComments, addComment}

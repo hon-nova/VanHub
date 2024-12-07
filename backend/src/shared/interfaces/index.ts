@@ -10,7 +10,7 @@ export interface User {
    email: string,
    password: string,
    role: string
-}
+};
 export type Post = {
 	id: number,
 	title:string,
@@ -19,4 +19,11 @@ export type Post = {
 	creator:string | User,
 	subgroup: string,
 	timestamp: number|null
+};
+export type Comment = {
+	id: number,
+	post_id:number,
+	creator: string | User,
+	description: string,
+	timestamp: number | null
 }

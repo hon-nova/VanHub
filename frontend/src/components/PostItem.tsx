@@ -27,7 +27,7 @@ const PostItem: React.FC<PostItemProps> = ({ post, onEdit, onDelete, currentUser
         <span>
           <Link
             to={`/public/posts/show/${post.id}`}
-            state={{ post }}
+            state={{ post,currentUser }}
             className="mx-2"><b>{post?.title}</b>
           </Link>
           ({hostname})
