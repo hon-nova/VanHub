@@ -128,6 +128,7 @@ router.delete('/posts/comment-delete/:commentid', async (req:Request,res:Respons
 		}
 	}
 })
+
 router.post("/posts/vote/:postid", async (req:Request,res:Response)=>{
 	try {
 		const post_id = Number(req.params.postid)
@@ -143,11 +144,13 @@ router.post("/posts/vote/:postid", async (req:Request,res:Response)=>{
 		
 		console.log(`post_id: `,post_id)
 		if(!value) throw new Error('@post Please add your vote.')
-		// db:vote: {post_id:number,user_id:string,value:number}
+		
 		const updatedNetVotes = await addNewOrUpdateVote({post_id,user_id,value})
-		// console.log(`newVote: `,newVote)
+		const netVotesDb = await getNetVotesByPostId(post_id)
+		console.log(`backend netVotesDb for post_id ${post_id}: `,netVotesDb)
+		
 		if(updatedNetVotes){
-			res.status(200).json({setvoteto:value,currentNetVotes: updatedNetVotes.value,successVoteMsg:'Vote working.'})
+			res.status(200).json({setvoteto: updatedNetVotes.value,netVotesDb})
 		} else {
 			throw new Error('@addVote: error adding vote')
 		}		

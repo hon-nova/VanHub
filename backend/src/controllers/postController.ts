@@ -247,14 +247,28 @@ async function addNewOrUpdateVote(vote: {post_id:number,user_id:string,value?:nu
 			value: vote.value
 		}
 		if(existingVote){
-			const {data,error} = await supabase.from('votes').update(updates).eq('post_id',vote.post_id).eq('user_id',vote.user_id).select('*').single();
-			if (error) throw new Error(`@addNewOrUpdateVote: error addNewOrUpdateVote: ${error.message}`)
-			const newVoteArr = await getVotes() as Vote[]
-			console.log(`after votes length: `,newVoteArr.length)
-			return data as Vote
+			if (existingVote.value === vote.value) {
+				const { data, error } = await supabase.from('votes')
+					.update({ value: 0 })
+					.eq('post_id', vote.post_id)
+					.eq('user_id', vote.user_id)
+					.select('*')
+					.single();
+				if (error) throw new Error(`Error updating vote to neutral: ${error.message}`);
+				return {...data,value:0} as Vote;
+			}
+
+			// Update the existing vote
+			const { data, error } = await supabase.from('votes')
+				.update({ value: vote.value })
+				.eq('post_id', vote.post_id)
+				.eq('user_id', vote.user_id)
+				.select('*')
+				.single();
+			if (error) throw new Error(`Error updating vote: ${error.message}`);
+			return data as Vote;
 			
 		} else {
-			// votes = [...votes,vote]
 			const newvote = {
 				post_id: vote.post_id,
 				user_id: vote.user_id,
@@ -280,7 +294,7 @@ async function getVotes():Promise<Vote[]|null>{
 		const {data,error} = await supabase.from('votes').select();
 		if (error) throw new Error('@getVotes: error getVotes: ')
 		const votes = data as Vote[]
-		console.log(`all votes @getVotes in postController: `,votes)
+		// console.log(`all votes @getVotes in postController: `,votes)
 		return votes
 	} catch(error){
 		if(error instanceof Error) {

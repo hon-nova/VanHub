@@ -8,8 +8,8 @@ div.post-content {
 /* 3. vote */
 
 i.bi.bi-hand-thumbs-down.btn-red {
-	color: red;
+	color: #e6000d;
 }
 i.bi.bi-hand-thumbs-up.btn-yellow {
-	color:rgba(244, 225, 17, 0.84);
+	color:#ecc043;
 }

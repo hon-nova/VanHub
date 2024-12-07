@@ -161,10 +161,15 @@ const PostDetail = ()=>{
 			})
 			const data = await response.json()
 			console.log(`data from handleVote: `,data)
-			if(data.setvoteto){
-				setVote((vote)=>({...vote,currentNetVotes: vote.currentNetVotes + data.currentNetVotes}))
-				setActiveVote(value)
+			if(response.ok){
+				const updatedVote = data.setvoteto === 0 ? 0 : value; // Toggle logic.
+				setVote((prevVote) => ({
+					...prevVote,
+					currentNetVotes: data.netVotesDb, // Use backend's netVotesDb directly.
+				}));
+				setActiveVote(updatedVote);
 			}
+			
 		}
   return (
 	<div className="post-detail-container">
@@ -192,7 +197,7 @@ const PostDetail = ()=>{
 					<button 
 						type="submit"
 						onClick={()=>handleVote(post.id,1)}
-						className=""><i className={`bi bi-hand-thumbs-up ${activeVote ===-1 ?'btn-yellow':''}`}></i>
+						className=""><i className={`bi bi-hand-thumbs-up ${activeVote ===1 ?'btn-yellow':''}`}></i>
 					</button>										
 					{vote.currentNetVotes && <p>{vote.currentNetVotes} </p>}					
 				</div>	
