@@ -1,5 +1,6 @@
 import React from 'react';
 import { User } from '../../../backend/src/shared/interfaces/index'
+import { Link } from 'react-router-dom';
 
 interface NavbarProps {
 	user:User,
@@ -60,9 +61,9 @@ const Navbar:React.FC<NavbarProps> = ({ user, handleLogout }) => {
                   </span>
                 </li>
                 <li>
-                  <a className="dropdown-item" href="/user/profile">
+                  <Link className="dropdown-item" to="/user/profile" state={{ user }}>
                     View Profile
-                  </a>
+                  </Link>
                 </li>
               </ul>
             </li>

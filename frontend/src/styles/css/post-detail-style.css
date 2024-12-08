@@ -1,8 +1,8 @@
 /* 1. post detail */
 div.post-detail-container {
-	width:90%;
+	width:99.99%;
 	justify-content: center;
-	margin:10px auto;
+	margin:0 auto;
 }
 div.post-content {
 	border-top: 1px solid #d0d0d5;

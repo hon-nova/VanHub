@@ -169,15 +169,17 @@ const PostDetail = ()=>{
 			
 		}
   return (
-	<div className="post-detail-container my-5">
-	
+	<div className="post-detail-container">
+		<nav className="navbar navbar-expand-lg navbar-dark justify-content-end"
+      		style={{ backgroundColor: '#004a77' }}>				  
+				 <button
+                onClick={handleLogout}
+                className="btn btn-outline-danger ms-3 mx-2">
+                Logout
+              </button>
+			</nav>
 		<div className="post-header d-flex justify-content-between">
-			<h6>You are logged in as <span style={{ color:"#00BCD4" }}><b>{user?.uname}</b></span></h6>
-			<button
-				onClick={handleLogout}
-				className="btn btn-outline-danger ms-3">
-				Logout
-			</button>
+			<h6>You are logged in as <span style={{ color:"#00BCD4" }}><b>{user?.uname}</b></span></h6>			
 		</div>
 		{/* each post */}
 		<div className="post-content justify-content-between">

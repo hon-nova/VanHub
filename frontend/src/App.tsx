@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState,useMemo} from 'react';
 import './App.css';
 import { BrowserRouter as Router, Route, Routes} from 'react-router-dom';  
 import Home from './components/Home';
@@ -12,6 +12,7 @@ import PostEdit from './components/PostEdit';
 import { Post, User } from '../../backend/src/shared/interfaces/index';
 import Profile from './components/User/Profile/index';
 import Settings from './components/User/Profile/settings';
+
 
 function App() {
  
@@ -29,18 +30,27 @@ function App() {
             credentials: 'include'
          });
          const data = await response.json()
+         // console.log(`user in fetching: `, data.user)
          if(response.ok){
             setPosts(data.posts)
             setUser(data.user)
          }      
    }
-   const postsUser = posts.filter((post:Post)=>post.creator ===  user?.id)
-   
    useEffect(()=>{
       getPostsAndUser()
    },[])
-   console.log(`postsUser: ${postsUser}`)
-   console.log(`posts: `, posts)
+   // console.log(`user in App.tsx: `, user)
+   const postsUser = useMemo(()=>{
+      console.log(`user in userMemo `, user) 
+      console.log(`posts in userMemo `, posts)
+      if(!user) return []
+      const psUser = posts.filter((p:Post)=>String(p.creator) === user.id )
+      console.log(`psUser in userMemo `, psUser)
+      return posts.filter((p:Post)=>String(p.creator) === user.id )
+   },[posts,user])   
+ 
+   console.log(`postsUser:`, postsUser)
+   // console.log(`posts: `, posts)
   
   return (
     <Router>
@@ -55,8 +65,10 @@ function App() {
         <Route path="/public/posts/edit/:id" element={<PostEdit post={post} onEdit={handleEdit}/>} />
         <Route path="/public/posts/show/:id" element={<PostDetail />} />
 
-        <Route path="/user/profile" element={<Profile posts={postsUser} user={user as User}/>} />
-        <Route path="/user/profile/settings" element={<Settings />} />
+        <Route path="/user/profile/" element={<Profile posts={postsUser} user={user as User}/>}>
+            <Route path="settings" element={<Settings user={user as User}/>} />
+        </Route>
+        
       </Routes>
     </Router>
   );
