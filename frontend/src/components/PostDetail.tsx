@@ -31,11 +31,10 @@ const PostDetail = ()=>{
 		setvoteto:0,
 		currentNetVotes:0
 	})
-	console.log(`currentNetVotes: `,vote.currentNetVotes)
-	console.log(`activeVote: `,activeVote)
+	// console.log(`currentNetVotes: `,vote.currentNetVotes)
+	// console.log(`activeVote: `,activeVote)
 	const getNetVotesDb = async (id:number)=>{
-		try {
-			// /posts/show/:postid
+		try {			
 			const response = await fetch(`http://localhost:8000/public/posts/show/${id}`,{
 				method:'GET',
 				credentials:'include'
@@ -162,18 +161,18 @@ const PostDetail = ()=>{
 			const data = await response.json()
 			console.log(`data from handleVote: `,data)
 			if(response.ok){
-				const updatedVote = data.setvoteto === 0 ? 0 : value; // Toggle logic.
+				const updatedVote = data.setvoteto === 0 ? 0 : value; 
 				setVote((prevVote) => ({
 					...prevVote,
-					currentNetVotes: data.netVotesDb, // Use backend's netVotesDb directly.
+					currentNetVotes: data.netVotesDb, 
 				}));
 				setActiveVote(updatedVote);
 			}
 			
 		}
   return (
-	<div className="post-detail-container">
-		<h1>Post Detail</h1>
+	<div className="post-detail-container my-5">
+	
 		<div className="post-header d-flex justify-content-between">
 			<h6>You are logged in as <span style={{ color:"#00BCD4" }}><b>{user?.uname}</b></span></h6>
 			<button
@@ -192,24 +191,28 @@ const PostDetail = ()=>{
 					<button 
 						type="submit"
 						onClick={()=>handleVote(post.id,-1)}
-						className=""><i className={`bi bi-hand-thumbs-down ${activeVote ===-1 ?'btn-red':''}`}></i>
+						className="up-down-vote-btn"><i className={`bi bi-hand-thumbs-down ${activeVote ===-1 ?'btn-red':''}`}></i>
 					</button>
 					<button 
 						type="submit"
 						onClick={()=>handleVote(post.id,1)}
-						className=""><i className={`bi bi-hand-thumbs-up ${activeVote ===1 ?'btn-yellow':''}`}></i>
-					</button>										
-					{vote.currentNetVotes && <p>{vote.currentNetVotes} </p>}					
+						className="up-down-vote-btn"><i className={`bi bi-hand-thumbs-up ${activeVote ===1 ?'btn-yellow':''}`}></i>
+					</button>	
+					<div className="netvotes-area">
+						{vote.currentNetVotes && <p>{vote.currentNetVotes} </p>}		
+					</div>									
+								
 				</div>	
 			</div>	
 			{/* end votes */}
 			<p><span style={{ color:"goldenrod" }}><b>{creatorName}</b></span> {post?.timestamp}</p>		
 			<p>{post?.description}</p>
-			<Link to={post?.link} target="_blank">Link</Link>
+			<Link to={post?.link} target="_blank"><i className="bi bi-link-45deg mx-1"></i>Link</Link>
 			<div className="comments">
 				<button
 				onClick={()=>setisCommentBtnVisible((isCommentBtnVisible)=>!isCommentBtnVisible)}	
-				> <i className="bi bi-chat-dots mx-1"></i>Comments({comments.length})</button>
+				className="view-add-comment"
+				> <i className="bi bi-chat-dots mx-1"></i>View Comments({comments.length})</button>
 				{isCommentBtnVisible && (
 					<div className="comments-area">
 						{msg.errorMsg && <div className="text-warning text-center">{msg.errorMsg}</div>}
@@ -218,19 +221,21 @@ const PostDetail = ()=>{
 						{/* add comment */}
 						<div className="comment-form">
 							{/* /posts/comment-create/:postid */}
-							<form action={`/public/posts/comment-create/${post.id}`} method="POST" onSubmit={(e)=>{handleAddComment(e,post.id)}}>
+							<form action={`/public/posts/comment-create/${post.id}`} method="POST" onSubmit={(e)=>{handleAddComment(e,post.id)}} className="comment-form-layer">
 								<textarea name="description"
 								onChange={(e)=>setComment((comment)=>({...comment,description:e.target.value}))}
 								value={comment.description}
-								id="description" 
+								className="description" 
 								cols={30} rows={3} placeholder='Write a comment ...'></textarea>
-								<button type="submit"><i className="bi bi-chat-dots mx-1"></i>Add Comment</button>
+								<button 
+								type="submit"
+								className="view-add-comment"><i className="bi bi-chat-dots mx-1"></i>Add Comment</button>
 							</form>
 						</div>
 						{/* show all comments */}
 						<div className="comments-list">							
 							{comments && comments.map((comment:Comment)=>(
-								<div className="comment" key={comment.id}>
+								<div className="comment-content" key={comment.id}>
 									<PostCommentItem comment={comment} currentUser={user} onDelete={()=>{handleDelComment(comment.id)}} />
 								</div>
 							))}							

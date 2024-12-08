@@ -1,11 +1,79 @@
+/* 1. post detail */
+div.post-detail-container {
+	width:90%;
+	justify-content: center;
+	margin:10px auto;
+}
 div.post-content {
-	border: 1px solid black;
+	border-top: 1px solid #d0d0d5;
+	
+	/* border-left: 1px solid black; */
+	/* border-right: 1px solid black; */
+	border-radius: 10px;
+	padding: 10px;
+	margin:10px;
+}
+/* 2. comment */
+div.comments-area {
+	/* border: 1px solid goldenrod; */
+	/* border: 5px outset black; */
+}
+div.comment-form {
+	/* border: 1px solid #c8c8cb; */
+}
+form.comment-form-layer {
+	border: 1px solid #d0d0d5;
+	border-radius: 10px;
+	margin:5px;
+}
+textarea.description {
+	border: 1px solid #d0d0d5;
+	border-radius: 10px;
+	margin:5px;
+	padding-left:10px;
+	/* display:flex; */
+	flex-direction: row;
+	/* justify-content: center; */
+	/* align-items: center; */
+	width: 80%;
+	height:50px;
+}
+button.view-add-comment {
+	border: 1px solid #d0d0d5;
 	border-radius: 10px;
 	padding: 10px;
 }
-/* 1. post detail */
-/* 2. comment */
+div.comments-list {
+	/* border: 1px solid red; */
+	/* padding: 10px; */
+}
+div.comment-content {
+	border: 1px solid #d0d0d5;
+	border-radius: 10px;
+	padding-left: 10px;
+	margin:5px;
+	margin-bottom:0;
+	padding-bottom:0
+}
 /* 3. vote */
+button.up-down-vote-btn {
+	border: 1px solid #d0d0d5;
+	background-color: white;
+	width: 50px;
+	height: 50px;
+	margin:1px
+}
+i.bi.bi-hand-thumbs-down, i.bi.bi-hand-thumbs-up {
+	font-size: 22px;
+}
+div.netvotes-area {
+	display:flex;
+	justify-content: center;
+	align-items: center;
+	text-align: center;
+	margin-top:5px;
+	padding:10px;
+}
 
 i.bi.bi-hand-thumbs-down.btn-red {
 	color: #e6000d;

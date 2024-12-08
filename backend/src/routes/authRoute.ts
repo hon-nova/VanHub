@@ -115,7 +115,7 @@ router.post('/forgot',forwardAuthenticated, async (req: Request, res: Response) 
 	}
 })
 
-router.post('/logout', forwardAuthenticated, (req: Request, res: Response) => {
+router.post('/logout', (req: Request, res: Response) => {
 	const user = req.user 
 	console.log(`BACKEND user logged out: `, user)
 	console.log(`BACKEND session: `, (req.session as any).passport)
