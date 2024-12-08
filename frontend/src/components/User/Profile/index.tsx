@@ -1,7 +1,7 @@
 import { Outlet, Link,useLocation,useNavigate } from 'react-router-dom';
 import '../../../styles/css/profile-style.css'
 import { Post, User } from '../../../../../backend/src/shared/interfaces/index'
-import PostItem from '../../PostItem'
+import ProfilePostItem from '../../User/Profile/ProfilePostItem'
 import { useState } from 'react';
 // interface IPostProps {
 // 	posts: Post[],
@@ -111,12 +111,12 @@ const Profile: React.FC<{posts:Post[],user:User}> = ({posts,user})=>{
 							<Link to="/user/profile/settings"><i className="bi bi-gear mx-1"></i>Settings</Link>
 						</div>						
 					</div>
-					<div className="col-md-9"style={{ backgroundColor:"skyblue" }}>right
+					<div className="col-md-9">
 						{/* displaying all posts of this user here */}
 						{isSettings ? ( <Outlet />) :(							
 							posts && posts.map((post:Post)=>(
 								<div key={post.id}>
-									<PostItem post={post} currentUser={activeUser} onDelete={()=>{}} onEdit={()=>{}}/>
+									<ProfilePostItem post={post} currentUser={activeUser} onDelete={()=>{}} onEdit={()=>{}}/>
 								</div>
 							))
 						)}						

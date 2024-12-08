@@ -67,6 +67,13 @@ const PostCreateItem: React.FC<PostCreateItemProps> = ({onAdd})=>{
 		e.preventDefault()
 		await submitAddRequest()
 	}
+	const isFormValid = Object.values(formData).every(
+		(value) => value.trim().length > 0
+	);
+
+	console.log("FormData:", formData);
+	console.log("Is Form Valid:", isFormValid);
+
 	return (
 		<>		
 		<div className="post-create-container">
@@ -98,7 +105,7 @@ const PostCreateItem: React.FC<PostCreateItemProps> = ({onAdd})=>{
 						value={formData.description}
 						id="description" name="description"
 						className="form-input"
-						style={{ height:"200" }}></textarea>
+						></textarea>
 				</div>				
 				<div>
 					<label htmlFor="subgroup" className="form-label">Subgroup:</label>
@@ -108,7 +115,8 @@ const PostCreateItem: React.FC<PostCreateItemProps> = ({onAdd})=>{
 						type="text" id="subgroup" name="subgroup"
 						className="form-input"/>
 				</div>
-				<button type="submit">Submit</button>
+				<button 				 	
+					type="submit" id="create-submit-btn"><i className="bi bi-send mx-1"></i>Submit</button>
 			</form>
 		</div>
 		</>

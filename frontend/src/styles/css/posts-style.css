@@ -5,3 +5,8 @@ div.posts-container {
 div.posts {
 	color: #8e918f;
 }
+button.create-submit-btn {
+	border: 1px solid #d0d0d5;
+	border-radius: 10px;
+	padding: 10px;
+}

@@ -98,7 +98,7 @@ const Posts = ()=>{
 						<button  
 							onClick={()=>setIsFormVisible((isVisible)=>!isVisible)}
 							type="button" 
-							className="mx-5">
+							className="mx-5 create-submit-btn">
 								<i className="bi bi-plus-square mx-2"></i>{isFormVisible ? 'Hide Form':'Create Post'}
 						</button>
 						{isFormVisible && (						

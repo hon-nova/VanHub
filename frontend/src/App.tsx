@@ -39,18 +39,17 @@ function App() {
    useEffect(()=>{
       getPostsAndUser()
    },[])
-   // console.log(`user in App.tsx: `, user)
+   
    const postsUser = useMemo(()=>{
-      console.log(`user in userMemo `, user) 
-      console.log(`posts in userMemo `, posts)
+      // console.log(`user in userMemo `, user) 
+      // console.log(`posts in userMemo `, posts)
       if(!user) return []
-      const psUser = posts.filter((p:Post)=>String(p.creator) === user.id )
-      console.log(`psUser in userMemo `, psUser)
-      return posts.filter((p:Post)=>String(p.creator) === user.id )
+      const psUser = posts.filter((p:Post)=>(p.creator as User)?.id === user.id )
+      // console.log(`psUser in userMemo `, psUser)
+      return psUser
    },[posts,user])   
  
-   console.log(`postsUser:`, postsUser)
-   // console.log(`posts: `, posts)
+   // console.log(`postsUser:`, postsUser)
   
   return (
     <Router>
