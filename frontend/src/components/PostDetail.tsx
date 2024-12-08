@@ -31,8 +31,6 @@ const PostDetail = ()=>{
 		setvoteto:0,
 		currentNetVotes:0
 	})
-	// console.log(`currentNetVotes: `,vote.currentNetVotes)
-	// console.log(`activeVote: `,activeVote)
 	const getNetVotesDb = async (id:number)=>{
 		try {			
 			const response = await fetch(`http://localhost:8000/public/posts/show/${id}`,{

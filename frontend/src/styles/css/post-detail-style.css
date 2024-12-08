@@ -6,9 +6,6 @@ div.post-detail-container {
 }
 div.post-content {
 	border-top: 1px solid #d0d0d5;
-	
-	/* border-left: 1px solid black; */
-	/* border-right: 1px solid black; */
 	border-radius: 10px;
 	padding: 10px;
 	margin:10px;
@@ -30,11 +27,8 @@ textarea.description {
 	border: 1px solid #d0d0d5;
 	border-radius: 10px;
 	margin:5px;
-	padding-left:10px;
-	/* display:flex; */
+	padding-left:10px;	
 	flex-direction: row;
-	/* justify-content: center; */
-	/* align-items: center; */
 	width: 80%;
 	height:50px;
 }

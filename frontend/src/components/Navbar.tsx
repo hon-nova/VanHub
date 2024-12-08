@@ -45,7 +45,7 @@ const Navbar:React.FC<NavbarProps> = ({ user, handleLogout }) => {
             <li className="nav-item dropdown">
               <a
                 className="nav-link dropdown-toggle"
-                href="/auth/profile"
+                href="/user/profile"
                 id="profileDropdown"
                 role="button"
                 data-bs-toggle="dropdown"
@@ -60,7 +60,7 @@ const Navbar:React.FC<NavbarProps> = ({ user, handleLogout }) => {
                   </span>
                 </li>
                 <li>
-                  <a className="dropdown-item" href="/auth/profile">
+                  <a className="dropdown-item" href="/user/profile">
                     View Profile
                   </a>
                 </li>

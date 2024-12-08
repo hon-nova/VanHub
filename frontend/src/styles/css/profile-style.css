@@ -1,0 +1,17 @@
+div.profile-container {
+	border: 5px solid goldenrod;
+	height: 100vh;
+	margin: 10px auto;
+	width:100%;
+	justify-content: center;
+}
+nav.profile-nav {	
+	background-color: #037b8b;
+	height: 60px;
+	align-items: center;	
+}
+div.profile-content {
+	margin:auto auto;
+	width:98%;
+	justify-content: center	
+}

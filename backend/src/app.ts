@@ -74,10 +74,12 @@ client.connect()
 import authRoute from "./routes/authRoute";
 import indexRoute from "./routes/indexRoute";
 import postRoute from "./routes/postRoute";
+import userRoute from "./routes/userRoute";
 
 // app.use("/", indexRoute);
 app.use("/auth", authRoute);
 app.use("/public", postRoute);
+app.use("/user/profile", userRoute);
 
 (async()=>{
   //important
