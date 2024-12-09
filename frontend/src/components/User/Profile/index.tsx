@@ -2,7 +2,7 @@ import { Outlet, Link,useLocation,useNavigate } from 'react-router-dom';
 import '../../../styles/css/profile-style.css'
 import { Post, User } from '../../../../../backend/src/shared/interfaces/index'
 import ProfilePostItem from '../../User/Profile/ProfilePostItem'
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 interface IPostProps {
 	posts: Post[],
 	user: User
@@ -12,7 +12,7 @@ const Profile: React.FC<IPostProps> = ({posts,user})=>{
 	const navigate = useNavigate()
 	const passedUser = location.state?.user
 	const activeUser = passedUser || user
-
+	const [avatar, setAvatar] = useState<string>('')
 	const isSettings = location.pathname.includes("/user/profile/settings")
 	// console.log(`posts in Profile: `, posts)
 	// console.log(`user in Profile: `, user)
@@ -43,6 +43,22 @@ const Profile: React.FC<IPostProps> = ({posts,user})=>{
 			  console.error('Error during logout:', error);
 		}
 	};
+
+	// const fetchAvatar = async()=>{
+	// 	const response = await fetch(`http://localhost:8000/user/profile/settings`,{
+	// 		method:"GET",
+	// 		credentials:"include",
+
+	// 	})
+	// 	const data = await response.json()
+	// 	if(response.ok){
+	// 		console.log(`data in fetchAvatar: `, data)
+	// 		setAvatar(data.avatar)
+	// 	}
+	// }
+	// useEffect(()=>{
+	// 	fetchAvatar()
+	// },[])
 	return (
 		<div className="profile-container">					
 			<nav className="navbar navbar-expand-lg navbar-dark"
@@ -104,7 +120,8 @@ const Profile: React.FC<IPostProps> = ({posts,user})=>{
 					<div className="col-md-3" style={{ backgroundColor:"pink" }}>
 						 <div className="text-center">
 						 	{/* <i className="bi bi-person-hearts"></i> */}
-							<img src="https://via.placeholder.com/180" alt="profile" style={{borderRadius:"50%",marginTop: "5px"}}/>						
+							{activeUser.avatar ? (<img src={activeUser.avatar} alt="profile" style={{borderRadius:"50%",marginTop: "5px"}}/>) : (<img src="https://via.placeholder.com/180" alt="profile" style={{borderRadius:"50%",marginTop: "5px"}}/>)}
+													
 							 Profileavatar+email+uname
 						 </div>
 						<div className="text-end">

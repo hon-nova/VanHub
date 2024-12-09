@@ -4,11 +4,11 @@ import bcrypt from 'bcrypt'
 
 const saltValue =8
 
-async function addUser(uname:string,email:string,password:string|''):Promise<User|null>{
+async function addUser(uname:string,email:string,password:string|'',avatar:string|''):Promise<User|null>{
 	try {
 		const hashedPassword = bcrypt.hashSync(password,saltValue)
-		const stm = 'INSERT INTO public.users (uname,email,password) VALUES ($1,$2,$3)';
-		const newUser = await client.query(stm,[uname,email,hashedPassword])
+		const stm = 'INSERT INTO public.users (uname,email,password,avatar) VALUES ($1,$2,$3,$4)';
+		const newUser = await client.query(stm,[uname,email,hashedPassword,avatar])
 		if(newUser.rowCount = 0){
 			throw new Error(`Couldn't add user`)
 		}
@@ -20,6 +20,25 @@ async function addUser(uname:string,email:string,password:string|''):Promise<Use
 		}		
 		return null
 	}
+}
+async function updateUser(id:string, changes : {avatar?:string}):Promise<User|null>{
+	try {
+		const {avatar} = changes
+		const stm = `UPDATE public.users
+						SET avatar=$1
+						WHERE id=$2
+						RETURNING *`
+		const updatedUser = await client.query(stm,[avatar,id])
+		if(updatedUser.rowCount === 0){
+			throw new Error(`Couldn't update user with their avatar`)
+		}
+		return updatedUser.rows[0] as User
+	} catch(error){
+		if(error instanceof Error) {
+			console.error('updateUser - Error in updating user: ',error.message)
+		}		
+		return null
+	}	
 }
 async function getUsers():Promise<Express.User[] |null>{
 	try {		
@@ -160,4 +179,4 @@ async function resetPassword(info:string,newbarepassword:string):Promise<User|nu
 		return null
 	}
 }
-export { getUsers, getUserById, getUserByUname,resetPassword,getUserByEmailAndPassword,getUserByEmail, isUserValid, addUser,getUserByUnameOrEmail }
+export { getUsers, getUserById, getUserByUname,resetPassword,getUserByEmailAndPassword,getUserByEmail, isUserValid, addUser,getUserByUnameOrEmail, updateUser }
