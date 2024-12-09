@@ -3,11 +3,11 @@ import '../../../styles/css/profile-style.css'
 import { Post, User } from '../../../../../backend/src/shared/interfaces/index'
 import ProfilePostItem from './ProfilePostItem'
 import { useState } from 'react';
-// interface IPostProps {
-// 	posts: Post[],
-// 	user: User
-// }
-const Profile: React.FC<{posts:Post[],user:User}> = ({posts,user})=>{
+interface IPostProps {
+	posts: Post[],
+	user: User
+}
+const Profile: React.FC<IPostProps> = ({posts,user})=>{
 	const location = useLocation()
 	const navigate = useNavigate()
 	const passedUser = location.state?.user

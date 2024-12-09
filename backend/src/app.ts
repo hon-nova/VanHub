@@ -9,6 +9,11 @@ import bodyParser from "body-parser";
 import cookieParser from 'cookie-parser'
 import { getUsers, getUserById, getUserByUname, getUserByEmail,getUserByEmailAndPassword,resetPassword } from "./controllers/userController";
 
+// import dotenv from 'dotenv'
+// dotenv.config()
+// console.log(`open_ai_key: `, process.env.OPEN_AI_KEY)
+
+
 const saltValue =8
 // const hash = bcrypt.hashSync('adminadmin',saltValue)
 // if(hash){
