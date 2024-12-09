@@ -1,7 +1,7 @@
 import { Outlet, Link,useLocation,useNavigate } from 'react-router-dom';
 import '../../../styles/css/profile-style.css'
 import { Post, User } from '../../../../../backend/src/shared/interfaces/index'
-import ProfilePostItem from '../../User/Profile/ProfilePostItem'
+import ProfilePostItem from './ProfilePostItem'
 import { useState } from 'react';
 // interface IPostProps {
 // 	posts: Post[],

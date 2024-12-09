@@ -10,7 +10,7 @@ import Posts from './components/Posts';
 import PostDetail from './components/PostDetail';
 import PostEdit from './components/PostEdit';
 import { Post, User } from '../../backend/src/shared/interfaces/index';
-import Profile from './components/User/Profile/index';
+import Profile from './components/User/Profile';
 import Settings from './components/User/Profile/settings';
 
 
