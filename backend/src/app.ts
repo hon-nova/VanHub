@@ -68,7 +68,8 @@ declare global{
       uname: string,
       email:string,
       password:string,
-      role:string
+      role:string,
+      avatar?:string
     }
   }
 }

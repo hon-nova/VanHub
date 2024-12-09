@@ -9,7 +9,8 @@ export interface User {
    uname: string,
    email: string,
    password: string,
-   role: string
+   role: string,
+	avatar?:string
 };
 export type Post = {
 	id: number,
