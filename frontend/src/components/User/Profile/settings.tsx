@@ -1,40 +1,93 @@
 import { User } from '../../../../../backend/src/shared/interfaces/index'
-import { createAvatar } from '@dicebear/core';
-// import { lorelei,adventurer,females,males } from '@dicebear/collection';
-import * as dicebear from '@dicebear/collection';
+
 import { useEffect, useState } from 'react';
 
+interface IAvatar {
+	gender: string;
+	clothing: string;
+	faceShape: string;
+	hairColor: string;
+	hairLength: string;
+	skinColor: string;
+ }
+ 
 const Settings:React.FC<{user:User}> = ({user})=>{
-	
+	const [avatarObj, setAvatarObj] = useState<IAvatar>({
+		gender: '',
+		clothing: '',
+		faceShape: '',
+		hairColor: '',
+		hairLength: '',
+		skinColor: '',
+	 });
+	const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+	const [loading, setLoading] = useState<boolean>(false);
+	const [error, setError] = useState<string | null>(null);
 
-	// const avatar = createAvatar(adventurer, {
-	// seed: 'John Doe',
-	
-	// });
-
-	// const svgCode = avatar.toString();
-	// console.log(`svgCode: `, svgCode)
-	const [svgCode, setSvgCode] = useState<string>('');
-
-  useEffect(() => {
-    // Customize options for the avatar
-    const avatar = createAvatar(dicebear.female, {
-      seed: 'hon-nguyen', // You can use a unique identifier to get a consistent avatar
-      // backgroundColor: '#6c63ff', // Set a custom background color
-      eyes: 'happy', // Customize eyes
-      hair: 'short', // You can customize hair type or color
-      skin: 'light', // Customize skin tone
-      accessories: ['glasses', 'earrings'], // You can add accessories
-    });
-
-    setSvgCode(avatar.toString());
-  }, []);
+	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		const {name,value } = e.target;
+	setAvatarObj({ ...avatarObj, [name]: value});
+	};
+	 
+	const handleGenerateAvatar = async () => {};	
 	return (
 		<div>
-			<h1>Profile Settings</h1>
-			{/* <img src="" */}
-			{/* <div dangerouslySetInnerHTML={{ __html: svgCode }} style={{width:"180px",height:"180px"}}/> */}
+		   <h2>Generate Your Avatar</h2>
+		   <div>
+				<label>Gender:</label>
+				<input
+					name="gender"
+					value={avatarObj.gender}
+					onChange={(e) => handleChange(e)}
+					placeholder="Gender"	/>
+		  </div>
+		  <div>
+				<label>Clothing:</label>
+				<input
+					name="clothing"
+					value={avatarObj.clothing}
+					onChange={(e) => handleChange(e)}
+					placeholder="Clothing"/>
+		  </div>
+		  <div>
+				<label>Face Shape:</label>
+				<input
+					name="faceShape"
+					value={avatarObj.faceShape}
+					onChange={(e) => handleChange(e)}
+					placeholder="Face Shape"/>
+		  </div>
+		  <div>
+				<label>Hair Color:</label>
+				<input
+				name="hairColor"
+					value={avatarObj.hairColor}
+					onChange={(e) => handleChange(e)}
+					placeholder="Hair Color" />
+		  </div>
+		  <div>
+				<label>Hair Length:</label>
+				<input
+				name="hairLength"
+					value={avatarObj.hairLength}
+					onChange={(e) => handleChange(e)}
+					placeholder="Hair Length" />
+		  </div>
+		  <div>
+				<label>Skin Color:</label>
+				<input
+				name="skinColor"
+					value={avatarObj.skinColor}
+					onChange={(e) => handleChange(e)}
+					placeholder="Skin Color" />
+		  </div>
+		  <button onClick={handleGenerateAvatar} disabled={loading}>
+			 {loading ? 'Generating...' : 'Generate Avatar'}
+		  </button>
+  
+		  {error && <p style={{ color: 'red' }}>{error}</p>}
+		  {avatarUrl && <img src={avatarUrl} alt="Generated Avatar" />}
 		</div>
-	)
+	 );
 }
 export default Settings;
