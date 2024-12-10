@@ -1,6 +1,7 @@
 import { supabase } from '../db/supabaseClient';
 import { User } from '../shared/interfaces/index';
 import bcrypt from 'bcrypt';
+import axios from 'axios';
 
 const saltValue = 8;
 
@@ -18,6 +19,33 @@ async function addUser(uname: string, email: string, password: string|'', avatar
   } catch (error) {
     console.error('addUser - Error:', error);
     return null;
+  }
+}
+async function uploadAvatarFromUrl(userId:string,imageUrl:string):Promise<string|undefined>{
+  try {
+    // download the image from Dall.e-2
+    const response = await axios.get(imageUrl, { responseType: 'arraybuffer' });
+    const buffer = Buffer.from(response.data);
+    const fileName = `${userId}/avatar.png`
+
+    //update the avatar to the supabase
+    const { data, error} = await supabase.storage.from('avatars').upload(fileName,buffer,{contentType: 'image/png'})
+    if(error) throw new Error(`Upload failed ${error.message}`)
+
+    //return the url/path of the uploaded image
+    console.log(`image path in uploadAvatarFromUrl: `, `https://supabase.com/dashboard/project/pvvdexpxtesuyjnodslj/storage/buckets/avatars/${data.path}`)
+
+    return `https://supabase.com/dashboard/project/pvvdexpxtesuyjnodslj/storage/buckets/avatars/${data.path}`
+    // const publicUrl = supabase.storage.from('avatars').getPublicUrl(fileName).publicUrl;
+    // console.log(`image path in uploadAvatarFromUrl: ${publicUrl}`);
+
+    // return publicUrl;
+
+  } catch(error){
+    if(error instanceof Error){
+      console.error('uploadAvatarFromUrl - Error:',error.message);
+      return undefined
+    }
   }
 }
 
@@ -191,4 +219,6 @@ export {
   addUser,
   getUserByUnameOrEmail,
   updateUser,
+  uploadAvatarFromUrl
+  
 };

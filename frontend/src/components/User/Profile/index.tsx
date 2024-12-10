@@ -3,12 +3,8 @@ import '../../../styles/css/profile-style.css'
 import { Post, User } from '../../../../../backend/src/shared/interfaces/index'
 
 import ProfilePostItem from '../../User/Profile/ProfilePostItem'
-<<<<<<< HEAD
-import { useState } from 'react';
-
-=======
 import { useState} from 'react';
->>>>>>> 10-settings
+
 interface IPostProps {
 	posts: Post[],
 	user: User
@@ -16,8 +12,9 @@ interface IPostProps {
 const Profile: React.FC<IPostProps> = ({posts,user})=>{
 	const location = useLocation()
 	const navigate = useNavigate()
-	const passedUser = location.state?.user
-	const activeUser = passedUser || user	
+	const testUser = location.state?.user
+	console.log(`testUser in state: `, testUser)
+	const activeUser = location.state?.user || user	
 	const isSettings = location.pathname.includes("/user/profile/settings")
 
 	const [msg,setMsg] = useState({
@@ -107,17 +104,11 @@ const Profile: React.FC<IPostProps> = ({posts,user})=>{
 					<div className="row">
 					<div className="col-md-3" style={{ backgroundColor:"pink" }}>					 
 						<div className="text-center">							
-							{activeUser.avatar ? (
-								<img
-								src={activeUser.avatar}
+							{activeUser.avatar && (
+								<img								
+								src={activeUser.avatar || 'https://via.placeholder.com/180'}
 								alt="profile"
 								style={{ borderRadius: "50%", marginTop: "5px", width: "150px", height: "150px" }}
-								/>
-							) : (
-								<img
-								src="https://via.placeholder.com/180"
-								alt="profile"
-								style={{ borderRadius: "50%", marginTop: "5px", width: "120px", height: "120px" }}
 								/>
 							)}							
 							<div>

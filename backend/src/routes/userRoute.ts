@@ -2,7 +2,7 @@ import express, {Request, Response} from 'express'
 import passport from 'passport'
 import path from 'path'
 import fs from 'fs'
-import { updateUser } from '../controllers/userController'
+import { updateUser,uploadAvatarFromUrl } from '../controllers/userController'
 
 // import Colors from '../utils/color.js'
 import dotenv from 'dotenv'
@@ -30,28 +30,35 @@ router.get('/', async (req,res)=>{
 router.post('/settings', async (req,res)=>{
 	try {
 		const { description } = req.body
-		const user_id = (req.user as Express.User)?.id
+		const user_id = (req.user as Express.User)?.id 
 		console.log(`user_id in post/settings: `, user_id)
+		//db: ac4c9fe6-2652-4612-888a-d5f014d20381
+
+		// console.log(`user_id in post/settings: `, user_id)
 		if(!description){
 			return res.status(400).json({message: 'Description is required'}) as any
 		}
-		//Note: the description max-text-length is 1000 characters
+		
 		const image = await openai.images.generate({ 
 			model: "dall-e-2", 
 			prompt: `${description}`,
 			size: "256x256",			
 			style:"natural"});	
 		// console.log(image.data.data[0].url);
-		const avatar = image.data[0].url
-		if(!avatar){
+		const imageUrl = image.data[0].url
+		if(!imageUrl){
 			throw new Error(`Backend failed to generate avatar. Please try again.`)
 		}
-		const updatedUser = await updateUser(user_id,{ avatar})
+	
+		const avatarPath = await uploadAvatarFromUrl(user_id,imageUrl)
+		const updatedUser = await updateUser(user_id,{ avatar: avatarPath})
 		if(!updatedUser){
+			console.log(`no user updated`)
 			throw new Error(`Couldn't update user with their avatar`)
 		}
-		console.log(`avatar generated: `)
-		console.log(avatar)
+		console.log(`user updated`)
+		console.log(`avatar path: `)
+		console.log(avatarPath)
 		return res.json({user:updatedUser,successMsg:'Successfully generated avatar'})
 		
 	} catch(error){
