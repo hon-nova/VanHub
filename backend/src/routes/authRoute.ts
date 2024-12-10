@@ -6,10 +6,11 @@ const router = express.Router();
 import {Request, Response} from 'express'
 import bcrypt from 'bcrypt'
 const saltValue =8
-import { addUser, getUserByEmail, getUserByEmailAndPassword,getUserByUnameOrEmail,resetPassword } from '../controllers/userController'
+import { addUser, getUserByEmail, getUserByUname, getUserByEmailAndPassword,getUserByUnameOrEmail,resetPassword } from '../controllers/userController'
 
 router.post("/register", async (req:Request, res:Response) => {
-	const { uname, email, password } = req.body
+	try {
+		const { uname, email, password } = req.body
 
 	if(!uname || !email ||!password){
 		console.log('All fields cannot be empty.')
@@ -17,22 +18,35 @@ router.post("/register", async (req:Request, res:Response) => {
 	}
 	const hashedPassword = bcrypt.hashSync(password,saltValue)
 	
-	const getUser = await getUserByEmail(uname) as Express.User
+	const getUser = await getUserByUname(uname) as Express.User
+	console.log(`getUserByUname in /register: `, getUser)
 	if(getUser !== null){
 		console.log('Username already existed. Please use another username.')
-		return res.status(400).json({errorEmail:'Email already exists. Please use another email.'}) as any
+		return res.status(400).json({errorEmail:'Username already exists. Please use another uname.'}) as any
 	}
 
 	const getUser2 = await getUserByEmail(email) as Express.User
+	console.log(`getUserByEmail in /register: `, getUser)
 	if(getUser2 !== null){
-		console.log('Username already exists.')
-		return res.status(400).json({errorUname:'Email already existed. Please use another email.'}) as any
+		console.log('Email already exists.')
+		return res.status(400).json({errorEmail:'Email already existed. Please use another email.'}) as any
 	}
-	const newUser = await addUser(uname,email,hashedPassword)
+	let avatar =''
+	const newUser = await addUser(uname,email,hashedPassword,avatar)
+	console.log(`newUser in /register: `, newUser)
 	if(newUser){
 		console.log('Registered successfully.')
 		return res.status(200).json({successMsg:'registered successfully.'}) as any
-	}  
+	} else {
+		throw new Error('Failed to register.')
+	} 
+	} catch(error){
+		if(error instanceof Error){
+			console.error('Error in /register:', error.message)
+			return res.status(500).json({errorRegister:`Error in /register: ${error.message}`}) as any
+		}
+	}
+	
 });
 
 router.post("/login", (req, res, next) => {

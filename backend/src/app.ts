@@ -3,7 +3,7 @@ import session from "express-session";
 import path from "path";
 import passportMiddleware from './middleware/passportMiddleware'
 import bcrypt from 'bcrypt'
-import client from './db/supabaseClient'
+import { supabase } from './db/supabaseClient'
 import cors from 'cors'
 import bodyParser from "body-parser";
 import cookieParser from 'cookie-parser'
@@ -73,9 +73,17 @@ declare global{
     }
   }
 }
-client.connect()
-  .then(() => console.log('Connected to Supabase PostgreSQL'))
-  .catch((err) => console.error('Error connecting to PostgreSQL:', err));
+(async()=>{
+  try {
+    const { data, error } = await supabase.from('users').select('*');
+    if (error) {
+      console.error('Error fetching users:', error.message);
+    }
+    console.log('Fetched users:', data);
+  } catch (err) {
+    console.error('Error testing Supabase connection:', err);
+  }
+})()
 
 import authRoute from "./routes/authRoute";
 import indexRoute from "./routes/indexRoute";

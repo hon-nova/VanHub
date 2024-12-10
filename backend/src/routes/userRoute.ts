@@ -16,16 +16,16 @@ router.get('/', (req,res)=>{
 	res.send('User Profile Route')
 })
 import OpenAI from 'openai'
-import readline from 'readline'
-import { fileURLToPath } from 'url';
+
 
 
 const openai = new OpenAI({ apiKey: process.env.OPEN_ACCESS_KEY });
 
 
-router.get('/settings', async (req,res)=>{
+router.get('/', async (req,res)=>{
 	const user = (req.user as Express.User)
-	console.log(`user in get/settings: `, user)
+	//the user should have an avatar now
+	console.log(`user in get/: `, user)
 	return res.json({user}) as any
 })
 
@@ -46,6 +46,9 @@ router.post('/settings', async (req,res)=>{
 			style:"natural"});	
 		// console.log(image.data.data[0].url);
 		const avatar = image.data[0].url
+		if(!avatar){
+			throw new Error(`Backend failed to generate avatar. Please try again.`)
+		}
 		const updatedUser = await updateUser(user_id,{ avatar})
 		if(!updatedUser){
 			throw new Error(`Couldn't update user with their avatar`)

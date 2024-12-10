@@ -120,7 +120,7 @@ const Profile: React.FC<IPostProps> = ({posts,user})=>{
 					<div className="col-md-3" style={{ backgroundColor:"pink" }}>
 						 <div className="text-center">
 						 	{/* <i className="bi bi-person-hearts"></i> */}
-							{activeUser.avatar ? (<img src={activeUser.avatar} alt="profile" style={{borderRadius:"50%",marginTop: "5px"}}/>) : (<img src="https://via.placeholder.com/180" alt="profile" style={{borderRadius:"50%",marginTop: "5px"}}/>)}
+							{activeUser.avatar ? (<img src={activeUser.avatar} alt="profile" style={{borderRadius:"50%",marginTop: "5px",width:"120px",height:"120px"}}/>) : (<img src="https://via.placeholder.com/180" alt="profile" style={{borderRadius:"50%",marginTop: "5px"}}/>)}
 													
 							 Profileavatar+email+uname
 						 </div>

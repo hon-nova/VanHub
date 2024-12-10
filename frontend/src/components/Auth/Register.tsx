@@ -57,6 +57,12 @@ const Register = () => {
 				// 	setMsg((msgObj)=>({...msgObj, errorEmail:''}))	
 				// },2000)
 			}
+			if(data.errorRegister){
+				setMsg((msgObj)=>({...msgObj, errorRegister:data.errorRegister}))
+				setTimeout(()=>{
+					setMsg((msgObj)=>({...msgObj, errorRegister:''}))	
+				},2000)
+			}
 			if(data.successMsg){
 				setMsg((msgObj)=>({...msgObj, successRegister:data.successMsg}))
 				setFormData((formObj)=>({...formObj, uname:'', email:'', password:'', confirmPassword:''}))
