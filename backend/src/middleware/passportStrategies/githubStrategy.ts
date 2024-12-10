@@ -18,19 +18,22 @@ const githubStrategy: GitHubStrategy = new GitHubStrategy({
    passReqToCallback: true,
    scope: ['user:email']
 }, async(req: Express.Request, accessToken: string, refreshToken: string, profile: Profile, done: Function): Promise<void> => {
-   // console.log('GitHub profile:', profile);
+   console.log('GitHub profile:', profile);
    // console.log(`accessToken: `,accessToken)//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
    const email = profile.emails && profile.emails[0]?.value ? profile.emails[0].value : null;
    if (!email) {
       console.log("GitHub email not available.");
       return done(new Error("GitHub email not available"), false);
    }  	
+   const avatar = profile.photos && profile.photos[0]?.value ? profile.photos[0].value : ''
+   console.log(`avatar: `,avatar)
    let githubUser:Express.User = {
       id:uuidv5(profile.id, uuidv5.URL), 		//d953eb44-6c05-51ed-a979-d894d8b37ffb
       uname: profile.username as string,
       email: email,
 		password:'',
-      role: 'user'
+      role: 'user',
+      avatar: avatar
    }; 
    //db: 6325cf1a-8d56-4963-8129-c3b7eb3d2d90
    try {
@@ -38,7 +41,7 @@ const githubStrategy: GitHubStrategy = new GitHubStrategy({
       console.log(`getUser @githubStrategy: `,getUser)
       if(!getUser){
          console.log(`User not found. started to add the github user to database.`)
-         await addUser(githubUser.uname,githubUser.email,githubUser.password)   
+         await addUser(githubUser.uname,githubUser.email,githubUser.password,avatar)   
          const supabaseUser = await getUserByUname(githubUser.uname) as Express.User
          console.log(`supabaseUser @githubStrategy: `,supabaseUser)
          return done(null, supabaseUser);  
