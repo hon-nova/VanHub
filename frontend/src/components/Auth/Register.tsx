@@ -87,11 +87,11 @@ const Register = () => {
 		<div className="register-container">
 			<h1>Register</h1>
 			<div className="register-form">
-				{msg.errorRegister && <p className="alert alert-danger">{msg.errorRegister}</p>}
-				{msg.errorUnmatchedPs && <p className="alert alert-danger">{msg.errorUnmatchedPs}</p>}
-				{msg.errorUname && <p className="alert alert-danger">{msg.errorUname}</p>}
-				{msg.errorEmail && <p className="alert alert-danger">{msg.errorEmail}</p>}
-				{msg.successRegister && <p className="alert alert-success">{msg.successRegister}</p>}
+				{msg.errorRegister && <p className="text-danger">{msg.errorRegister}</p>}
+				{msg.errorUnmatchedPs && <p className="text-danger">{msg.errorUnmatchedPs}</p>}
+				{msg.errorUname && <p className="text-danger">{msg.errorUname}</p>}
+				{msg.errorEmail && <p className="text-danger">{msg.errorEmail}</p>}
+				{msg.successRegister && <p className="text-success">{msg.successRegister}</p>}
 				<form action="/auth/register" method="POST" 
 						onSubmit={handleSubmitRegister}>
 					<div className="mt-5 mb-1">

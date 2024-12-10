@@ -36,29 +36,31 @@ const PostCreateItem: React.FC<PostCreateItemProps> = ({onAdd})=>{
 				body: JSON.stringify(formData),
 				credentials:"include"
 			 })
-			 const data = await response.json()
-			 console.log(`data.post @submitAddRequest: `,data.post)
-			 onAdd(data.post)
-			 setFormData({
-				title:'',
-				link:'',
-				description:'',
-				creator:'',
-				subgroup:''
-			 })
-			 if(data.successMsg){
-				 setMsg((msgObj)=>({...msgObj, successMsg:data.successMsg}))
-				 setTimeout(()=>{
-					 setMsg((msgObj)=>({...msgObj, successMsg:''}))
-				 },3000)
-			 }
-			 if(data.errorMsg){
-				 setMsg((msgObj)=>({...msgObj, errorMsg:data.errorMsg}))
-				 setTimeout(()=>{
-					setMsg((msgObj)=>({...msgObj, errorMsg:''}))
+			const data = await response.json()
+			if (!response.ok) {
+				if (data.errorMsg) {
+					setMsg((msgObj) => ({ ...msgObj, errorMsg: data.errorMsg }));
+					setTimeout(() => {
+						setMsg((msgObj) => ({ ...msgObj, errorMsg: '' }));
+					}, 3000);
+				}
+				return;
+			}
+			console.log(`data.post @submitAddRequest: `,data.post)
+			onAdd(data.post)
+			setFormData({
+			title:'',
+			link:'',
+			description:'',
+			creator:'',
+			subgroup:''
+			})
+			if(data.successMsg){
+				setMsg((msgObj)=>({...msgObj, successMsg:data.successMsg}))
+				setTimeout(()=>{
+					setMsg((msgObj)=>({...msgObj, successMsg:''}))
 				},3000)
-			 }
-			
+			}			
 		} catch(error){
 			console.error(`error @submitAddRequest: `,error)
 		}
@@ -70,10 +72,6 @@ const PostCreateItem: React.FC<PostCreateItemProps> = ({onAdd})=>{
 	const isFormValid = Object.values(formData).every(
 		(value) => value.trim().length > 0
 	);
-
-	console.log("FormData:", formData);
-	console.log("Is Form Valid:", isFormValid);
-
 	return (
 		<>		
 		<div className="post-create-container">

@@ -106,8 +106,7 @@ const Profile: React.FC<IPostProps> = ({posts,user})=>{
 					{activeUser.uname && <h5>Hello {activeUser.uname}</h5>}					
 					<div className="row">
 					<div className="col-md-3" style={{ backgroundColor:"pink" }}>					 
-						<div className="text-center">
-							
+						<div className="text-center">							
 							{activeUser.avatar ? (
 								<img
 								src={activeUser.avatar}
@@ -118,7 +117,7 @@ const Profile: React.FC<IPostProps> = ({posts,user})=>{
 								<img
 								src="https://via.placeholder.com/180"
 								alt="profile"
-								style={{ borderRadius: "50%", marginTop: "5px", width: "150px", height: "150px" }}
+								style={{ borderRadius: "50%", marginTop: "5px", width: "120px", height: "120px" }}
 								/>
 							)}							
 							<div>
@@ -134,15 +133,13 @@ const Profile: React.FC<IPostProps> = ({posts,user})=>{
 					{isSettings ? (
 							<Outlet />
 						) : (
-							posts && posts.length > 0 ? (
+							posts && posts.length > 0 && (
 								posts.map((post: Post) => (
 								<div key={post.id}>
-									<ProfilePostItem post={post} currentUser={activeUser} onDelete={() => {}} onEdit={() => {}} />
+									<ProfilePostItem post={post} currentUser={activeUser}  />
 								</div>
 								))
-							) : (
-								<p>No Posts Posted Yet.</p>
-							)
+							) 
 						)}			
 					</div>
 					</div>

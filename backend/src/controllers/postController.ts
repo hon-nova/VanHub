@@ -32,7 +32,7 @@ function formatTimestamp(timestamp:number|null):string|null{
 	})
 	// console.log(`dataFormatted @formatTimestamp: `,dataFormatted)
 	return data.toLocaleString('en-US', {
-		month:'long',
+		month:'short',
 		day:'numeric',
 		year:'numeric',
 		hour:'2-digit',
@@ -184,9 +184,12 @@ async function getCommentById(id:number):Promise<Comment|null>{
 		return null
 	}
 }
-async function getComments(): Promise<Comment[]>{
+async function getCommentsByPostId(post_id:number): Promise<Comment[]>{
 	try {
-		const {data,error} = await supabase.from('comments').select();
+		const {data,error} = await supabase
+		.from('comments')
+		.select()
+		.eq('post_id',post_id);
 		if (error) throw new Error('@getComments: error getComments: ')
 		const comments = data as Comment[]
 		
@@ -367,6 +370,8 @@ async function getNetVotesByPostId(postId:number):Promise<number>{
 	// console.log(`async(): `,oneVote)
 	// const updatedAddVote = await addNewOrUpdateVote({post_id:13,user_id:'52ee7094-de13-495b-83d5-13cd23c3e475',value:-1})
 	// console.log(`async(): `,updatedAddVote)
+	// const commentsArrayByPostId= await getCommentsByPostId(32)
+	// console.log(`async() commentsArrayByPostId: `,commentsArrayByPostId)
 })()
 
- export { getPosts, addPost, getPostById, editPost, deletePost, getComments, addComment, deleteComment, getNetVotesByPostId, addNewOrUpdateVote}
+ export { getPosts, addPost, getPostById, editPost, deletePost, getCommentsByPostId, addComment, deleteComment, getNetVotesByPostId, addNewOrUpdateVote}
