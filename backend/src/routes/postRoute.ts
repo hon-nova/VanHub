@@ -1,6 +1,6 @@
 import express ,{Request, Response} from "express";
 import { forwardAuthenticated } from "../middleware/checkAuth";
-import { getPosts, addPost, editPost, deletePost, getComments, addComment, deleteComment, getNetVotesByPostId, addNewOrUpdateVote } from "../controllers/postController";
+import { getPosts, addPost, editPost, deletePost, getCommentsByPostId, addComment, deleteComment, getNetVotesByPostId, addNewOrUpdateVote } from "../controllers/postController";
 import { Post } from '../shared/interfaces/index'
 const router = express.Router();
 
@@ -23,18 +23,12 @@ router.get('/posts', async (req:Request,res:Response)=>{
 router.post("/posts", async (req:Request,res:Response)=>{
 	try {
 		const {title,link,description,subgroup} = req.body
-		console.log(`title: `,title)
-		console.log(`description: `,description)
 		const user = req.user as Express.User
 		if(!user) throw new Error('@post : user not found')
 		
-		if(!title || !link || !description || !subgroup) throw new Error('@post Please fill in all required fields')
+		if(!title || !link || !description || !subgroup) throw new Error('Please fill in all required fields')
 		const creator = user?.id as string
-		console.log(`creator: `,creator)
-		console.log(`req.body @/posts/add: `,req.body)
-		// {title:'',link:'',description:'',creator:'',subgroup:''}
 		const post = await addPost({title,link,description,creator,subgroup})
-		console.log(`newPost just created: `, post)
 		res.status(200).json({post,successMsg:'Post added.'})
 	} catch(error){
 		if(error instanceof Error){
@@ -103,8 +97,9 @@ router.post('/posts/comment-create/:postid', async (req:Request,res:Response)=>{
 
 router.get('/posts/show/:postid', async (req:Request,res:Response)=>{
 	try {
-		const comments = await getComments()
 		const post_id = Number(req.params.postid)
+		const comments = await getCommentsByPostId(post_id)
+		
 		const netVotesDb = await getNetVotesByPostId(post_id)
 		res.status(200).json({comments,netVotesDb})
 	} catch(error){

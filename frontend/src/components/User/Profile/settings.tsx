@@ -57,10 +57,11 @@ const Settings:React.FC<ISettingsProps> = ({user})=>{
 						onChange={(e) => setDescription(e.target.value)}
 						placeholder="Please describe your avatar ..."	/>
 						<button 
-						disabled={loading || user.avatar!==null}>
+						disabled={loading}>
 								{loading ? 'Generating...' : 'Generate Avatar'}
 						</button>
-				</form>				
+				</form>
+				<i>You would need to sign out and log back in to see your avatar updated.</i>				
 		  </div>  
 		  {msg.errorMsg && <p style={{ color: 'red' }}>{msg.errorMsg}</p>}
 		  {msg.succcessMsg && <p style={{ color: 'green' }}>{msg.succcessMsg}</p>}		 

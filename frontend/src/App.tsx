@@ -12,7 +12,7 @@ import PostEdit from './components/PostEdit';
 import { Post, User } from '../../backend/src/shared/interfaces/index';
 import Profile from './components/User/Profile/index';
 import Settings from './components/User/Profile/settings';
-
+import ProfilePostItem from './components/User/Profile/ProfilePostItem'
 
 function App() {
  
@@ -64,6 +64,7 @@ function App() {
         <Route path="/public/posts/edit/:id" element={<PostEdit post={post} onEdit={handleEdit}/>} />
         <Route path="/public/posts/show/:id" element={<PostDetail />} />
 
+         <Route path="/user/profile" element={<ProfilePostItem post={post as Post} currentUser={user}/>}  />
         <Route path="/user/profile/" element={<Profile posts={postsUser} user={user as User}/>}>
             <Route path="settings" element={<Settings user={user as User}/>} />
         </Route>

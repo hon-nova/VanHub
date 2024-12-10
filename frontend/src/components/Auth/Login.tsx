@@ -73,9 +73,9 @@ const Login =()=>{
 		<div className="login-container">
 			<h1>Login</h1>
 			<div className="login-form">
-				{msg.errorLogin && <p className="alert alert-danger">{msg.errorLogin}</p>}
-				{msg.errorPassword && <p className="alert alert-danger">{msg.errorPassword}</p>}
-				{msg.successLogin && <p className="alert alert-success">{msg.successLogin}</p>}
+				{msg.errorLogin && <p className="text-danger">{msg.errorLogin}</p>}
+				{msg.errorPassword && <p className="text-danger">{msg.errorPassword}</p>}
+				{msg.successLogin && <p className="text-success">{msg.successLogin}</p>}
 				<form action="/auth/login" method="POST" onSubmit={handleSubmitLogin}>					
 					<div className="mt-5 mb-1">
 						<label htmlFor="email" className="form-label">Email:</label>

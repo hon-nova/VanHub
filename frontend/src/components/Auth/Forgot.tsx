@@ -83,13 +83,13 @@ const Forgot = () => {
     <div className="forgot-container">
       <h1 className="mb-4">Reset Password</h1>
       <div className="forgot-form">
-        {msg.errorEmpty && <div className="alert alert-danger">{msg.errorEmpty}</div>}
-        {msg.errorEmail && <div className="alert alert-danger">{msg.errorEmail}</div>}
+        {msg.errorEmpty && <div className="text-danger">{msg.errorEmpty}</div>}
+        {msg.errorEmail && <div className="text-danger">{msg.errorEmail}</div>}
         {msg.errorMatchPwd && (
-          <div className="alert alert-danger">{msg.errorMatchPwd}</div>
+          <div className="text-danger">{msg.errorMatchPwd}</div>
         )}
         {msg.successReset && (
-          <div className="alert alert-success">{msg.successReset}</div>
+          <div className="text-success">{msg.successReset}</div>
         )}
         <form action="/auth/forgot" method="POST" onSubmit={handleSubmitForgot}>
           <div className="mt-5">

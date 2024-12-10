@@ -74,15 +74,15 @@ declare global{
   }
 }
 (async()=>{
-  try {
-    const { data, error } = await supabase.from('users').select('*');
-    if (error) {
-      console.error('Error fetching users:', error.message);
-    }
-    console.log('Fetched users:', data);
-  } catch (err) {
-    console.error('Error testing Supabase connection:', err);
-  }
+  // try {
+  //   const { data, error } = await supabase.from('users').select('*');
+  //   if (error) {
+  //     console.error('Error fetching users:', error.message);
+  //   }
+  //   console.log('Fetched users:', data);
+  // } catch (err) {
+  //   console.error('Error testing Supabase connection:', err);
+  // }
 })()
 
 import authRoute from "./routes/authRoute";

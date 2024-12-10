@@ -89,8 +89,8 @@ const Posts = ()=>{
 	return (
 		<div className="posts-container">
 			<Navbar user={user as User} handleLogout={handleLogout}/>				
-			{msg.errorMsg && <div className="alert alert-danger text-center">{msg.errorMsg}</div>}
-			{msg.successMsg && <div className="alert alert-success text-center">{msg.successMsg}</div>}	
+			{msg.errorMsg && <div className="text-danger text-center">{msg.errorMsg}</div>}
+			{msg.successMsg && <div className="text-success text-center">{msg.successMsg}</div>}	
 			<div>
 				<div className="my-5">
 					{user && <h3>Welcome {user?.uname || "Guest"}</h3>}
