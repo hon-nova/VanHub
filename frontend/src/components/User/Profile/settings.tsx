@@ -1,12 +1,15 @@
 import { User } from '../../../../../backend/src/shared/interfaces/index'
 import '../../../styles/css/profile-settings-style.css'
 import { useNavigate } from 'react-router-dom';
+
+
 import { useState } from 'react';
 
 interface ISettingsProps {
 	user: User;
  }
-const Settings:React.FC<ISettingsProps> = ({user})=>{
+const Settings:React.FC<ISettingsProps> = ({user})=>{		
+
 	const [description, setDescription] = useState<string>('');	
 	const [loading, setLoading] = useState<boolean>(false);
 	const navigate = useNavigate();

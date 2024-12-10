@@ -22,7 +22,7 @@ function formatTimestamp(timestamp:number|null):string|null{
 	const data = new Date(timestamp)
 	// console.log(`date Object @formatTimestamp: `,data)
 	const dataFormatted = data.toLocaleString('en-US', {
-		month:'long',
+		month:'short',
 		day:'numeric',
 		year:'numeric',
 		hour:'2-digit',
