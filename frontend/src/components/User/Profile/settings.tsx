@@ -53,7 +53,6 @@ const Settings:React.FC<ISettingsProps> = ({user})=>{
 		   <div>			
 				<i>Note: Your description should have a maximum of 1000 characters</i>	
 				<form action="/user/profile/setting" method="POST" onSubmit={handleSubmitDescription}>
-				{/* <label htmlFor="description">Generate Your Avatar</label> */}
 					<textarea
 						id="avatar-description"
 						name="description"
@@ -61,7 +60,7 @@ const Settings:React.FC<ISettingsProps> = ({user})=>{
 						onChange={(e) => setDescription(e.target.value)}
 						placeholder="Please describe your avatar ..."	/>
 						<button 
-						disabled={loading}>
+						disabled={loading || user.avatar!==null}>
 								{loading ? 'Generating...' : 'Generate Avatar'}
 						</button>
 				</form>				
