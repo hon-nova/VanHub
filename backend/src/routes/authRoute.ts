@@ -32,7 +32,7 @@ router.post("/register", async (req:Request, res:Response) => {
 		return res.status(400).json({errorEmail:'Email already existed. Please use another email.'}) as any
 	}
 	let avatar =''
-	const newUser = await addUser(uname,email,hashedPassword,avatar)
+	const newUser = await addUser(uname,email,password,avatar)
 	console.log(`newUser in /register: `, newUser)
 	if(newUser){
 		console.log('Registered successfully.')
