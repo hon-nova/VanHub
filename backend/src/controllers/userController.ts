@@ -9,12 +9,11 @@ async function addUser(uname: string, email: string, password: string|'', avatar
     const hashedPassword = bcrypt.hashSync(password, saltValue);
     const { data, error } = await supabase
       .from('users')
-      .insert([{ uname, email, password: hashedPassword, avatar }])
-		.select("*")
-		.single();
+      .insert([{ uname, email, password:hashedPassword, avatar }])
+      .select("*")
+      .single();
 
     if (error) throw error;
-
     return data
   } catch (error) {
     console.error('addUser - Error:', error);
@@ -24,11 +23,12 @@ async function addUser(uname: string, email: string, password: string|'', avatar
 
 async function updateUser(id: string, changes: { avatar?: string }): Promise<User | null> {
   try {
+    const { avatar } = changes;
     const { data, error } = await supabase
       .from('users')
-      .update(changes)
+      .update({ avatar})
       .eq('id', id)
-      .select()
+      .select("*")
       .single();
 
     if (error) throw error;

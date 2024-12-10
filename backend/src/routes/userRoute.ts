@@ -13,15 +13,13 @@ dotenv.config()
 const router = express.Router()
 
 router.get('/', (req,res)=>{
-	res.send('User Profile Route')
+	const user = (req.user as Express.User)
+	console.log(`user in get /user/profile: `, user)
+	res.json({user})
 })
+
 import OpenAI from 'openai'
-
-
-
 const openai = new OpenAI({ apiKey: process.env.OPEN_ACCESS_KEY });
-
-
 router.get('/', async (req,res)=>{
 	const user = (req.user as Express.User)
 	//the user should have an avatar now
@@ -31,7 +29,6 @@ router.get('/', async (req,res)=>{
 
 router.post('/settings', async (req,res)=>{
 	try {
-		//req.body here
 		const { description } = req.body
 		const user_id = (req.user as Express.User)?.id
 		console.log(`user_id in post/settings: `, user_id)

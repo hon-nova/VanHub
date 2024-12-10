@@ -44,16 +44,17 @@ const Navbar:React.FC<NavbarProps> = ({ user, handleLogout }) => {
 			 <ul className="navbar-nav ms-auto">
             {/* Profile Dropdown */}
             <li className="nav-item dropdown">
-              <a
+              <Link
                 className="nav-link dropdown-toggle"
-                href="/user/profile"
+                to="#"
                 id="profileDropdown"
                 role="button"
                 data-bs-toggle="dropdown"
                 aria-expanded="false"
+                
               >
                 Profile
-              </a>
+              </Link>
               <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
                 <li>
                   <span className="dropdown-item-text text-muted">

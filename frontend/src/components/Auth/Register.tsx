@@ -1,6 +1,6 @@
 import '../../styles/css/register-style.css'
 import { Link,useNavigate } from 'react-router-dom'
-import React, { useState } from 'react'
+import { useState } from 'react'
 
 const Register = () => {
 	const navigate = useNavigate()
@@ -49,13 +49,13 @@ const Register = () => {
 				setMsg((msgObj)=>({...msgObj, errorUname:data.errorUname}))
 				// setTimeout(()=>{
 				// 	setMsg((msgObj)=>({...msgObj, errorUname:''}))	
-				// },2000)
+				// },4000)
 			}
 			if(data.errorEmail){
 				setMsg((msgObj)=>({...msgObj, errorEmail:data.errorEmail}))
 				// setTimeout(()=>{
 				// 	setMsg((msgObj)=>({...msgObj, errorEmail:''}))	
-				// },2000)
+				// },4000)
 			}
 			if(data.errorRegister){
 				setMsg((msgObj)=>({...msgObj, errorRegister:data.errorRegister}))
