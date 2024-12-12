@@ -2,7 +2,8 @@ import { Outlet, Link,useLocation,useNavigate } from 'react-router-dom';
 import '../../../styles/css/profile-style.css'
 import { Post, User } from '../../../../../backend/src/shared/interfaces/index'
 import ProfilePostItem from '../../User/Profile/ProfilePostItem'
-import { useState} from 'react';
+import { useState, useMemo} from 'react';
+
 interface IPostProps {
 	posts: Post[],
 	user: User
@@ -10,9 +11,8 @@ interface IPostProps {
 const Profile: React.FC<IPostProps> = ({posts,user})=>{
 	const location = useLocation()
 	const navigate = useNavigate()
-	const testUser = location.state?.user
-	console.log(`testUser in state: `, testUser)
-	const activeUser = location.state?.user || user	
+	const stateUser = location.state?.user
+	console.log(`stateUser from Nav: `, stateUser)
 	const isSettings = location.pathname.includes("/user/profile/settings")
 
 	const [msg,setMsg] = useState({
@@ -21,6 +21,12 @@ const Profile: React.FC<IPostProps> = ({posts,user})=>{
 		successComment:'',
 		successDelComment:''
 	})
+	const postsUser = useMemo(()=>{
+         if(!stateUser) return []
+      const psUser = posts.filter((p:Post)=>(p.creator as User)?.id === stateUser.id )
+      // console.log(`psUser in userMemo `, psUser)
+      return psUser
+   },[posts,stateUser]) 
 	const handleLogout = async () => {
 		try {
 			console.log(`handleLogout started`)
@@ -68,19 +74,14 @@ const Profile: React.FC<IPostProps> = ({posts,user})=>{
 							role="button"
 							data-bs-toggle="dropdown"
 							aria-expanded="false" >
-							{activeUser?.email}
+							{stateUser?.email}
 						</a>
 						<ul className="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">	
 							<li>
-								<Link className="dropdown-item" to="/user/profile" state={{ user }}>
+								<Link className="dropdown-item" to="/user/profile">
 								Profile
 								</Link>
 							</li>						
-							<li>
-								<Link className="dropdown-item" to="/user/profile/settings" state={{ user }}>
-								Settings
-								</Link>
-							</li>
 						</ul>
 						</li>
 						{/* Logout Button */}
@@ -98,20 +99,20 @@ const Profile: React.FC<IPostProps> = ({posts,user})=>{
 			<main>
 				<div className="profile-content">
 					<h1>User Profile</h1>
-					{activeUser.uname && <h5>Hello {activeUser.uname}</h5>}					
+					{stateUser.uname && <h5>Hello {stateUser.uname}</h5>}					
 					<div className="row">
 					<div className="col-md-3" style={{ backgroundColor:"pink" }}>					 
 						<div className="text-center">							
-							{activeUser.avatar && (
+							{stateUser.avatar && (
 								<img								
-								src={activeUser.avatar || 'https://via.placeholder.com/180'}
+								src={stateUser.avatar || 'https://via.placeholder.com/180'}
 								alt="profile"
 								style={{ borderRadius: "50%", marginTop: "5px", width: "150px", height: "150px" }}
 								/>
 							)}							
 							<div>
-								<p>{activeUser.email}</p>
-								<p>Logged-in username: {activeUser.uname}</p>
+								<p>{stateUser.email}</p>
+								<p>Logged-in username: {stateUser.uname}</p>
 							</div>
   						</div>						
 						<div className="text-end">
@@ -122,10 +123,10 @@ const Profile: React.FC<IPostProps> = ({posts,user})=>{
 					{isSettings ? (
 							<Outlet />
 						) : (
-							posts && posts.length > 0 && (
-								posts.map((post: Post) => (
+							postsUser && postsUser.length > 0 && (
+								postsUser.map((post: Post) => (
 								<div key={post.id}>
-									<ProfilePostItem post={post} currentUser={activeUser}  />
+									<ProfilePostItem post={post} currentUser={stateUser}  />
 								</div>
 								))
 							) 

@@ -69,9 +69,7 @@ const PostCreateItem: React.FC<PostCreateItemProps> = ({onAdd})=>{
 		e.preventDefault()
 		await submitAddRequest()
 	}
-	const isFormValid = Object.values(formData).every(
-		(value) => value.trim().length > 0
-	);
+	
 	return (
 		<>		
 		<div className="post-create-container">

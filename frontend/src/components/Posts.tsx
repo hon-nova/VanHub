@@ -5,34 +5,19 @@ import PostCreateItem from './PostCreateItem'
 import { Post,User } from '../../../backend/src/shared/interfaces/index'
 import Navbar from './Navbar'
 import '../styles/css/posts-style.css'
+import { useUser } from '../context/UserContext'
+import { usePosts } from '../context/PostsContext'
 
-const Posts = ()=>{
+const Posts:React.FC = ()=>{
 	const navigate = useNavigate();
 	const [msg,setMsg] = useState({
 		errorMsg:'',
 		successMsg:''
 	})
-	const [user,setUser] = useState<User>()
-	const [posts, setPosts ]= useState<Post[]>([])	
-	
-	const [isFormVisible,setIsFormVisible] = useState(false)
-	const getPosts = async ()=>{
-		try {
-			const response = await fetch('http://localhost:8000/public/posts', {
-				method: "GET",
-				credentials: "include",
-			 })
-			 const data = await response.json()
-			 setPosts(data.posts)
-			 setUser(data.user)
-		} catch(error){
-			console.error(`error public/posts @Posts: `,error)
-		}
-	}
-	useEffect(()=>{
-		getPosts()
-	},[])	 
-	
+	const { user } = useUser()
+	let { posts, setPosts } = usePosts()
+	const [isFormVisible,setIsFormVisible] = useState(false)	
+	console.log(`user in Posts: `, user)		
 	const handleLogout = async () => {
 		try {
 			console.log(`handleLogout started`)
@@ -54,38 +39,16 @@ const Posts = ()=>{
 			  console.error('Error during logout:', error);
 		}
 	};
-
+	
 	const handleAddPost = (newPost:Post)=>{		
-		setPosts((posts)=>[...posts,newPost])
-		getPosts()
+		setPosts((preposts)=>(preposts ? [...preposts,newPost].sort((a,b)=>b.id -a.id) : [newPost]))	
 	}
-
 	/** will revisit if delete */
-	const handleEditPost = (updatedPost:Post)=>{
-		setPosts((posts)=>({...posts, updatedPost}))
-		getPosts()
-	}
-	const sendDeleteRequest = async (id:number)=>{
-		try {
-			const response = await fetch(`http://localhost:8000/public/posts/delete/${id}`, {
-				method: "DELETE",
-				credentials: "include",
-			 })
-			 const data = await response.json()
-			 console.log(`data.post @sendDeleteRequest: `,data.successMsg)
-			 setPosts((posts)=>{
-				return posts.filter((p)=>p.id !== id)
-			})
-		} catch(error){
-			if (error instanceof Error){
-				console.error(`error @sendDeleteRequest: `,error.message)				
-			}			
-		}
-	}
-	const handleDelPost = async (id:number)=>{
-		await sendDeleteRequest(id)
-		getPosts()
-	}
+	const handleEditPost = (updatedPost:Post)=>{}
+	// const sendDeleteRequest = async (id:number)=>{
+	
+	// }
+	 const handleDelPost = async (id:number)=>{}
 	return (
 		<div className="posts-container">
 			<Navbar user={user as User} handleLogout={handleLogout}/>				
@@ -113,7 +76,7 @@ const Posts = ()=>{
 				{/* all posts */}
 				<ol>
 				{posts && posts.map((p:Post,index)=>(
-					<li key={index}><PostItem post={p} onDelete={(id)=>{handleDelPost(id)}} onEdit={(id)=>handleEditPost(p)} currentUser={user}/></li>
+					<li key={index}><PostItem post={p} onDelete={(id)=>{handleDelPost(id)}} onEdit={(id)=>handleEditPost(p)} currentUser={user as User}/></li>
 				))}
 				</ol>
 			</div>	

@@ -50,8 +50,7 @@ const Navbar:React.FC<NavbarProps> = ({ user, handleLogout }) => {
                 id="profileDropdown"
                 role="button"
                 data-bs-toggle="dropdown"
-                aria-expanded="false"
-                
+                aria-expanded="false"                
               >
                 Profile
               </Link>
@@ -63,9 +62,9 @@ const Navbar:React.FC<NavbarProps> = ({ user, handleLogout }) => {
                 </li>
                 <li>
                   <Link className="dropdown-item" to="/user/profile" state={{ user }}>
-                    View Profile
+                  <i className="bi bi-person-lines-fill mx-2"></i>View Profile
                   </Link>
-                </li>
+                </li>                
               </ul>
             </li>
 

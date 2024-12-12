@@ -6,9 +6,11 @@ const router = express.Router();
 
 router.get('/posts', async (req:Request,res:Response)=>{
 	const user = req.user as Express.User
+	console.log(`user @public/posts: `,user)
 	if (!req.isAuthenticated()) {
-		// return res.status(401).send({ error: 'User not authenticated' });
 		console.log(`user not authenticated @public/posts`)
+		return res.status(401).send({ error: 'User not authenticated' }) as any
+		
 	 }
 	//  console.log('Authenticated User:', req.user);
 	// console.log(`user @public/posts: `,user)
@@ -16,7 +18,7 @@ router.get('/posts', async (req:Request,res:Response)=>{
 
 	const posts = await getPosts()
 	// const sortedPosts = posts.sort((a:Post,b:Post)=>b.id - a.id)
-	// console.log(`all posts @/posts: `,posts)
+	console.log(`all posts @/posts hope sorted: `,posts)
 	res.status(200).json({ posts,user});
 })
 
@@ -24,7 +26,7 @@ router.post("/posts", async (req:Request,res:Response)=>{
 	try {
 		const {title,link,description,subgroup} = req.body
 		const user = req.user as Express.User
-		if(!user) throw new Error('@post : user not found')
+		if(!user) throw new Error('Please login to add posts.')
 		
 		if(!title || !link || !description || !subgroup) throw new Error('Please fill in all required fields')
 		const creator = user?.id as string
