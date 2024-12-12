@@ -13,37 +13,19 @@ import { Post, User } from '../../backend/src/shared/interfaces/index';
 import Profile from './components/User/Profile/index';
 import Settings from './components/User/Profile/settings';
 import ProfilePostItem from './components/User/Profile/ProfilePostItem'
-import { UserProvider } from './context/UserContext';
-import { PostsProvider } from './context/PostsContext';
-
-const UserContext = React.createContext<User | undefined>(undefined);
+import { UserProvider, useUser } from './context/UserContext';
+import { PostsProvider, usePosts } from './context/PostsContext';
 
 function App() {
  
-   const [post, setPost] = useState<Post>();
-   const [posts,setPosts]= useState<Post[]>([])
-   const [user,setUser] = useState<User>()
-   
+   const [post, setPost] = useState<Post>();   
+   const { user } = useUser()
+   const { posts, setPosts } = usePosts()
    const handleEdit = (editedPost: Post) => {
+      console.log(`handleEdit is called in App: `, editedPost)
       setPost((post)=>({...post,...editedPost}))
-   };
-   const getPostsAndUser = async ()=>{
-      const response = await fetch('http://localhost:8000/public/posts',{
-         method: 'GET',
-         headers: {'Content-Type': 'application/json'},
-         credentials: 'include'
-      });
-      const data = await response.json()
-      // console.log(`user in fetching: `, data.user)
-      if(response.ok){
-         setPosts(data.posts)
-         setUser(data.user)
-      }      
-   }
-   useEffect(()=>{
-      getPostsAndUser()
-   },[])
-  
+      setPosts((preposts)=>(preposts?.map((p:Post)=>p.id === editedPost.id ? editedPost : p) || null))   
+   };   
   return (
    <UserProvider>
       <PostsProvider>
@@ -59,9 +41,9 @@ function App() {
                <Route path="/public/posts/edit/:id" element={<PostEdit post={post} onEdit={handleEdit}/>} />
                <Route path="/public/posts/show/:id" element={<PostDetail />} />
 
-                  <Route path="/user/profile" element={<ProfilePostItem post={post as Post} currentUser={user}/>}  />
-               <Route path="/user/profile/" element={<Profile posts={posts} user={user as User}/>}>
-                     <Route path="settings" element={<Settings user={user as User}/>} />
+               <Route path="/user/profile" element={<ProfilePostItem post={post as Post} currentUser={user as User}/>}  />
+               <Route path="/user/profile/" element={<Profile posts={posts as Post[]} user={user as User}/>}>
+                  <Route path="settings" element={<Settings user={user as User}/>} />
                </Route>        
             </Routes>
          </Router>
@@ -69,5 +51,5 @@ function App() {
    </UserProvider>  
   );
 }
-export const useUser = () =>React.useContext(UserContext)
+
 export default App;

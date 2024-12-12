@@ -7,10 +7,8 @@ interface UserContextValue {
 	setUser: React.Dispatch<React.SetStateAction<User|null>>
 }
 const UserContext = createContext<UserContextValue|undefined>(undefined)
-// console.log(`@App.tsx React.ReactNode: `, React.ReactNode)
 export const UserProvider: React.FC<{children:React.ReactNode}> = ({ children })=>{
-	const [user,setUser] = useState<User|null>(null)
-	
+	const [user,setUser] = useState<User|null>(null)	
 
 	useEffect(()=>{
 		const getUser = async ()=>{

@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import PostItem from './PostItem'
 import PostCreateItem from './PostCreateItem'
 import { Post,User } from '../../../backend/src/shared/interfaces/index'
@@ -14,7 +14,7 @@ const Posts:React.FC = ()=>{
 		errorMsg:'',
 		successMsg:''
 	})
-	const { user } = useUser()
+	const { user,setUser } = useUser()
 	let { posts, setPosts } = usePosts()
 	const [isFormVisible,setIsFormVisible] = useState(false)	
 	console.log(`user in Posts: `, user)		
@@ -42,13 +42,40 @@ const Posts:React.FC = ()=>{
 	
 	const handleAddPost = (newPost:Post)=>{		
 		setPosts((preposts)=>(preposts ? [...preposts,newPost].sort((a,b)=>b.id -a.id) : [newPost]))	
+		setUser(user)
+		// setIsFormVisible(false)
 	}
 	/** will revisit if delete */
-	const handleEditPost = (updatedPost:Post)=>{}
-	// const sendDeleteRequest = async (id:number)=>{
-	
-	// }
-	 const handleDelPost = async (id:number)=>{}
+
+	const sendDeleteRequest = async (id:number)=>{
+		try {	
+			const response = await fetch(`http://localhost:8000/public/posts/delete/${id}`, {
+				method: 'DELETE',
+				credentials: 'include'
+			});
+			const data = await response.json();
+			if(response.ok){
+				
+				setPosts((preposts)=>(preposts?.filter((post:Post)=>post.id !==id)||null))
+				if(data.successMsg){
+					setMsg((msgObj)=>({...msgObj, successMsg:data.successMsg}))
+					setTimeout(()=>{
+						setMsg((msgObj)=>({...msgObj, successMsg:''}))
+					},2000)
+				}
+			
+		} else {
+			console.log(`FE error deleting post: `,response.statusText)
+		}
+		} catch(error:any){			
+			console.error(`error deleting post: `,error)
+			setMsg((msgObj)=>({...msgObj, errorMsg:error}))			
+		}
+	}
+	 const handleDelPost = async(id:number)=>{
+		setUser(user)		
+		await sendDeleteRequest(id)		
+	 }
 	return (
 		<div className="posts-container">
 			<Navbar user={user as User} handleLogout={handleLogout}/>				
@@ -76,7 +103,7 @@ const Posts:React.FC = ()=>{
 				{/* all posts */}
 				<ol>
 				{posts && posts.map((p:Post,index)=>(
-					<li key={index}><PostItem post={p} onDelete={(id)=>{handleDelPost(id)}} onEdit={(id)=>handleEditPost(p)} currentUser={user as User}/></li>
+					<li key={index}><PostItem post={p} onDelete={(id)=>{handleDelPost(id)}} onEdit={()=>{}} currentUser={user as User}/></li>
 				))}
 				</ol>
 			</div>	
