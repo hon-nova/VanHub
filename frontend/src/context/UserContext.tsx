@@ -3,13 +3,23 @@ import React, { createContext, useContext } from 'react'
 import { useEffect, useState } from 'react'
 
 interface UserContextValue {
-	user: User|null,
-	setUser: React.Dispatch<React.SetStateAction<User|null>>
+	user: User,
+	setUser: React.Dispatch<React.SetStateAction<User>>,
+	loading: boolean
 }
+const defaultUser: User = {
+	id: '',
+   uname: '',
+   email: '',
+   password: '',
+   role: '',
+	avatar:''
+};
 const UserContext = createContext<UserContextValue|undefined>(undefined)
 export const UserProvider: React.FC<{children:React.ReactNode}> = ({ children })=>{
-	const [user,setUser] = useState<User|null>(null)	
-
+	
+	const [user,setUser] = useState<User>(defaultUser)	
+	const [loading, setLoading] = useState(true);
 	useEffect(()=>{
 		const getUser = async ()=>{
 			try {
@@ -26,12 +36,14 @@ export const UserProvider: React.FC<{children:React.ReactNode}> = ({ children })
 				}
 			} catch (error) {
 				console.error(`error @UserProvider: `,error)
+			} finally {
+				setLoading(false)
 			}
 		}
 		getUser()
 	},[])
 	return (
-		<UserContext.Provider value={{ user,setUser }}>
+		<UserContext.Provider value={{ user,setUser,loading }}>
 			{children}
 		</UserContext.Provider>
 	)

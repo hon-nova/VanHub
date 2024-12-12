@@ -13,20 +13,27 @@ import { Post, User } from '../../backend/src/shared/interfaces/index';
 import Profile from './components/User/Profile';
 import Settings from './components/User/Profile/settings';
 import ProfilePostItem from './components/User/Profile/ProfilePostItem'
-import { UserProvider, useUser } from './context/UserContext';
-import { PostsProvider, usePosts } from './context/PostsContext';
+import { UserProvider} from './context/UserContext';
+import { PostsProvider} from './context/PostsContext';
 
-function App() {
- 
-   const [post, setPost] = useState<Post>();   
-   const { user } = useUser()
-   const { posts, setPosts } = usePosts()
-   const handleEdit = (editedPost: Post) => {
-      console.log(`handleEdit is called in App: `, editedPost)
-      setPost((post)=>({...post,...editedPost}))
-      setPosts((preposts)=>(preposts?.map((p:Post)=>p.id === editedPost.id ? editedPost : p) || null))   
-   };   
-  return (
+function App() { 
+  
+   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+   const templatePost: Post = {
+      id: -1,
+      title: 'Default Title',
+      link: 'http://localhost:3000',
+      description: 'Default Description',
+      subgroup: 'Default Subgroup',
+      creator: { id: '',
+         uname: '',
+         email: '',
+         password: '',
+         role: '',
+         avatar:''},
+      timestamp: 0,
+    };
+   return (
    <UserProvider>
       <PostsProvider>
          <Router>
@@ -38,13 +45,13 @@ function App() {
                <Route path="/auth/admin" element={<Admin />}/>       
 
                <Route path="/public/posts" element={<Posts />}/>
-               <Route path="/public/posts/edit/:id" element={<PostEdit post={post} onEdit={handleEdit}/>} />
+               <Route path="/public/posts/edit/:id" element={<PostEdit />} />
                <Route path="/public/posts/show/:id" element={<PostDetail />} />
 
-               <Route path="/user/profile" element={<ProfilePostItem post={post as Post} currentUser={user as User}/>}  />
-               <Route path="/user/profile/" element={<Profile posts={posts as Post[]} user={user as User}/>}>
+               <Route path="/user/profile" element={<ProfilePostItem post={ selectedPost||templatePost }/>}  />
+               {/* <Route path="/user/profile/" element={<Profile posts={posts as Post[]} user={user as User}/>}>
                   <Route path="settings" element={<Settings user={user as User}/>} />
-               </Route>        
+               </Route>         */}
             </Routes>
          </Router>
       </PostsProvider>      

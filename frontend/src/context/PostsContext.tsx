@@ -3,12 +3,13 @@ import React, { createContext, useContext } from 'react'
 import { useEffect, useState } from 'react'
 
 interface PostsContextValue {
-	posts: Post[]|null,
-	setPosts: React.Dispatch<React.SetStateAction<Post[]|null>>
+	posts: Post[],
+	setPosts: React.Dispatch<React.SetStateAction<Post[]>>,
+	editPost: (updatedPost: Post) => void;
 }
 const PostsContext = createContext<PostsContextValue|undefined>(undefined)
 export const PostsProvider: React.FC<{children:React.ReactNode}> = ({ children })=>{
-	const [posts,setPosts] = useState<Post[]|null>(null)	
+	const [posts,setPosts] = useState<Post[]>([])	
 
 	useEffect(()=>{
 		const getPosts = async ()=>{
@@ -33,9 +34,14 @@ export const PostsProvider: React.FC<{children:React.ReactNode}> = ({ children }
 		}
 		getPosts()
 	},[])
+	const editPost = (passedPost:Post)=>{
+		setPosts((prevPosts) =>
+			prevPosts.map((post) => (post.id === passedPost.id ? { ...post, ...passedPost } : post))
+		 );
+	}
 	
 	return (
-		<PostsContext.Provider value={{ posts,setPosts }}>
+		<PostsContext.Provider value={{ posts,setPosts, editPost }}>
 			{children}
 		</PostsContext.Provider>
 	)
@@ -44,7 +50,7 @@ export const PostsProvider: React.FC<{children:React.ReactNode}> = ({ children }
 export const usePosts =(): PostsContextValue => {
 	const context = useContext(PostsContext)
 	if(!context){
-		throw new Error(`useUser must be used within a UserProvider`)
+		throw new Error(`usePosts must be used within a UserProvider`)
 	}
 	return context
 }

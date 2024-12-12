@@ -1,21 +1,21 @@
 import { Outlet, Link,useLocation,useNavigate } from 'react-router-dom';
 import '../../../styles/css/profile-style.css'
 import { Post, User } from '../../../../../backend/src/shared/interfaces/index'
-
 import ProfilePostItem from '../../User/Profile/ProfilePostItem'
+import { useState } from 'react';
+import  { useUser }  from '../../../context/UserContext'
+import { usePosts }  from '../../../context/PostsContext'
 
-import { useState} from 'react';
 
-
-interface IPostProps {
-	posts: Post[],
-	user: User
-}
-const Profile: React.FC<IPostProps> = ({posts,user})=>{
+const Profile: React.FC = ()=>{
 	const location = useLocation()
 	const navigate = useNavigate()
 	const stateUser = location.state?.user
 	console.log(`stateUser from Nav: `, stateUser)
+	const { posts } = usePosts()
+	// console.log(`posts from usePosts: `, posts)
+	const { user } = useUser()
+	console.log(`user from useUser: `, user)
 	const isSettings = location.pathname.includes("/user/profile/settings")
 
 	const [msg,setMsg] = useState({
@@ -129,7 +129,7 @@ const Profile: React.FC<IPostProps> = ({posts,user})=>{
 							posts && posts.length > 0 && (
 								posts.map((post: Post) => (
 								<div key={post.id}>
-									<ProfilePostItem post={post} currentUser={stateUser}  />
+									<ProfilePostItem post={post}  />
 								</div>
 								))
 							) 

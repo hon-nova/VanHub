@@ -14,7 +14,7 @@ const Posts:React.FC = ()=>{
 		errorMsg:'',
 		successMsg:''
 	})
-	const { user,setUser } = useUser()
+	const { user,setUser,loading } = useUser()
 	let { posts, setPosts } = usePosts()
 	const [isFormVisible,setIsFormVisible] = useState(false)	
 	console.log(`user in Posts: `, user)		
@@ -45,8 +45,6 @@ const Posts:React.FC = ()=>{
 		setUser(user)
 		// setIsFormVisible(false)
 	}
-	/** will revisit if delete */
-
 	const sendDeleteRequest = async (id:number)=>{
 		try {	
 			const response = await fetch(`http://localhost:8000/public/posts/delete/${id}`, {
@@ -72,10 +70,16 @@ const Posts:React.FC = ()=>{
 			setMsg((msgObj)=>({...msgObj, errorMsg:error}))			
 		}
 	}
-	 const handleDelPost = async(id:number)=>{
+
+	const handleDelPost = async(id:number)=>{
 		setUser(user)		
 		await sendDeleteRequest(id)		
-	 }
+	}
+
+	if(loading){
+		return <div>Loading...</div>
+	}
+
 	return (
 		<div className="posts-container">
 			<Navbar user={user as User} handleLogout={handleLogout}/>				
