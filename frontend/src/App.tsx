@@ -49,9 +49,9 @@ function App() {
                <Route path="/public/posts/show/:id" element={<PostDetail />} />
 
                <Route path="/user/profile" element={<ProfilePostItem post={ selectedPost||templatePost }/>}  />
-               {/* <Route path="/user/profile/" element={<Profile posts={posts as Post[]} user={user as User}/>}>
-                  <Route path="settings" element={<Settings user={user as User}/>} />
-               </Route>         */}
+               <Route path="/user/profile/" element={<Profile />}>
+                  <Route path="settings" element={<Settings />} />
+               </Route>         
             </Routes>
          </Router>
       </PostsProvider>      

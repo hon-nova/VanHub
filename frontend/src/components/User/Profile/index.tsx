@@ -10,26 +10,21 @@ import { usePosts }  from '../../../context/PostsContext'
 const Profile: React.FC = ()=>{
 	const location = useLocation()
 	const navigate = useNavigate()
-	const stateUser = location.state?.user
+	const { user } = useUser()
+	console.log(`user from root: `, user)
+	const stateUser = location.state?.user || user
 	console.log(`stateUser from Nav: `, stateUser)
 	const { posts } = usePosts()
-	// console.log(`posts from usePosts: `, posts)
-	const { user } = useUser()
-	console.log(`user from useUser: `, user)
 	const isSettings = location.pathname.includes("/user/profile/settings")
 
+	const postsUser = posts.filter((post: Post) => (post.creator as User)?.id === stateUser.id)
+	console.log(`postsUser: `, postsUser)
 	const [msg,setMsg] = useState({
 		errorMsg:'',
 		successMsg:'',
 		successComment:'',
 		successDelComment:''
 	})
-	// const postsUser = useMemo(()=>{
-   //       if(!stateUser) return []
-   //    const psUser = posts.filter((p:Post)=>(p.creator as User)?.id === stateUser.id )
-   //    // console.log(`psUser in userMemo `, psUser)
-   //    return psUser
-   // },[posts,stateUser]) 
 	const handleLogout = async () => {
 		try {
 			console.log(`handleLogout started`)
@@ -119,15 +114,15 @@ const Profile: React.FC = ()=>{
 							</div>
   						</div>						
 						<div className="text-end">
-							<Link to="/user/profile/settings"><i className="bi bi-gear mx-1"></i>Settings</Link>
+							<Link to="/user/profile/settings" state={{ user:stateUser }}><i className="bi bi-gear mx-1"></i>Settings</Link>
 						</div>						
 					</div>
 					<div className="col-md-9">
 					{isSettings ? (
 							<Outlet />
 						) : (
-							posts && posts.length > 0 && (
-								posts.map((post: Post) => (
+							postsUser && postsUser.length > 0 && (
+								postsUser.map((post: Post) => (
 								<div key={post.id}>
 									<ProfilePostItem post={post}  />
 								</div>

@@ -2,27 +2,22 @@ import { User } from '../../../../../backend/src/shared/interfaces/index'
 import '../../../styles/css/profile-settings-style.css'
 
 import { useNavigate, useLocation } from 'react-router-dom';
-
 import { useState } from 'react';
 
-interface ISettingsProps {
-	user: User;
- }
-
-const Settings:React.FC<ISettingsProps>=({user})=>{
+const Settings:React.FC=()=>{
 
 	const [description, setDescription] = useState<string>('');	
 	const [loading, setLoading] = useState<boolean>(false);
-	const [localUser, setLocalUser] = useState<User>(user);	
+	// const [localUser, setLocalUser] = useState<User>(user);	
 	const navigate = useNavigate();
 	const location = useLocation();
+	const stateUser = location.state?.user
+	console.log(`stateUser in settings: `, stateUser)	
 	const [msg, setMsg] = useState({
 		errorMsg: '',
 		succcessMsg:''
 	});	
-	
-	const stateUserFromNav = location.state?.user;	
-	console.log(`stateUserFromNav in settings: `, stateUserFromNav)
+
 	const sendGenerateAvatarRequest = async () => {
 		setLoading(true);
 		console.log('Sending description:', description);  
@@ -56,7 +51,7 @@ const Settings:React.FC<ISettingsProps>=({user})=>{
 	}
 	return (
 		<div>
-		   <h2>Hello {stateUserFromNav && stateUserFromNav.uname} - Generate Your Avatar</h2>
+		   <h2>Hello {stateUser && stateUser.uname} - Generate Your Avatar</h2>
 		   <div>			
 				<i>Note: Your description should have a maximum of 1000 characters</i>	
 				<form action="/user/profile/setting" method="POST" onSubmit={handleSubmitDescription}>

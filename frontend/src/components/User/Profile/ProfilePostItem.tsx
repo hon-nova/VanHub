@@ -4,8 +4,7 @@ import { Link } from "react-router-dom";
 import { useUser } from '../../../context/UserContext'
 
 interface ProfilePostItemProps {
-  post: Post;
-  
+  post: Post;  
 }
 const ProfilePostItem: React.FC<ProfilePostItemProps> = ({ post }) => {
   const { user } = useUser()
@@ -35,7 +34,7 @@ const ProfilePostItem: React.FC<ProfilePostItemProps> = ({ post }) => {
         <span>
           <p>            
             <i>
-              <span className="">Posted </span> at {post?.timestamp}
+              <span className="">Posted </span> {post?.timestamp}
             </i>
           </p>
         </span>
