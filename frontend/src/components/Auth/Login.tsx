@@ -24,7 +24,6 @@ const Login =()=>{
 				credentials: "include", 
 			})
 			const data = await response.json()
-			console.log(`frontend data: `,data)
 			
 			if(data.errorLogin){
 				console.log(`data.errorLogin: `, data.errorLogin)
@@ -42,7 +41,6 @@ const Login =()=>{
 			}							
 			//success
 		if(data.successMsg){
-			console.log(`data.successMsg: `, data.successMsg)
 			setMsg((msgObj)=>({...msgObj, successLogin:data.successMsg}))
 			if(data.isAdmin){
 				setTimeout(()=>{
