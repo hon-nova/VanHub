@@ -17,8 +17,6 @@ router.get('/posts', async (req:Request,res:Response)=>{
 	// console.log('Session exists @public/posts:', (req.session as any).passport.user);
 
 	const posts = await getPosts()
-	// const sortedPosts = posts.sort((a:Post,b:Post)=>b.id - a.id)
-	console.log(`all posts @/posts hope sorted: `,posts)
 	res.status(200).json({ posts,user});
 })
 

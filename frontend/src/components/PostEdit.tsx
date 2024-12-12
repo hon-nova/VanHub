@@ -109,13 +109,10 @@ const PostEdit: React.FC<PostEditProps> = ({post,onEdit})=>{
 				</div>
 				<div className="my-2 form-btn">
 				<button type="submit" className="edit-btn">Save Changes</button>
-				</div>
-				
+				</div>				
 			</form>
-			</div>
-			
-		</div>
-		
+			</div>			
+		</div>		
 	)
 }
 export default PostEdit;
