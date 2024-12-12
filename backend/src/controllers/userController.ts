@@ -21,31 +21,114 @@ async function addUser(uname: string, email: string, password: string|'', avatar
     return null;
   }
 }
-async function uploadAvatarFromUrl(userId:string,imageUrl:string):Promise<string|undefined>{
-  try {
-    // download the image from Dall.e-2
-    const response = await axios.get(imageUrl, { responseType: 'arraybuffer' });
-    const buffer = Buffer.from(response.data);
-    const fileName = `${userId}/avatar.png`
+// Upload file using standard upload
+// const avatar = data[0].url
+// const file = `https://supabase.com/dashboard/project/pvvdexpxtesuyjnodslj/storage/buckets/avatars/${avatar}`
+// async function uploadFile(file:File,userId:string):Promise<void>{ 
+//   const file_path = `https://supabase.com/dashboard/project/pvvdexpxtesuyjnodslj/storage/buckets/avatars/`
 
-    //update the avatar to the supabase
-    const { data, error} = await supabase.storage.from('avatars').upload(fileName,buffer,{contentType: 'image/png'})
-    if(error) throw new Error(`Upload failed ${error.message}`)
-
-    //return the url/path of the uploaded image
-    console.log(`image path in uploadAvatarFromUrl: `, `https://supabase.com/dashboard/project/pvvdexpxtesuyjnodslj/storage/buckets/avatars/${data.path}`)
-
-    return `https://supabase.com/dashboard/project/pvvdexpxtesuyjnodslj/storage/buckets/avatars/${data.path}`
-    // const publicUrl = supabase.storage.from('avatars').getPublicUrl(fileName).publicUrl;
-    // console.log(`image path in uploadAvatarFromUrl: ${publicUrl}`);
-
-    // return publicUrl;
-
+//   const { data, error } = await supabase.storage.from('avatars').upload(file_path, file,{ contentType: 'image/jpeg'})
+//   if (error) {
+//     // Handle error
+//     console.log('uploadFile - Error:', error);
+//   } else {
+//     // Handle success
+//     console.log('uploadFile - Success:', data);
+//   }
+// }
+async function fetchImageAsBlob(imageUrl:string):Promise<Blob|undefined>{
+  try{
+    const response = await fetch(imageUrl)
+    if(!response.ok){
+      throw new Error(`Failed to fetch image from ${imageUrl}`)
+    }
+    return await response.blob()
   } catch(error){
     if(error instanceof Error){
-      console.error('uploadAvatarFromUrl - Error:',error.message);
+      console.error('CATCH fetchImageAsBlob - Error:',error.message);
       return undefined
+    }  
+  } 
+}
+async function uploadFile(blob:Blob,userId:string):Promise<string|undefined>{
+  try {
+    const filePath=`https://supabase.com/dashboard/project/pvvdexpxtesuyjnodslj/storage/buckets/avatars/${userId}-${Date.now()}.png`
+    const { data, error } = await supabase.storage
+        .from('avatars')
+        .upload(filePath,blob,{ upsert: true, contentType: 'image/png'})
+
+    if(error) throw new Error(`Upload failed ${error.message}`)
+    //!important, return the public URL of the uploaded file
+    console.log(`data in uploadFile: `, data)
+    const { data: publicUrlData} = supabase.storage.from('avatars').getPublicUrl(filePath)
+    console.log(`publicUrlData in uploadFile: `, publicUrlData)
+    console.log(`typeof publicUrlData.publicUrl in uploadFile: `, typeof publicUrlData?.publicUrl)
+    // return data?.publicUrl
+    return publicUrlData?.publicUrl
+    
+  } catch(error){
+    if(error instanceof Error){
+      console.error('CATCH uploadFile - Error:',error.message);
+      return ''
     }
+  }
+}
+async function saveUserAvatar(userId: string, avatarUrl: string): Promise<void> {
+  try {
+    const { data, error } = await supabase
+    .from('users')
+    .update({ avatar: avatarUrl })
+    .eq('id', userId)
+
+
+  if (error) {
+    console.error('Error updating user avatar:', error.message);
+    throw new Error('Failed to update user avatar.');
+  }
+
+  console.log('User avatar updated successfully:', data);
+  
+  } catch(error){
+    if(error instanceof Error){
+      console.error('saveUserAvatar - Error:',error.message);
+    }
+  }
+  
+}
+
+import OpenAI from 'openai'
+const openai = new OpenAI({ apiKey: process.env.OPEN_ACCESS_KEY });
+async function handleAvatarGeneration(description: string, userId: string): Promise<void> {
+  try {
+    const image = await openai.images.generate({
+      model: "dall-e-2",
+      prompt: description,
+      size: "256x256",
+      style: "natural"
+    });
+
+    const avatarUrl = image.data[0].url;
+    console.log(`OpenAI avatar: `, avatarUrl);
+    if (!avatarUrl) {
+      throw new Error('Failed to generate avatar.');
+    }
+
+    // Fetch image as Blob
+    const imageBlob = await fetchImageAsBlob(avatarUrl) as Blob;
+
+    // Upload Blob to Supabase
+    const uploadedUrl = await uploadFile(imageBlob, userId);
+    if (!uploadedUrl) {
+      throw new Error('Failed to upload avatar to Supabase.');
+    }
+
+    // Save avatar URL to user's profile
+    await saveUserAvatar(userId, uploadedUrl);   
+    
+  } catch (error) {
+    if (error instanceof Error){
+      console.error('Error in handleAvatarGeneration:', error.message);
+    }    
   }
 }
 
@@ -207,6 +290,15 @@ async function resetPassword(info: string, newbarepassword: string): Promise<Use
     return null;
   }
 }
+(async ()=>{
+  // const urlString='https://randomuser.me/api/portraits/men/78.jpg'
+  // const blob = await fetchImageAsBlob(urlString)
+  // // console.log(`blob in userController: `, blob)
+  // // signature: uploadFile(blob:Blob,userId:string)
+  // const userId="ac4c9fe6-2652-4612-888a-d5f014d20381"
+  // const publicUrl = await uploadFile(blob!,userId)
+  // console.log(`publicUrl in userController: `, publicUrl)
+})()
 
 export {
   getUsers,
@@ -219,6 +311,7 @@ export {
   addUser,
   getUserByUnameOrEmail,
   updateUser,
-  uploadAvatarFromUrl
-  
+  fetchImageAsBlob,
+  uploadFile,
+  handleAvatarGeneration
 };

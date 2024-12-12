@@ -1,4 +1,23 @@
 textarea#avatar-description {
-	width:60%;
-	padding-left:10px;
+	width:70%;
+	padding:10px;
+	border-radius: 10px;
+	margin-right:5px;
+	height: 70px;
+	color: #00BCD4;
+	font-weight:bolder;
+}
+button.avatar-btn {
+	border: 1px solid #d0d0d5;
+	padding: 10px;
+	border-radius: 10px;
+}
+button.avatar-btn:hover {
+	background-color: #d5d5d9;
+}
+div.avatar {
+	padding: 10px;
+	margin: 5px;
+	border: 1px solid black;
+	border-radius: 10px;
 }

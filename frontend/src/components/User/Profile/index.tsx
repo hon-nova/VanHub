@@ -22,8 +22,7 @@ const Profile: React.FC = ()=>{
 	const [msg,setMsg] = useState({
 		errorMsg:'',
 		successMsg:'',
-		successComment:'',
-		successDelComment:''
+		
 	})
 	const handleLogout = async () => {
 		try {
@@ -95,9 +94,8 @@ const Profile: React.FC = ()=>{
 				</div>
    		</nav>
 			<main>
-				<div className="profile-content">
-					<h1>User Profile</h1>
-					{stateUser.uname && <h5>Hello {stateUser.uname}</h5>}					
+				<div className="profile-content my-4">
+					{stateUser.uname && <h5>You're logging in as <span style={{ color:"pink" }}>{stateUser.uname}</span> </h5>}					
 					<div className="row">
 					<div className="col-md-3" style={{ backgroundColor:"pink" }}>					 
 						<div className="text-center">							

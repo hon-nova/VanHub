@@ -7,7 +7,7 @@ import { supabase } from './db/supabaseClient'
 import cors from 'cors'
 import bodyParser from "body-parser";
 import cookieParser from 'cookie-parser'
-import { getUsers, getUserById, getUserByUname, getUserByEmail,getUserByEmailAndPassword,resetPassword } from "./controllers/userController";
+import { getUsers, getUserById, getUserByUname, getUserByEmail,getUserByEmailAndPassword,resetPassword, fetchImageAsBlob, uploadFile } from "./controllers/userController";
 
 // import dotenv from 'dotenv'
 // dotenv.config()
@@ -73,17 +73,7 @@ declare global{
     }
   }
 }
-(async()=>{
-  // try {
-  //   const { data, error } = await supabase.from('users').select('*');
-  //   if (error) {
-  //     console.error('Error fetching users:', error.message);
-  //   }
-  //   console.log('Fetched users:', data);
-  // } catch (err) {
-  //   console.error('Error testing Supabase connection:', err);
-  // }
-})()
+
 
 import authRoute from "./routes/authRoute";
 import indexRoute from "./routes/indexRoute";
@@ -95,11 +85,14 @@ app.use("/auth", authRoute);
 app.use("/public", postRoute);
 app.use("/user/profile", userRoute);
 
-(async()=>{
-  //important
-  // console.log(req.user); // Outputs: [object Object]
-  // console.log(req.session); // Outputs: [object Object]
-
+(async ()=>{
+  // const urlString='https://randomuser.me/api/portraits/men/78.jpg'
+  // const blob = await fetchImageAsBlob(urlString)
+  // // console.log(`blob in userController: `, blob)
+  // // signature: uploadFile(blob:Blob,userId:string)
+  // const userId="ac4c9fe6-2652-4612-888a-d5f014d20381"
+  // const publicUrl = await uploadFile(blob!,userId)
+  // console.log(`publicUrl in userController: `, publicUrl)
 })()
 app.listen(port, () => {
   console.log(`🚀 Social Media Server has started at http://localhost:${port}`);
