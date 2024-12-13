@@ -59,20 +59,28 @@ const Profile: React.FC = ()=>{
 						aria-expanded="false"
 						aria-label="Toggle navigation">
 					<span className="navbar-toggler-icon"></span>
-				</button>
+					</button>
 				{/* Navbar Content */}
 				<div className="collapse navbar-collapse" id="navbarNav">
+				<ul className="navbar-nav me-auto mb-2 mb-lg-0">
+            {/* Posts Link */}
+            <li className="nav-item">
+              <a className="nav-link" href="/public/posts">
+                Home
+              </a>
+            </li>            
+          </ul>
 					<ul className="navbar-nav ms-auto">
 						{/* Profile Dropdown */}
 						<li className="nav-item dropdown">
-						<a className="nav-link dropdown-toggle"
-							href="/user/profile"
-							id="profileDropdown"
-							role="button"
-							data-bs-toggle="dropdown"
-							aria-expanded="false" >
-							{stateUser?.email}
-						</a>
+							<a className="nav-link dropdown-toggle"
+								href="/user/profile"
+								id="profileDropdown"
+								role="button"
+								data-bs-toggle="dropdown"
+								aria-expanded="false" >
+								{stateUser?.email}
+							</a>
 						<ul className="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">	
 							<li>
 								<Link className="dropdown-item" to="/user/profile">
