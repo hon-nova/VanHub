@@ -4,6 +4,7 @@ import bcrypt from 'bcrypt';
 import axios from 'axios';
 import path from 'path';
 import fs from 'fs'
+import fss from 'node:fs/promises'
 
 const saltValue = 8;
 
@@ -160,8 +161,36 @@ async function handleAvatarGeneration(description: string, userId: string): Prom
 (async()=>{
   // const avatar = saveAvatarToDisk('https://oaidalleapiprodscus.blob.core.windows.net/private/org-RITs8FNPgNEteFFQNsd2R4xP/user-dw9rR9SPiM1og9ZohYAtF9vv/img-6plTWR7F6BNKBd9OLO3jlkli.png?st=2024-12-13T04%3A43%3A03Z&se=2024-12-13T06%3A43%3A03Z&sp=r&sv=2024-08-04&sr=b&rscd=inline&rsct=image/png&skoid=d505667d-d6c1-4a0a-bac7-5c84a87759f8&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2024-12-13T04%3A01%3A07Z&ske=2024-12-14T04%3A01%3A07Z&sks=b&skv=2024-08-04&sig=bZbisNLXGkAXjqq89k4kKW%2Bb1ZhVMLJGblHuZzm/GdU%3D','44cf8405-b28d-4d59-a427-79d32add0161')
   // await handleAvatarGeneration('A happy female coder', '44cf8405-b28d-4d59-a427-79d32add0161')
+  const pathIn = path.join(__dirname,'../../../backend/src/images')
+console.log(`pathIn in userController: `, pathIn)
 })()
+const pathIn = path.join(__dirname,'../../../backend/src/images')
+// console.log(`pathIn in userController: `, pathIn)
+async function readAvatarsFromDisk(userId:string):Promise<User|null>{
+  try {
+    const pathIn = path.join(__dirname,'../../../backend/src/images')
+    const files = await fss.readdir(pathIn)
+    console.log(`files in readAvatarsFromDisk: `, files)
+    const userAvatar = files.find((file)=>file.includes(userId))
+    // console.log(`userAvatar in readAvatarsFromDisk: `, userAvatar)
+    if(!userAvatar){
+      // console.log(`path.join(pathIn,userAvatar) in readAvatarsFromDisk: `, path.join(pathIn,userAvatar))
+      return null
+    }   
+    console.log(`userAvatar: `,userAvatar)
+      const updatedUser = await updateUser(userId,{avatar:userAvatar})
+      console.log(`IMPORTANT updatedUser in readAvatarsFromDisk: `)
+      console.log(updatedUser)
+      return updatedUser 
 
+  } catch(error){
+    if(error instanceof Error){
+      console.error('readAvatarFromDisk - Error:',error.message);
+    }
+    return null
+  }
+}
+readAvatarsFromDisk('c338f528-d10c-4b85-9490-64a03da91133')
 async function updateUser(id: string, changes: { avatar?: string }): Promise<User | null> {
   try {
     const { avatar } = changes;
@@ -344,5 +373,6 @@ export {
   fetchImageAsBlob,
   uploadFile,
   handleAvatarGeneration,
-  saveAvatarToDisk
+  saveAvatarToDisk,
+  readAvatarsFromDisk
 };
