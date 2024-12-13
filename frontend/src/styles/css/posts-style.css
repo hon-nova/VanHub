@@ -1,9 +1,17 @@
 div.posts-container {
 	/* background-color: #004a77; */
 	width:100%;
+	margin: auto;
+	
 }
 div.posts {
 	color: #8e918f;
+}
+img#creatorAvatar {
+	width:30px;
+	height:30px;
+	border-radius: 50%;
+	margin: 5px;
 }
 button.create-submit-btn {
 	border: 1px solid #d0d0d5;

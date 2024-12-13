@@ -10,8 +10,7 @@ const Profile: React.FC = ()=>{
 	const location = useLocation()
 	const navigate = useNavigate()
 	const { user,setUser } = useUser()
-	const image1 = 'ac4c9fe6-2652-4612-888a-d5f014d20381-1734069618319.png'
-	
+		
 	console.log(`user from root: `, user)
 	console.log(`user from state: `, location.state?.user)
 	const stateUser = location.state?.user || user
@@ -28,7 +27,7 @@ const Profile: React.FC = ()=>{
 	})
 	useEffect(() => {
 		if (user && user.avatar) {
-		  setUser(user); // Replace `setStateUser` with your actual state management function
+		  setUser(user);
 		}
 	 }, [user]);
 	 
@@ -54,8 +53,7 @@ const Profile: React.FC = ()=>{
 		}
 	};
 	return (
-		<div className="profile-container">				
-		
+		<div className="profile-container">			
 			<nav className="navbar navbar-expand-lg navbar-dark"
 					style={{ backgroundColor: '#004a77' }}	>
 				<div className="container-fluid">

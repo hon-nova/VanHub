@@ -55,6 +55,7 @@ const PostDetail = ()=>{
     typeof post.creator === "object" && post.creator?.uname
       ? post.creator.uname
       : "Unknown";
+	const createrAvatar = typeof post.creator === "object" && post.creator?.avatar && post.creator?.avatar.trim() !== "" ? post.creator?.avatar:""
 
 		const handleLogout = async () => {
 			try {
@@ -205,8 +206,9 @@ const PostDetail = ()=>{
 				</div>	
 			</div>	
 			{/* end votes */}
-			<p><span style={{ color:"goldenrod" }}><b>{creatorName}</b></span> {post?.timestamp}</p>		
 			<p>{post?.description}</p>
+			<p><img src={createrAvatar} alt="creatorAvatar" id="creatorAvatar"/><span style={{ color:"goldenrod" }}><b>{creatorName}</b></span> {post?.timestamp}</p>		
+			
 			<Link to={post?.link} target="_blank"><i className="bi bi-link-45deg mx-1"></i>Link</Link>
 			<div className="comments">
 				<button

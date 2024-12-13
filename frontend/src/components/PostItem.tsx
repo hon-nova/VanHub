@@ -20,6 +20,7 @@ const PostItem: React.FC<PostItemProps> = ({ post, onEdit, onDelete, currentUser
       ? post.creator.uname
       : "Unknown";
   const isCreator = creatorName === currentUser?.uname 
+  const createrAvatar = typeof post.creator === "object" && post.creator?.avatar && post.creator?.avatar.trim() !== "" ? post.creator?.avatar:""
 
   return (
     <div className="d-flex justify-content-between post-item">
@@ -34,7 +35,7 @@ const PostItem: React.FC<PostItemProps> = ({ post, onEdit, onDelete, currentUser
         </span>
         <span>
           <p>
-            By{" "}
+          <img src={createrAvatar || 'https://example.com/default-avatar.png'} alt="creatorAvatar" id="creatorAvatar"/>
             <i>
               <span className="creator-name">{creatorName}</span> at {post?.timestamp}
             </i>
