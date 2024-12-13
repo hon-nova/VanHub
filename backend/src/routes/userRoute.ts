@@ -2,7 +2,7 @@ import express, {Request, Response} from 'express'
 import passport from 'passport'
 import path from 'path'
 import fs from 'fs'
-import { handleAvatarGeneration, saveAvatarToDisk,readAvatarsFromDisk } from '../controllers/userController'
+import { handleAvatarGeneration, saveAvatarToDisk,readAvatarsFromDisk,uploadAvatarToSupabase } from '../controllers/userController'
 
 // import Colors from '../utils/color.js'
 import dotenv from 'dotenv'
@@ -38,11 +38,9 @@ router.post('/settings', async (req,res)=>{
 		console.log(`user_id in post/settings: `, user_id)
 		if(!description){
 			return res.status(400).json({message: 'Description is required'}) as any
-		}		
-		
-		await handleAvatarGeneration(description, user_id)		
-			
-			
+		}			
+		await handleAvatarGeneration(description, user_id)					
+		const updatedUser = await uploadAvatarToSupabase(user_id)		
 		return res.json({user,successMsg:'Successfully generated avatar'})
 		
 	} catch(error){
