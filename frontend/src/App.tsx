@@ -10,9 +10,11 @@ import Posts from './components/Posts';
 import PostDetail from './components/PostDetail';
 import PostEdit from './components/PostEdit';
 import { Post, User } from '../../backend/src/shared/interfaces/index';
-import Profile from './components/User/Profile';
-import Settings from './components/User/Profile/settings';
-import ProfilePostItem from './components/User/Profile/ProfilePostItem'
+// import Profile from './components/User/Profile';
+import Profile from './components/User/Profile/Profile'
+// import Settings from './components/User/Profile/Settings';
+import Settings from './components/User/Profile/settings'
+// import ProfilePostItem from './components/User/Profile/ProfilePostItem'
 import { UserProvider} from './context/UserContext';
 import { PostsProvider} from './context/PostsContext';
 
@@ -48,7 +50,6 @@ function App() {
                <Route path="/public/posts/edit/:id" element={<PostEdit />} />
                <Route path="/public/posts/show/:id" element={<PostDetail />} />
 
-               <Route path="/user/profile" element={<ProfilePostItem post={ selectedPost||templatePost }/>}  />
                <Route path="/user/profile/" element={<Profile />}>
                   <Route path="settings" element={<Settings />} />
                </Route>         

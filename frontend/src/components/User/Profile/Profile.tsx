@@ -2,16 +2,18 @@ import { Outlet, Link,useLocation,useNavigate } from 'react-router-dom';
 import '../../../styles/css/profile-style.css'
 import { Post, User } from '../../../../../backend/src/shared/interfaces/index'
 import ProfilePostItem from '../../User/Profile/ProfilePostItem'
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import  { useUser }  from '../../../context/UserContext'
 import { usePosts }  from '../../../context/PostsContext'
-
 
 const Profile: React.FC = ()=>{
 	const location = useLocation()
 	const navigate = useNavigate()
-	const { user } = useUser()
+	const { user,setUser } = useUser()
+	const image1 = 'ac4c9fe6-2652-4612-888a-d5f014d20381-1734069618319.png'
+	
 	console.log(`user from root: `, user)
+	console.log(`user from state: `, location.state?.user)
 	const stateUser = location.state?.user || user
 	console.log(`stateUser from Nav: `, stateUser)
 	const { posts } = usePosts()
@@ -24,6 +26,12 @@ const Profile: React.FC = ()=>{
 		successMsg:'',
 		
 	})
+	useEffect(() => {
+		if (user && user.avatar) {
+		  setUser(user); // Replace `setStateUser` with your actual state management function
+		}
+	 }, [user]);
+	 
 	const handleLogout = async () => {
 		try {
 			console.log(`handleLogout started`)
@@ -46,7 +54,8 @@ const Profile: React.FC = ()=>{
 		}
 	};
 	return (
-		<div className="profile-container">					
+		<div className="profile-container">				
+		
 			<nav className="navbar navbar-expand-lg navbar-dark"
 					style={{ backgroundColor: '#004a77' }}	>
 				<div className="container-fluid">
@@ -109,7 +118,7 @@ const Profile: React.FC = ()=>{
 						<div className="text-center">							
 							{stateUser.avatar && (
 								<img								
-								src={stateUser.avatar || 'https://via.placeholder.com/180'}
+								src={stateUser.avatar}
 								alt="profile"
 								style={{ borderRadius: "50%", marginTop: "5px", width: "150px", height: "150px" }}
 								/>
