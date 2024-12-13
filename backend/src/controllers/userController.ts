@@ -2,6 +2,8 @@ import { supabase } from '../db/supabaseClient';
 import { User } from '../shared/interfaces/index';
 import bcrypt from 'bcrypt';
 import axios from 'axios';
+import path from 'path';
+import fs from 'fs'
 
 const saltValue = 8;
 
@@ -19,6 +21,32 @@ async function addUser(uname: string, email: string, password: string|'', avatar
   } catch (error) {
     console.error('addUser - Error:', error);
     return null;
+  }
+}
+
+
+async function saveAvatarToDisk(imageUrl:string,userId:string):Promise<string>{
+  try {    
+    const imageDir = path.join(__dirname,'../../../backend/src/images')
+    
+    const imagePath = path.join(imageDir,`${userId}-${Date.now()}.png`)
+    console.log(`IMPORTANT`)
+    console.log(`userId in saveAvatarToDisk:`, userId);
+
+    // ensure the directory exists
+    if(!fs.existsSync(imageDir)){
+      fs.mkdirSync(imageDir,{recursive:true})
+    }
+    // fetch the image and save to disk
+    const response = await axios.get(imageUrl, {responseType: "arraybuffer"})
+    console.log(`data in saveAvatarToDisk: `, response.data)//Buffer
+    fs.writeFileSync(imagePath, response.data)
+    return imagePath
+  } catch(error){
+    if(error instanceof Error){
+      console.error('saveAvatarToDisk - Error:',error.message);
+    }
+    return ''
   }
 }
 // Upload file using standard upload
@@ -99,6 +127,8 @@ async function saveUserAvatar(userId: string, avatarUrl: string): Promise<void> 
 import OpenAI from 'openai'
 const openai = new OpenAI({ apiKey: process.env.OPEN_ACCESS_KEY });
 async function handleAvatarGeneration(description: string, userId: string): Promise<void> {
+  console.log(`IMPORTANT IN handleAvatarGeneration`)
+  console.log(`userId: `, userId)
   try {
     const image = await openai.images.generate({
       model: "dall-e-2",
@@ -112,18 +142,14 @@ async function handleAvatarGeneration(description: string, userId: string): Prom
     if (!avatarUrl) {
       throw new Error('Failed to generate avatar.');
     }
-
-    // Fetch image as Blob
-    const imageBlob = await fetchImageAsBlob(avatarUrl) as Blob;
-
-    // Upload Blob to Supabase
-    const uploadedUrl = await uploadFile(imageBlob, userId);
-    if (!uploadedUrl) {
-      throw new Error('Failed to upload avatar to Supabase.');
+    // Save avatar to disk
+    const imagePath = await saveAvatarToDisk(avatarUrl, userId);
+    
+    if(imagePath){
+      console.log(`SUCCESS SAVED IMAGED ON DISK`)
+    } else {
+      throw new Error('Failed to save image on disk')
     }
-
-    // Save avatar URL to user's profile
-    await saveUserAvatar(userId, uploadedUrl);   
     
   } catch (error) {
     if (error instanceof Error){
@@ -131,6 +157,10 @@ async function handleAvatarGeneration(description: string, userId: string): Prom
     }    
   }
 }
+(async()=>{
+  // const avatar = saveAvatarToDisk('https://oaidalleapiprodscus.blob.core.windows.net/private/org-RITs8FNPgNEteFFQNsd2R4xP/user-dw9rR9SPiM1og9ZohYAtF9vv/img-6plTWR7F6BNKBd9OLO3jlkli.png?st=2024-12-13T04%3A43%3A03Z&se=2024-12-13T06%3A43%3A03Z&sp=r&sv=2024-08-04&sr=b&rscd=inline&rsct=image/png&skoid=d505667d-d6c1-4a0a-bac7-5c84a87759f8&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2024-12-13T04%3A01%3A07Z&ske=2024-12-14T04%3A01%3A07Z&sks=b&skv=2024-08-04&sig=bZbisNLXGkAXjqq89k4kKW%2Bb1ZhVMLJGblHuZzm/GdU%3D','44cf8405-b28d-4d59-a427-79d32add0161')
+  // await handleAvatarGeneration('A happy female coder', '44cf8405-b28d-4d59-a427-79d32add0161')
+})()
 
 async function updateUser(id: string, changes: { avatar?: string }): Promise<User | null> {
   try {
@@ -313,5 +343,6 @@ export {
   updateUser,
   fetchImageAsBlob,
   uploadFile,
-  handleAvatarGeneration
+  handleAvatarGeneration,
+  saveAvatarToDisk
 };
