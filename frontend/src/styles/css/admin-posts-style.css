@@ -1,0 +1,10 @@
+div.chart {
+	height: 350px;
+	background-color: rgb(229, 225, 225);
+}
+div.radioBtn {
+	display:flex;
+	justify-content: center;	
+	background-color: whitesmoke;
+	margin-top:5px;
+}
