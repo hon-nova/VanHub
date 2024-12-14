@@ -42,7 +42,7 @@ const AdminNav:React.FC<AdminNavProps> = ({ user, handleLogout }) => {
               </a>
             </li>  
 				<li className="nav-item">
-              <a className="nav-link" href="/auth/admin">
+              <a className="nav-link" href="/auth/admin/users">
                 Users
               </a>
             </li>            

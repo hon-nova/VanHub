@@ -8,6 +8,7 @@ import cors from 'cors'
 import bodyParser from "body-parser";
 import cookieParser from 'cookie-parser'
 import { getUsers, getUserById, getUserByUname, getUserByEmail,getUserByEmailAndPassword,resetPassword, fetchImageAsBlob, uploadFile } from "./controllers/userController";
+import { getSentiment, analyzeSentiment, positivePosts, negativePosts} from './controllers/authController'
 
 // import dotenv from 'dotenv'
 // dotenv.config()
@@ -93,6 +94,10 @@ app.use("/user/profile", userRoute);
   // const userId="ac4c9fe6-2652-4612-888a-d5f014d20381"
   // const publicUrl = await uploadFile(blob!,userId)
   // console.log(`publicUrl in userController: `, publicUrl)
+  // console.log(`process.env.OPEN_ACCESS_KEY: `,process.env.OPEN_ACCESS_KEY)
+  //   getSentiment('I hate it when groceries prices keep going up. This could ruin my freedom and peace. Why did not the government help deal with its citizens.').then((data)=>{console.log(`RESULT SENTIMENT ANALYSIS: `,data)})
+  // analyzeSentiment().then((sentimentObj)=>console.log(sentimentObj))
+  negativePosts().then((positivePosts)=>console.log(positivePosts))
 })()
 app.listen(port, () => {
   console.log(`🚀 Social Media Server has started at http://localhost:${port}`);

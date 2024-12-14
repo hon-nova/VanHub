@@ -7,6 +7,8 @@ import {Request, Response} from 'express'
 import bcrypt from 'bcrypt'
 const saltValue =8
 import { addUser, getUserByEmail, getUserByUname, getUserByEmailAndPassword,getUserByUnameOrEmail,resetPassword } from '../controllers/userController'
+import { getPosts } from "../controllers/postController";
+import { getSentiment } from '../controllers/authController'
 
 router.post("/register", async (req:Request, res:Response) => {
 	try {
@@ -16,7 +18,6 @@ router.post("/register", async (req:Request, res:Response) => {
 		console.log('All fields cannot be empty.')
 		return
 	}
-	const hashedPassword = bcrypt.hashSync(password,saltValue)
 	
 	const getUser = await getUserByUname(uname) as Express.User
 	console.log(`getUserByUname in /register: `, getUser)
@@ -150,6 +151,19 @@ router.get("/admin",(req: Request, res: Response)=>{
 	 }
 	// console.log(`@admin USER IS  AUTHENTICATED: `,req.isAuthenticated())
 	res.status(200).json({adminUser,successMsg:'Admin user is authenticated.'})
+})
+
+router.get("/admin/posts", async (req: Request, res: Response) => {
+	const posts = await getPosts()
+
+	if (!req.isAuthenticated()) {
+		console.log(`admin not authenticated @admin/posts`)
+	}
+	return res.status(200).json({posts}) as any
+})
+
+router.post("/admin/posts", async (req: Request, res: Response) => {
+
 })
 
 

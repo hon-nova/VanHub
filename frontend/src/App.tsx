@@ -18,6 +18,7 @@ import Settings from './components/User/Profile/settings'
 import { UserProvider} from './context/UserContext';
 import { PostsProvider} from './context/PostsContext';
 import AdminPosts from './components/Admin/AdminPosts';
+import AdminUsers from './components/Admin/AdminUsers';
 
 function App() { 
   
@@ -47,9 +48,9 @@ function App() {
                <Route path="/auth/forgot" element={<Forgot />}/>
                
                <Route path="/auth/admin/" element={<Admin />}>
-                  <Route path="posts" element={<AdminPosts />} />
-               </Route>       
-
+                  <Route path="users" element={<AdminUsers />} />
+                  <Route path="posts" element={<AdminPosts />} />   
+               </Route>
                <Route path="/public/posts" element={<Posts />}/>
                <Route path="/public/posts/edit/:id" element={<PostEdit />} />
                <Route path="/public/posts/show/:id" element={<PostDetail />} />
