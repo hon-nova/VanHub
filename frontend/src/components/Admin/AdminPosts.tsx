@@ -30,8 +30,11 @@ const AdminPosts: React.FC = ()=>{
 		percentageNeutralCS:0
 	})
 	const [chartData, setChartData] = useState<any>();
-	const [posts, setPosts] = useState<Post[]>()
+	const [posts, setPosts] = useState<any[]>([])
 	console.log(`posts in AdminPosts: `,posts)
+	const [selectedSentiment, setSelectedSentiment] = useState<string>('positive');	
+	const [filteredPosts, setFilteredPosts] = useState<any[]>([]);
+	
 	useEffect(() => {
 		const fetchSentimentData = async () => {
 			const response = await fetch('http://localhost:8000/auth/admin/posts', {
@@ -68,10 +71,17 @@ const AdminPosts: React.FC = ()=>{
 				},
 			 ],
 		  });
-		};
-  
+		};  
 		fetchSentimentData();
 	 }, []);
+
+	useEffect(()=>{
+		const filterPosts = ()=>{
+			setFilteredPosts(posts?.filter((p:any)=>p.sentiment === selectedSentiment))
+		}
+		filterPosts()
+	},[posts, selectedSentiment])
+	console.log(`filteredPosts: `,filteredPosts)
 	 const creatorName = (post:Post) =>{
 		if (typeof post.creator ==="object" && post.creator?.uname){
 			return post.creator?.uname
@@ -96,13 +106,13 @@ const AdminPosts: React.FC = ()=>{
 				<Bar
 					data={chartData}
 					options={{
-						indexAxis: 'y', // Makes the bars horizontal
+						indexAxis: 'y',
 						scales: {
 						x: {
-							min: 0, // Start at zero
-							max: 100, // Limit to 100
+							min: 0,
+							max: 100,
 							ticks: {
-								callback: (value: number | string) => `${Number(value)}%`, // Adds a percentage sign
+								callback: (value: number | string) => `${Number(value)}%`,
 							},
 						},
 						},
@@ -117,14 +127,29 @@ const AdminPosts: React.FC = ()=>{
       </div>
 			<div className="radioBtn">
 				<div className="mx-4">
-					<input type="radio" name="posts" value="positive" /> <label><i className="bi bi-flag-fill" style={{ color:"green" }}></i></label>
+					<input 
+					type="radio" 
+					name="posts" 
+					value="positive"
+					checked={selectedSentiment==='positive'}
+					onChange={()=>setSelectedSentiment('positive')} /> <label><i className="bi bi-flag-fill" style={{ color:"green" }}></i></label>
 					</div>
 				<div className="mx-4">
-					<input type="radio" name="posts" value="negative" /> 
+					<input 
+					type="radio" 
+					name="posts" 
+					value="negative"
+					checked={selectedSentiment==='negative'}
+					onChange={()=>setSelectedSentiment('negative')} /> 
 					<label><i className="bi bi-flag-fill" style={{ color:"red" }}></i></label>
 				</div>
 				<div className="mx-4">
-					<input type="radio" name="posts" value="neutral" />
+					<input 
+					type="radio" 
+					name="posts" 
+					value="neutral"
+					checked={selectedSentiment==='neutral'}
+					onChange={()=>setSelectedSentiment("neutral")} />
 					<label><i className="bi bi-flag-fill" style={{ color:"gray" }}></i></label>
 				</div>				
 			</div>
@@ -132,27 +157,50 @@ const AdminPosts: React.FC = ()=>{
 				<table className="table table-striped">
 					<thead>
 						<tr>
-							<th scope="col">Post ID</th>
+							<th scope="col">ID</th>
 							<th scope="col">Posted by</th>
-							<th scope="col">[when]Post Title</th>
-							<th scope="col">Post Descriptionb[10-word]</th>
-							<th scope="col">Sentiment <i className="bi bi-flag-fill"></i></th>
+							<th scope="col">[when]Title</th>
+							<th scope="col">Descriptionb</th>
+							<th scope="col">Analysis<i className="bi bi-flag-fill"></i></th>
 							<th scope="col">Confidence Score</th>
 						</tr>
 					</thead>
 					<tbody>
-						{posts && posts.map((post:any)=>(
+					{filteredPosts && filteredPosts.length > 0 ? (
+						filteredPosts.map((post: any) => (
 							<tr key={post.id}>
 							<th scope="row">{post.id}</th>
 							<td>{creatorName(post)}</td>
 							<td>[{post.timestamp}] {post.title}</td>
-							<td>{post.description.slice(0,20).concat(" ...")}</td>
-							<td><i className="bi bi-flag-fill" style={{ color:color(post.sentiment) }}></i></td>
+							<td>{post.description.slice(0, 20).concat(" ...")}</td>
+							<td>
+								<i className="bi bi-flag-fill" style={{ color: color(post.sentiment) }}></i>
+							</td>
 							<td>{post.confidence_score}</td>
-						</tr>		
-						))}
-										
-					</tbody>
+							</tr>
+						))
+						) : posts && posts.length > 0 ? (
+						posts.map((post: any) => (
+							<tr key={post.id}>
+							<th scope="row">{post.id}</th>
+							<td>{creatorName(post)}</td>
+							<td>[{post.timestamp}] {post.title}</td>
+							<td>{post.description.slice(0, 20).concat(" ...")}</td>
+							<td>
+								<i className="bi bi-flag-fill" style={{ color: color(post.sentiment) }}></i>
+							</td>
+							<td>{post.confidence_score}</td>
+							</tr>
+						))
+					) : (
+						<tr>
+							<td colSpan={6} style={{ textAlign: "center" }}>
+							No Posts Available
+							</td>
+						</tr>
+					)}
+						</tbody>
+
 				</table>
 			</div>
 		</div>

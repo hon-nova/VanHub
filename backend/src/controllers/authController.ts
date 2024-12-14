@@ -3,7 +3,7 @@ const openai = new OpenAI({ apiKey: process.env.OPEN_ACCESS_KEY });
 import { getPosts, getPostById }  from '../controllers/postController'
 import { Post }  from '../shared/interfaces/index'
 
-console.log(`process.env.OPEN_ACCESS_KEY: `,process.env.OPEN_ACCESS_KEY)
+
 const getSentiment = async (description : string) => {
 	try {
 	  const completion = await openai.chat.completions.create({
@@ -38,7 +38,7 @@ async function analyzeSentiment():Promise<any[]>{
 		const cs = (sentiment?.split(",")[1]) ? parseFloat(sentiment?.split(",")[1]) : 0
 		sentimentArr.push({post_id:post.id,sentiment:sen,confidence_score:cs})
 	}))
-	// console.log(`what is sentiments here: `,sentiments)
+	// console.log(`what is sentiment here: `,sentiments)
 	console.log(`sentimentArr: `,sentimentArr)
 	return sentimentArr
  }
