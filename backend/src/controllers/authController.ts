@@ -44,7 +44,19 @@ async function analyzeSentiment():Promise<any[]>{
  }
  async function positivePosts(): Promise<any|null>{
 	const sentimentArr = await analyzeSentiment()
-	
+	const posts = await getPosts()
+	const decoratedPosts = posts.map((post:any)=>{
+		const sentimentData = sentimentArr.find((obj:any)=>obj.post_id ===post.id)
+		console.log(`IMPORTANT FIRST: `, sentimentData)
+		return ({
+			...post,
+			sentiment:sentimentData.sentiment,
+			confidence_score:sentimentData.confidence_score
+		})
+		
+	})
+	// console.log(`decoratedPosts: `,decoratedPosts)
+
 	const positiveSentiments = sentimentArr.filter((obj:any)=>obj.sentiment === 'positive')
 	const percentagePositive =(positiveSentiments.length/sentimentArr.length)*100
 	const percentagePCS = positiveSentiments.reduce((acc:any,obj:any)=>acc+obj.confidence_score,0)/positiveSentiments.length
@@ -56,7 +68,7 @@ async function analyzeSentiment():Promise<any[]>{
 			.map(async(obj:any)=>await getPostById(obj.post_id)))
 	// console.log(`positivePosts: `,positivePosts)
 
-	return {posts:positivePosts,percentagePositive,percentagePCS}
+	return {decoratedPosts,posts:positivePosts,percentagePositive,percentagePCS}
  }
  async function negativePosts(): Promise<any|null>{
 	const sentimentArr = await analyzeSentiment()
@@ -74,6 +86,23 @@ async function analyzeSentiment():Promise<any[]>{
 	return {posts:negativePosts,percentageNegative,percentageNCS}
  }
 
+ async function neutralPosts(): Promise<any|null>{
+	const sentimentArr = await analyzeSentiment()
+	const neutralSentiments = sentimentArr.filter((obj:any)=>obj.sentiment === 'neutral')
+	const neutralPosts = (await Promise.all(
+		neutralSentiments			
+			.map(async(obj:any)=> await getPostById(obj.post_id))))
+	
+	const percentageNeutral = (neutralPosts.length/sentimentArr.length)*100
+	const percentageNeutralCS =50
+
+	console.log(`percentageNeutralCS: `,percentageNeutralCS)
+	console.log(`percentageNeutral: `,percentageNeutral)
+	// console.log(`negativePosts: `,negativePosts)
+	return {posts:neutralPosts,percentageNeutral,percentageNeutralCS}
+ }	
+ 
+
  (async ()=>{
 	// console.log(`authController: process.env.OPEN_ACCESS_KEY: `,process.env.OPEN_ACCESS_KEY)
 	// getSentiment('I love this product').then((data)=>{console.log(`RESULT SENTIMENT ANALYSIS: `,data)})
@@ -81,4 +110,4 @@ async function analyzeSentiment():Promise<any[]>{
 	// positivePosts().then((positivePosts)=>console.log(JSON.stringify(positivePosts,null,2)))
  })()
 
- export { getSentiment, analyzeSentiment,positivePosts,negativePosts }
+ export { getSentiment, analyzeSentiment,positivePosts,negativePosts,neutralPosts }

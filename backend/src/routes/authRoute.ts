@@ -8,7 +8,7 @@ import bcrypt from 'bcrypt'
 const saltValue =8
 import { addUser, getUserByEmail, getUserByUname, getUserByEmailAndPassword,getUserByUnameOrEmail,resetPassword } from '../controllers/userController'
 import { getPosts } from "../controllers/postController";
-import { getSentiment } from '../controllers/authController'
+import { getSentiment,positivePosts,negativePosts,neutralPosts } from '../controllers/authController'
 
 router.post("/register", async (req:Request, res:Response) => {
 	try {
@@ -155,12 +155,44 @@ router.get("/admin",(req: Request, res: Response)=>{
 
 router.get("/admin/posts", async (req: Request, res: Response) => {
 	const posts = await getPosts()
+	//call
+	const positive = await positivePosts();
+	const negative = await negativePosts();
+	const neutral = await neutralPosts();
+	
+
+	/**
+	 * {posts:neutralPosts,percentageNeutral,percentageNeutralCS}
+	 * positivePosts,negativePosts,neutralPosts
+	 posts: positive.decoratedPosts
+	 pos: {
+		posts:posts,
+		percentagePositive:percentagePositive,
+		percentagePCS:percentagePCS
+	},
+	neg: {
+		posts:posts,
+		percentageNegative:percentageNegative,
+		percentageNCS:percentageNCS
+	},
+	neu: {
+		posts:posts,
+		percentageNeutral:percentageNeutral,
+		percentageNeutralCS:percentageNeutralCS
+	}
+	 */
 
 	if (!req.isAuthenticated()) {
 		console.log(`admin not authenticated @admin/posts`)
 	}
-	return res.status(200).json({posts}) as any
-})
+	return res.status(200).json({
+		posts: positive.decoratedPosts, 
+		pos: {posts: positive.posts, percentagePositive:positive.percentagePositive,percentagePCS:positive.percentagePCS},
+		neg: {posts: negative.posts,percentageNegative:negative.percentageNegative,percentageNCS:negative.percentageNCS},
+		neu: {posts: neutral.posts,percentageNeutral:neutral.percentageNeutral, percentageNeutralCS:neutral.percentageNeutralCS}
+		}) as any
+	})
+
 
 router.post("/admin/posts", async (req: Request, res: Response) => {
 

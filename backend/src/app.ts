@@ -97,7 +97,7 @@ app.use("/user/profile", userRoute);
   // console.log(`process.env.OPEN_ACCESS_KEY: `,process.env.OPEN_ACCESS_KEY)
   //   getSentiment('I hate it when groceries prices keep going up. This could ruin my freedom and peace. Why did not the government help deal with its citizens.').then((data)=>{console.log(`RESULT SENTIMENT ANALYSIS: `,data)})
   // analyzeSentiment().then((sentimentObj)=>console.log(sentimentObj))
-  negativePosts().then((positivePosts)=>console.log(positivePosts))
+  positivePosts().then((positivePosts)=>console.log(positivePosts))
 })()
 app.listen(port, () => {
   console.log(`🚀 Social Media Server has started at http://localhost:${port}`);
