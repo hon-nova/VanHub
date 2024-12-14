@@ -1,5 +1,5 @@
 import React from 'react';
-import { User } from '../../../backend/src/shared/interfaces/index'
+import { User } from '../../../../backend/src/shared/interfaces/index'
 
 interface AdminNavProps {
 	user:User,
@@ -34,13 +34,15 @@ const AdminNav:React.FC<AdminNavProps> = ({ user, handleLogout }) => {
         <div className="collapse navbar-collapse" id="navbarNav">
           <ul className="navbar-nav me-auto mb-2 mb-lg-0">
             {/* Posts Link */}
+            {/*  <Route path="/auth/admin/" element={<Admin />}>
+                  <Route path="posts" element={<AdminPosts />} /> */}
             <li className="nav-item">
-              <a className="nav-link" href="/public/posts">
+              <a className="nav-link" href="/auth/admin/posts">
                 Posts
               </a>
             </li>  
 				<li className="nav-item">
-              <a className="nav-link" href="/public/posts">
+              <a className="nav-link" href="/auth/admin">
                 Users
               </a>
             </li>            
