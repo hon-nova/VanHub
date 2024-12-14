@@ -2,7 +2,7 @@ import AdminNav from './AdminNav'
 import '../../styles/css/admin-style.css'
 import { User } from '../../../../backend/src/shared/interfaces/index'
 import { useEffect, useState } from 'react'
-import { useNavigate, Link } from 'react-router-dom'
+import { useNavigate, Link, Outlet } from 'react-router-dom'
 
 const Admin =()=>{
 	const [user,setUser] = useState<User>()
@@ -57,11 +57,13 @@ const Admin =()=>{
 			<div className="row row-decorated">
 				<div className="col-md-3 left-panel">
 					<ul>
-						<li className="users-posts"><Link to="/auth/admin">Users</Link></li>
-						<li className="users-posts"><Link to="/auth/admin/posts">Posts</Link></li>
+						<li className="users-posts"><i className="bi bi-people-fill mx-2"></i><Link to="/auth/admin/users">Users</Link></li>
+						<li className="users-posts"><i className="bi bi-chat-quote mx-2"></i><Link to="/auth/admin/posts">Posts</Link></li>
 					</ul>
 				</div>
-				<div className="col-md-9 right-body">right</div>
+				<div className="col-md-9 right-body">
+					<Outlet />
+				</div>
 			</div>
 		</div>
 	)

@@ -2,7 +2,7 @@ const AdminPosts: React.FC = ()=>{
 
 	return (
 		<div>
-			<h1>Admin Posts</h1>
+			<h2>Admin Posts</h2>
 		</div>
 	)
 }

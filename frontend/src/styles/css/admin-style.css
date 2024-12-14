@@ -16,7 +16,7 @@ div.right-body {
 }
 li.users-posts {
 	list-style: none;
-	font-size:25px;
+	/* font-size:25px; */
 }
 li.users-posts:hover {
 	color:goldenrod;
