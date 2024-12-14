@@ -120,8 +120,7 @@ async function saveUserAvatar(userId: string, avatarUrl: string): Promise<void> 
     if(error instanceof Error){
       console.error('saveUserAvatar - Error:',error.message);
     }
-  }
-  
+  }  
 }
 
 import OpenAI from 'openai'

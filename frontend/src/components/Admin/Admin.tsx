@@ -52,7 +52,7 @@ const Admin =()=>{
 		<div className="admin-container">
 			<div className="">
 				<AdminNav user={user as User} handleLogout={handleLogout}/>
-				{user && <h1>Hello {user?.uname}. You are logged in as {user?.email}</h1>	}
+				{user && <h3>Hello {user?.uname}</h3>	}
 			</div>
 			<div className="row row-decorated">
 				<div className="col-md-3 left-panel">

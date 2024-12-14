@@ -73,7 +73,7 @@ const AdminPosts: React.FC = ()=>{
 		  });
 		};  
 		fetchSentimentData();
-	 }, []);
+	 }, [chartData,setChartData]);
 
 	useEffect(()=>{
 		const filterPosts = ()=>{
@@ -100,7 +100,7 @@ const AdminPosts: React.FC = ()=>{
 	}
 	return (
 		<div>
-			<h2>Admin Posts</h2>
+			<h2 className="text-center my-4">Posts Analysis Overview</h2>
 			<div className="chart">
 			{chartData && (
 				<Bar
@@ -132,7 +132,7 @@ const AdminPosts: React.FC = ()=>{
 					name="posts" 
 					value="positive"
 					checked={selectedSentiment==='positive'}
-					onChange={()=>setSelectedSentiment('positive')} /> <label><i className="bi bi-flag-fill" style={{ color:"green" }}></i></label>
+					onChange={()=>setSelectedSentiment('positive')} /> <label><i className="bi bi-flag-fill mx-2" style={{ color:"green" }}></i></label>
 					</div>
 				<div className="mx-4">
 					<input 
@@ -141,7 +141,7 @@ const AdminPosts: React.FC = ()=>{
 					value="negative"
 					checked={selectedSentiment==='negative'}
 					onChange={()=>setSelectedSentiment('negative')} /> 
-					<label><i className="bi bi-flag-fill" style={{ color:"red" }}></i></label>
+					<label><i className="bi bi-flag-fill mx-2" style={{ color:"red" }}></i></label>
 				</div>
 				<div className="mx-4">
 					<input 
@@ -150,7 +150,7 @@ const AdminPosts: React.FC = ()=>{
 					value="neutral"
 					checked={selectedSentiment==='neutral'}
 					onChange={()=>setSelectedSentiment("neutral")} />
-					<label><i className="bi bi-flag-fill" style={{ color:"gray" }}></i></label>
+					<label><i className="bi bi-flag-fill mx-2" style={{ color:"gray" }}></i></label>
 				</div>				
 			</div>
 			<div className="table-posts">

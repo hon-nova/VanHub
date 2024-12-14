@@ -35,17 +35,8 @@ const AdminNav:React.FC<AdminNavProps> = ({ user, handleLogout }) => {
           <ul className="navbar-nav me-auto mb-2 mb-lg-0">
             {/* Posts Link */}
             {/*  <Route path="/auth/admin/" element={<Admin />}>
-                  <Route path="posts" element={<AdminPosts />} /> */}
-            <li className="nav-item">
-              <a className="nav-link" href="/auth/admin/posts">
-                Posts
-              </a>
-            </li>  
-				<li className="nav-item">
-              <a className="nav-link" href="/auth/admin/users">
-                Users
-              </a>
-            </li>            
+                  <Route path="posts" element={<AdminPosts />} /> */}          
+				              
           </ul>
 			 <ul className="navbar-nav ms-auto">
             {/* Profile Dropdown */}
@@ -67,8 +58,8 @@ const AdminNav:React.FC<AdminNavProps> = ({ user, handleLogout }) => {
                   </span>
                 </li>
                 <li>
-                  <a className="dropdown-item" href="/auth/profile">
-                    Secret Profile
+                  <a className="dropdown-item" href="#">
+                    Audit
                   </a>
                 </li>
               </ul>

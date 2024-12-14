@@ -6,7 +6,7 @@ const router = express.Router();
 import {Request, Response} from 'express'
 import bcrypt from 'bcrypt'
 const saltValue =8
-import { addUser, getUserByEmail, getUserByUname, getUserByEmailAndPassword,getUserByUnameOrEmail,resetPassword } from '../controllers/userController'
+import { addUser, getUserByEmail, getUserByUname, getUserByEmailAndPassword,getUserByUnameOrEmail,resetPassword, getUsers } from '../controllers/userController'
 import { getPosts } from "../controllers/postController";
 import { getSentiment,positivePosts,negativePosts,neutralPosts } from '../controllers/authController'
 
@@ -160,28 +160,6 @@ router.get("/admin/posts", async (req: Request, res: Response) => {
 	const negative = await negativePosts();
 	const neutral = await neutralPosts();
 	
-
-	/**
-	 * {posts:neutralPosts,percentageNeutral,percentageNeutralCS}
-	 * positivePosts,negativePosts,neutralPosts
-	 posts: positive.decoratedPosts
-	 pos: {
-		posts:posts,
-		percentagePositive:percentagePositive,
-		percentagePCS:percentagePCS
-	},
-	neg: {
-		posts:posts,
-		percentageNegative:percentageNegative,
-		percentageNCS:percentageNCS
-	},
-	neu: {
-		posts:posts,
-		percentageNeutral:percentageNeutral,
-		percentageNeutralCS:percentageNeutralCS
-	}
-	 */
-
 	if (!req.isAuthenticated()) {
 		console.log(`admin not authenticated @admin/posts`)
 	}
@@ -196,6 +174,14 @@ router.get("/admin/posts", async (req: Request, res: Response) => {
 
 router.post("/admin/posts", async (req: Request, res: Response) => {
 
+})
+
+//  <Route path="/auth/admin/" element={<Admin />}>
+//<Route path="users" element={<AdminUsers />} />
+router.get('/admin/users', async (req: Request, res: Response) => {
+	const users = await getUsers()
+	const usersWithoutAdmin = users?.filter((user:any)=>user.role !== 'admin')
+	return res.status(200).json({users:usersWithoutAdmin}) as any
 })
 
 
