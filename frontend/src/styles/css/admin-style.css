@@ -1,0 +1,24 @@
+div.admin-container {
+	border: 5px solid hotpink;
+}
+div.row.row-decorated {
+	margin:auto;
+	height:100vh;
+	justify-content:center
+}
+div.left-panel {
+	border:5px solid green;
+	background-color: rgb(34, 33, 33);
+	color:white;
+}
+div.right-body {
+	border:5px solid tomato;	
+}
+li.users-posts {
+	list-style: none;
+	font-size:25px;
+}
+li.users-posts:hover {
+	color:goldenrod;
+	width:100%;
+}

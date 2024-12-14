@@ -5,7 +5,7 @@ import Home from './components/Home';
 import Register from './components/Auth/Register';
 import Login from './components/Auth/Login';
 import Forgot from './components/Auth/Forgot';
-import Admin from './components/Auth/Admin';
+import Admin from './components/Admin/Admin';
 import Posts from './components/Posts';
 import PostDetail from './components/PostDetail';
 import PostEdit from './components/PostEdit';
@@ -17,6 +17,7 @@ import Settings from './components/User/Profile/settings'
 // import ProfilePostItem from './components/User/Profile/ProfilePostItem'
 import { UserProvider} from './context/UserContext';
 import { PostsProvider} from './context/PostsContext';
+import AdminPosts from './components/Admin/AdminPosts';
 
 function App() { 
   
@@ -44,7 +45,10 @@ function App() {
                <Route path="/auth/register" element={<Register />}/>
                <Route path="/auth/login" element={<Login />}/>
                <Route path="/auth/forgot" element={<Forgot />}/>
-               <Route path="/auth/admin" element={<Admin />}/>       
+               
+               <Route path="/auth/admin/" element={<Admin />}>
+                  <Route path="posts" element={<AdminPosts />} />
+               </Route>       
 
                <Route path="/public/posts" element={<Posts />}/>
                <Route path="/public/posts/edit/:id" element={<PostEdit />} />

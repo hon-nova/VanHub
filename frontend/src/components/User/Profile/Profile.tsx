@@ -111,7 +111,7 @@ const Profile: React.FC = ()=>{
 			<main>
 				<div className="profile-content my-4">
 					{stateUser.uname && <h5>You're logging in as <span style={{ color:"pink" }}>{stateUser.uname}</span> </h5>}					
-					<div className="row">
+					<div className="row" style={{ margin:"auto",height:"100vh",justifyContent:"center" }}>
 					<div className="col-md-3" style={{ backgroundColor:"pink" }}>					 
 						<div className="text-center">							
 							{stateUser.avatar && (
