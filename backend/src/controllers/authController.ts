@@ -29,7 +29,7 @@ const getSentiment = async (description : string) => {
 	  return 'error';
 	}
  };
- async function analyzeSentiment():Promise<any[]>{
+async function analyzeSentiment():Promise<any[]>{
 	const sentimentArr:any =[]
 	const posts = await getPosts()
 	await Promise.all(posts.map(async (post:Post)=>{
@@ -42,7 +42,7 @@ const getSentiment = async (description : string) => {
 	console.log(`sentimentArr: `,sentimentArr)
 	return sentimentArr
  }
- async function positivePosts(): Promise<Post[]|null>{
+ async function positivePosts(): Promise<any|null>{
 	const sentimentArr = await analyzeSentiment()
 	
 	const positiveSentiments = sentimentArr.filter((obj:any)=>obj.sentiment === 'positive')
@@ -56,9 +56,9 @@ const getSentiment = async (description : string) => {
 			.map(async(obj:any)=>await getPostById(obj.post_id)))
 	// console.log(`positivePosts: `,positivePosts)
 
-	return positivePosts as Post[]
+	return {posts:positivePosts,percentagePositive,percentagePCS}
  }
- async function negativePosts(): Promise<Post[]>{
+ async function negativePosts(): Promise<any|null>{
 	const sentimentArr = await analyzeSentiment()
 	const negativeSentiments = sentimentArr.filter((obj:any)=>obj.sentiment === 'negative')
 	const negativePosts = (await Promise.all(
@@ -71,7 +71,7 @@ const getSentiment = async (description : string) => {
 	console.log(`percentageNCS: `,percentageNCS)
 	console.log(`percentageNegative: `,percentageNegative)
 	// console.log(`negativePosts: `,negativePosts)
-	return negativePosts as Post[]
+	return {posts:negativePosts,percentageNegative,percentageNCS}
  }
 
  (async ()=>{
