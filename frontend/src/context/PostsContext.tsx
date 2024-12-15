@@ -20,11 +20,11 @@ export const PostsProvider: React.FC<{children:React.ReactNode}> = ({ children }
 				})
 				const data = await response.json()
 				if(response.ok){
-					console.log(`@App.tsx data.posts: `, data.posts)
+					
 					const sortedPosts = data.posts.sort((a:Post,b:Post)=>(a.id > b.id ? -1 : 1))	
 					
 					setPosts(sortedPosts)
-					console.log(`sorted posts in PostsProvider: `, sortedPosts)
+					
 				} else {
 					console.log(`@App.tsx posts statusText: `, response.statusText)
 				}

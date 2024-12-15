@@ -71,7 +71,7 @@ const PostDetail = ()=>{
 						navigate('/auth/login');
 					},2000)					 
 				  } else {
-					console.error('Failed to log out:', data.errorMsg);
+					
 					setMsg((msgObj)=>({...msgObj, errorMsg:data.errorMsg}))
 			  }
 			} catch (error) {
@@ -79,14 +79,14 @@ const PostDetail = ()=>{
 			}
 		};
 		const getComments = async (id:number)=>{
-			///posts/show/:postid
+			
 			const response = await fetch(`http://localhost:8000/public/posts/show/${id}`,{
 				method:'GET',
 				credentials:'include'
 			})
 			const data = await response.json()
 			if(response.ok){
-				// console.log(`@PostDetail getComments data: `,data.comments)
+				
 				setComments(data.comments)
 			}
 		}
@@ -105,7 +105,7 @@ const PostDetail = ()=>{
 			})
 			const data = await response.json()
 			if(response.ok){
-				console.log(`@PostDetail sendAddCommentRequest data: `,data)
+				
 				setComment(data.comment)				
 				setMsg((msgObj)=>({...msgObj, successComment:data.successMsg}))
 
@@ -116,7 +116,7 @@ const PostDetail = ()=>{
 				},2000)
 				
 			} else {
-				console.log(`@PostDetail sendAddCommentRequest data: `,data.errorMsg)
+				
 				setMsg((msgObj)=>({...msgObj, errorMsg:data.errorMsg}))
 				setTimeout(()=>{
 					setMsg((msgObj)=>({...msgObj, errorMsg:''}))
@@ -158,7 +158,7 @@ const PostDetail = ()=>{
 				body:JSON.stringify({setvoteto:value})
 			})
 			const data = await response.json()
-			console.log(`data from handleVote: `,data)
+			
 			if(response.ok){
 				const updatedVote = data.setvoteto === 0 ? 0 : value; 
 				setVote((prevVote) => ({
@@ -182,7 +182,6 @@ const PostDetail = ()=>{
 		<div className="post-header d-flex justify-content-between">
 			<h6>You are logged in as <span style={{ color:"#00BCD4" }}><b>{user?.uname}</b></span></h6>			
 		</div>
-		{/* each post */}
 		<div className="post-content justify-content-between">
 			{/* votes */}
 			<div className="d-flex justify-content-between">

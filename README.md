@@ -9,6 +9,4 @@
 | Database| Supabase PostgreSQL|
 | Auth| Passport.js|
 
-### Hugging Face models for sentiment analysis
-distilbert-base-uncased – Fast and efficient while maintaining good accuracy.
-roberta-base – Highly accurate with robust performance, though more resource-intensive.
+

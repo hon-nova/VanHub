@@ -8,7 +8,7 @@ import bcrypt from 'bcrypt'
 const saltValue =8
 import { addUser, getUserByEmail, getUserByUname, getUserByEmailAndPassword,getUserByUnameOrEmail,resetPassword, getUsers } from '../controllers/userController'
 import { getPosts } from "../controllers/postController";
-import { getSentiment,positivePosts,negativePosts,neutralPosts } from '../controllers/authController'
+import { positivePosts,negativePosts,neutralPosts } from '../controllers/authController'
 
 router.post("/register", async (req:Request, res:Response) => {
 	try {
@@ -22,7 +22,7 @@ router.post("/register", async (req:Request, res:Response) => {
 	const getUser = await getUserByUname(uname) as Express.User
 	console.log(`getUserByUname in /register: `, getUser)
 	if(getUser !== null){
-		console.log('Username already existed. Please use another username.')
+		// console.log('Username already existed. Please use another username.')
 		return res.status(400).json({errorEmail:'Username already exists. Please use another uname.'}) as any
 	}
 
@@ -34,9 +34,9 @@ router.post("/register", async (req:Request, res:Response) => {
 	}
 	let avatar =''
 	const newUser = await addUser(uname,email,password,avatar)
-	console.log(`newUser in /register: `, newUser)
+	
 	if(newUser){
-		console.log('Registered successfully.')
+		
 		return res.status(200).json({successMsg:'registered successfully.'}) as any
 	} else {
 		throw new Error('Failed to register.')
@@ -56,20 +56,20 @@ router.post("/login", (req, res, next) => {
 	  { failureRedirect: "/auth/login", failureMessage: true },
 	  (err: Error, user: Express.User, info: IVerifyOptions) => {
 			if (err) {
-				console.error('errorLogin:', err.message);
+				
 				return res.status(500).json({errorLogin:`errorLogin ${err.message}`})
 			} 
 			if (!user) {
 				const errorE = info?.message || "backend /login: NO SUCH USER";
-				console.error('errorEmail:', info?.message);
+				
 				return res.status(401).json({errorLogin:`${errorE}`})
 			}
 			req.logIn(user, (err) => {
 				if (err) {
-					console.error('req.logIn Error:', info?.message);
+					
 					return res.status(500).json({ errorLogin: `req.logIn: ${err.message}` });
 				 }
-				//success
+				
 				const successMsg = `Success. Redirecting ...`
 				if (isAdmin(req)) {
 					return res.status(200).json({user: user, isAdmin:true, successMsg})
@@ -117,12 +117,12 @@ router.post('/forgot',forwardAuthenticated, async (req: Request, res: Response) 
 		}
 		const user = await getUserByUnameOrEmail(info,info) as Express.User
 		if(!user || !user.password){
-			console.log('NO SUCH USER/EMAIL')
+			
 			return res.status(400).json({errorEmail:'NO SUCH USER/EMAIL'}) as any
 		}
 		const updatedPwdUser = await resetPassword(info,newpassword)
 		if(updatedPwdUser){
-			console.log('Password reset successfully.')
+			
 			return res.status(200).json({successReset:'Password reset successfully.'}) as any
 		}
 	} catch(error){
@@ -132,8 +132,7 @@ router.post('/forgot',forwardAuthenticated, async (req: Request, res: Response) 
 
 router.post('/logout', (req: Request, res: Response) => {
 	const user = req.user 
-	console.log(`BACKEND user logged out: `, user)
-	console.log(`BACKEND session: `, (req.session as any).passport)
+	
 	req.session.destroy((err) => {
 		if (err) {
 			console.error('Error destroying session:', err);
@@ -149,13 +148,13 @@ router.get("/admin",(req: Request, res: Response)=>{
 	if (!req.isAuthenticated()) {
 		console.log(`user not authenticated @admin`)
 	 }
-	// console.log(`@admin USER IS  AUTHENTICATED: `,req.isAuthenticated())
+	
 	res.status(200).json({adminUser,successMsg:'Admin user is authenticated.'})
 })
 
 router.get("/admin/posts", async (req: Request, res: Response) => {
 	const posts = await getPosts()
-	//call
+	
 	const positive = await positivePosts();
 	const negative = await negativePosts();
 	const neutral = await neutralPosts();
@@ -176,8 +175,6 @@ router.post("/admin/posts", async (req: Request, res: Response) => {
 
 })
 
-//  <Route path="/auth/admin/" element={<Admin />}>
-//<Route path="users" element={<AdminUsers />} />
 router.get('/admin/users', async (req: Request, res: Response) => {
 	const users = await getUsers()
 	const usersWithoutAdmin = users?.filter((user:any)=>user.role !== 'admin')

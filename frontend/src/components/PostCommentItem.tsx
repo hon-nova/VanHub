@@ -8,10 +8,7 @@ interface PostCommentItemProps {
 }
 
 const PostCommentItem: React.FC<PostCommentItemProps> = ({comment,currentUser,onDelete})=>{
-	// const creatorName =
-   //  typeof post.creator === "object" && post.creator?.uname
-   //    ? post.creator.uname
-   //    : "Unknown";
+	
 	const creatorName = 
 		typeof comment.creator === "object" && comment.creator?.uname ? 
 			comment.creator.uname : "Unknown"

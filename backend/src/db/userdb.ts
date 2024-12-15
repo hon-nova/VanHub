@@ -29,9 +29,9 @@ const sampledb= [
 	 },
 	 {
 		 id:4,
-		 uname:"Sam Stephenson",
-		 email:"samstephenson@gmail.com",
-		 password:"samstephenson",
+		 uname:"admin",
+		 email:"admin@admin.com",
+		 password:"adminadmin",
 		 role:"admin"
 	 },
 

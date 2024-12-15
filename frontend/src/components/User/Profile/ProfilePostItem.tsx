@@ -7,18 +7,14 @@ interface ProfilePostItemProps {
   post: Post;  
 }
 const ProfilePostItem: React.FC<ProfilePostItemProps> = ({ post }) => {
-  const { user } = useUser()
+ 
   let hostname = "";
   try {
     hostname = new URL(post?.link).hostname || "N/A";
   } catch (error) {
     console.error(`error @PostItem: `, error);
   }
-  const creatorName =
-    typeof post.creator === "object" && post.creator?.uname
-      ? post.creator.uname
-      : "Unknown";
-  // const isCreator = creatorName === user?.uname 
+
 
   return (
     <div className="d-flex justify-content-between profile-post-item">

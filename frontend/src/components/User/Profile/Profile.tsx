@@ -67,10 +67,10 @@ const Profile: React.FC = ()=>{
 						aria-label="Toggle navigation">
 					<span className="navbar-toggler-icon"></span>
 					</button>
-				{/* Navbar Content */}
+				
 				<div className="collapse navbar-collapse" id="navbarNav">
 				<ul className="navbar-nav me-auto mb-2 mb-lg-0">
-            {/* Posts Link */}
+            
             <li className="nav-item">
               <a className="nav-link" href="/public/posts">
                 Home
@@ -78,7 +78,7 @@ const Profile: React.FC = ()=>{
             </li>            
           </ul>
 					<ul className="navbar-nav ms-auto">
-						{/* Profile Dropdown */}
+						
 						<li className="nav-item dropdown">
 							<a className="nav-link dropdown-toggle"
 								href="/user/profile"
@@ -96,7 +96,7 @@ const Profile: React.FC = ()=>{
 							</li>						
 						</ul>
 						</li>
-						{/* Logout Button */}
+						
 						<li className="nav-item">
 						<button
 							onClick={handleLogout}

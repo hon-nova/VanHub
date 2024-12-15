@@ -1,4 +1,3 @@
-import { User } from '../../../../../backend/src/shared/interfaces/index'
 import '../../../styles/css/profile-settings-style.css'
 
 import { useNavigate, useLocation } from 'react-router-dom';
@@ -66,7 +65,7 @@ const Settings:React.FC=()=>{
 								{loading ? 'Generating...' : 'Generate Avatar'}
 						</button>
 				</form>
-				<i><i className="bi bi-exclamation-circle mx-2" style={{ color:"#ecc043" }}></i><span style={{color:"gray"}}>You would need to sign out and log back in to see your avatar updated.</span></i>				
+				<i><i className="bi bi-exclamation-circle mx-2" style={{ color:"#ecc043" }}></i><span style={{color:"gray"}}>You would need to sign out and log back in to see your avatar updated. For the slow internet connection issue, keep refreshing the page to see the update.</span></i>				
 		  </div>  
 		  {msg.errorMsg && <p style={{ color: 'red' }}>{msg.errorMsg}</p>}
 		  {msg.succcessMsg && <p style={{ color: 'green' }}>{msg.succcessMsg}</p>}		 

@@ -46,7 +46,7 @@ const PostCreateItem: React.FC<PostCreateItemProps> = ({onAdd})=>{
 				}
 				return;
 			}
-			console.log(`data.post @submitAddRequest: `,data.post)
+			
 			onAdd(data.post)
 			setFormData({
 			title:'',

@@ -48,7 +48,7 @@ const PostItem: React.FC<PostItemProps> = ({ post, onEdit, onDelete, currentUser
            className="btn btn-outline-primary mx-2">
            <i className="bi bi-pencil mx-2"></i>
          </Link>
-         {/* button to trigger the modal */}
+        
          <button
            type="button"
            className="btn btn-outline-primary"
@@ -58,7 +58,7 @@ const PostItem: React.FC<PostItemProps> = ({ post, onEdit, onDelete, currentUser
            <i className="bi bi-trash mx-2 text-danger"></i>
            
          </button>
-         {/* Modal */}
+        
          <div
            className="modal fade"
            id={`deleteModal-${post.id}`}
@@ -104,7 +104,7 @@ const PostItem: React.FC<PostItemProps> = ({ post, onEdit, onDelete, currentUser
              </div>
            </div>
          </div>
-         {/* end modal */}
+        
        </div>
       )}
      

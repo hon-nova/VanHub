@@ -30,16 +30,13 @@ async function saveAvatarToDisk(imageUrl:string,userId:string):Promise<string>{
     const imageDir = path.join(__dirname,'../../../backend/src/avatars')
     
     const imagePath = path.join(imageDir,`${userId}-${Date.now()}.png`)
-    console.log(`IMPORTANT`)
-    console.log(`userId in saveAvatarToDisk:`, userId);
-
-    // ensure the directory exists
+    
     if(!fs.existsSync(imageDir)){
       fs.mkdirSync(imageDir,{recursive:true})
     }
-    // fetch the image and save to disk
+   
     const response = await axios.get(imageUrl, {responseType: "arraybuffer"})
-    console.log(`data in saveAvatarToDisk: `, response.data)//Buffer
+    
     fs.writeFileSync(imagePath, response.data)
     return imagePath
   } catch(error){
@@ -49,21 +46,7 @@ async function saveAvatarToDisk(imageUrl:string,userId:string):Promise<string>{
     return ''
   }
 }
-// Upload file using standard upload
-// const avatar = data[0].url
-// const file = `https://supabase.com/dashboard/project/pvvdexpxtesuyjnodslj/storage/buckets/avatars/${avatar}`
-// async function uploadFile(file:File,userId:string):Promise<void>{ 
-//   const file_path = `https://supabase.com/dashboard/project/pvvdexpxtesuyjnodslj/storage/buckets/avatars/`
 
-//   const { data, error } = await supabase.storage.from('avatars').upload(file_path, file,{ contentType: 'image/jpeg'})
-//   if (error) {
-//     // Handle error
-//     console.log('uploadFile - Error:', error);
-//   } else {
-//     // Handle success
-//     console.log('uploadFile - Success:', data);
-//   }
-// }
 async function fetchImageAsBlob(imageUrl:string):Promise<Blob|undefined>{
   try{
     const response = await fetch(imageUrl)
@@ -86,12 +69,9 @@ async function uploadFile(blob:Blob,userId:string):Promise<string|undefined>{
         .upload(filePath,blob,{ upsert: true, contentType: 'image/png'})
 
     if(error) throw new Error(`Upload failed ${error.message}`)
-    //!important, return the public URL of the uploaded file
-    console.log(`data in uploadFile: `, data)
+   
     const { data: publicUrlData} = supabase.storage.from('avatars').getPublicUrl(filePath)
-    console.log(`publicUrlData in uploadFile: `, publicUrlData)
-    console.log(`typeof publicUrlData.publicUrl in uploadFile: `, typeof publicUrlData?.publicUrl)
-    // return data?.publicUrl
+    
     return publicUrlData?.publicUrl
     
   } catch(error){
@@ -113,8 +93,6 @@ async function saveUserAvatar(userId: string, avatarUrl: string): Promise<void> 
     console.error('Error updating user avatar:', error.message);
     throw new Error('Failed to update user avatar.');
   }
-
-  console.log('User avatar updated successfully:', data);
   
   } catch(error){
     if(error instanceof Error){
@@ -125,9 +103,9 @@ async function saveUserAvatar(userId: string, avatarUrl: string): Promise<void> 
 
 import OpenAI from 'openai'
 const openai = new OpenAI({ apiKey: process.env.OPEN_ACCESS_KEY });
+
 async function handleAvatarGeneration(description: string, userId: string): Promise<void> {
-  console.log(`IMPORTANT IN handleAvatarGeneration`)
-  console.log(`userId: `, userId)
+  
   try {
     const image = await openai.images.generate({
       model: "dall-e-2",
@@ -137,11 +115,11 @@ async function handleAvatarGeneration(description: string, userId: string): Prom
     });
 
     const avatarUrl = image.data[0].url;
-    console.log(`OpenAI avatar: `, avatarUrl);
+    
     if (!avatarUrl) {
       throw new Error('Failed to generate avatar.');
     }
-    // Save avatar to disk
+    
     const imagePath = await saveAvatarToDisk(avatarUrl, userId);
     
     if(imagePath){
@@ -157,20 +135,18 @@ async function handleAvatarGeneration(description: string, userId: string): Prom
   }
 }
 
-// const pathIn = path.join(__dirname,'../../../backend/src/avatars')
-
 async function uploadAvatarToSupabase(userId: string):Promise<User|null> {
   try {
    const pathIn=path.join(__dirname,'../../../backend/src/avatars')
-   // const filePath= path.join(pathIn,`${userId}-${Date.now()}.png`)
+  
    const fileOrigin= await fss.readdir(pathIn)
    const filePath = path.join(pathIn,fileOrigin[0])
-   console.log( `FIRST IMPORTANT `)
-   console.log(`filePath in uploadAvatarToSupabase: `, filePath)
+  //  console.log( `FIRST IMPORTANT `)
+  //  console.log(`filePath in uploadAvatarToSupabase: `, filePath)
 
    const fileBuffer = fs.readFileSync(filePath)
    const fileName = path.basename(filePath)
-   console.log(`fileName in uploadAvatarToSupabase: `, fileName)
+  //  console.log(`fileName in uploadAvatarToSupabase: `, fileName)
 
    //upload avatar to supabase
    const { data,error}= await supabase.storage.from('images').upload(fileName,fileBuffer, {contentType: 'image/png'})
@@ -179,23 +155,21 @@ async function uploadAvatarToSupabase(userId: string):Promise<User|null> {
       throw new Error('Failed to upload avatar to Supabase.');
       
    }
-   console.log(`IMPORTANT-1`)
-   console.log(`SUCCESS-1 File uploaded as: `, data.path)
+  //  console.log(`IMPORTANT-1`)
+  //  console.log(`SUCCESS-1 File uploaded as: `, data.path)
    // generate a public URL for the uploaded file
 
    const { data: publicUrlData} = supabase.storage.from('images').getPublicUrl(data.path)
-   if(publicUrlData){
-      console.log(`IMPORTANT-2`)
-      console.log(`SUCCESS-2 public URL: `, publicUrlData?.publicUrl)
-      console.log(`CRUCIAL MOMENT HERE`)
-   }
-   
-   //update user
+
+   if(publicUrlData){      
+      console.log(`SUCCESS-2 public URL: `, publicUrlData?.publicUrl)     
+   }   
+
    const updatedUser = await updateUser(userId,{avatar:publicUrlData?.publicUrl})
    console.log(`IMPORTANT updatedUser in uploadAvatarToSupabase: `)
    console.log(updatedUser)
    
-   //delete the file from disk
+   
    fs.unlinkSync(filePath)
    return updatedUser  
 
@@ -207,32 +181,20 @@ async function uploadAvatarToSupabase(userId: string):Promise<User|null> {
   }  
 }
 
-(async ()=>{
-   //   const userId="c338f528-d10c-4b85-9490-64a03da91133"
-   //    await uploadAvatarToSupabase(userId).then((updatedUser) => {
-   //     if (updatedUser) {
-   //         console.log('@async Avatar uploaded and user updated:', updatedUser);
-   //     } else {
-   //         console.log('@async Failed to upload avatar or update user.');
-   //     }
-   //  });
- })()
-
 async function readAvatarsFromDisk(userId:string):Promise<User|null>{
   try {
     const pathIn = path.join(__dirname,'../../../backend/src/avatar')
     const files = await fss.readdir(pathIn)
-    console.log(`files in readAvatarsFromDisk: `, files)
+   
     const userAvatar = files.find((file)=>file.includes(userId))
-    // console.log(`userAvatar in readAvatarsFromDisk: `, userAvatar)
+    
     if(!userAvatar){
-      // console.log(`path.join(pathIn,userAvatar) in readAvatarsFromDisk: `, path.join(pathIn,userAvatar))
+      
       return null
     }   
     console.log(`userAvatar: `,userAvatar)
       const updatedUser = await updateUser(userId,{avatar:userAvatar})
-      console.log(`IMPORTANT updatedUser in readAvatarsFromDisk: `)
-      console.log(updatedUser)
+      
       return updatedUser 
 
   } catch(error){
@@ -242,7 +204,7 @@ async function readAvatarsFromDisk(userId:string):Promise<User|null>{
     return null
   }
 }
-// readAvatarsFromDisk('c338f528-d10c-4b85-9490-64a03da91133')
+
 
 async function updateUser(id: string, changes: { avatar?: string }): Promise<User | null> {
   try {
@@ -304,7 +266,7 @@ async function getUserByUname(uname: string): Promise<User | null> {
       .single();
 
     if (error) {
-      // console.log(`getUserByUname - User not found:`, uname);
+      
       return null;
     }
 
@@ -324,7 +286,7 @@ async function getUserByEmail(email: string): Promise<User | null> {
       .single();
 
     if (error) {
-      // console.log('getUserByEmail - User not found:', email);
+      
       return null;
     }
 

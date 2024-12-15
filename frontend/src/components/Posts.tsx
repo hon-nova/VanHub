@@ -32,7 +32,7 @@ const Posts:React.FC = ()=>{
 					navigate('/auth/login');
 				},2000)					 
 			  } else {
-            console.error('Failed to log out:', data.errorMsg);
+            
 				setMsg((msgObj)=>({...msgObj, errorMsg:data.errorMsg}))
         }
 		} catch (error) {
@@ -43,7 +43,7 @@ const Posts:React.FC = ()=>{
 	const handleAddPost = (newPost:Post)=>{		
 		setPosts((preposts)=>(preposts ? [...preposts,newPost].sort((a,b)=>b.id -a.id) : [newPost]))	
 		setUser(user)
-		// setIsFormVisible(false)
+		
 	}
 	const sendDeleteRequest = async (id:number)=>{
 		try {	

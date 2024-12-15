@@ -29,7 +29,7 @@ export const UserProvider: React.FC<{children:React.ReactNode}> = ({ children })
 				})
 				const data = await response.json()
 				if(response.ok){
-					// console.log(`@App.tsx data.user: `, data.user)
+					
 					setUser(data.user)
 				} else {
 					console.log(`@App.tsx statusText: `, response.statusText)
