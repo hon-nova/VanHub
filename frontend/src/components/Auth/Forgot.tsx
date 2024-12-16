@@ -58,9 +58,9 @@ const Forgot = () => {
          body: JSON.stringify({ info, newpassword, confirmnewpassword }),
          });
          const data = await response.json();
-         // console.log(`frontend forgot data: `, data);
+         
          if(data.errorEmail){
-         //   console.log(`data.errorEmail: `, data.errorEmail)					
+         				
          setMsg((msgObj)=>({...msgObj, errorEmail:data.errorEmail}))
          setTimeout(()=>{
             setMsg((msgObj)=>({...msgObj, errorEmail:''}))

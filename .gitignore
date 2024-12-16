@@ -1,0 +1,4 @@
+frontend/.env
+backend/.env
+frontend/build/
+backend/dist/
