@@ -29,27 +29,22 @@ const githubStrategy = new passport_github2_1.Strategy({
     scope: ['user:email']
 }, (req, accessToken, refreshToken, profile, done) => __awaiter(void 0, void 0, void 0, function* () {
     var _a, _b;
-    // console.log('GitHub profile:', profile);
-    // console.log(`accessToken: `,accessToken)//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
     const email = profile.emails && ((_a = profile.emails[0]) === null || _a === void 0 ? void 0 : _a.value) ? profile.emails[0].value : null;
     if (!email) {
         console.log("GitHub email not available.");
         return done(new Error("GitHub email not available"), false);
     }
     const avatar = profile.photos && ((_b = profile.photos[0]) === null || _b === void 0 ? void 0 : _b.value) ? profile.photos[0].value : '';
-    // console.log(`avatar: `,avatar)
     let githubUser = {
-        id: (0, uuid_1.v5)(profile.id, uuid_1.v5.URL), //d953eb44-6c05-51ed-a979-d894d8b37ffb
+        id: (0, uuid_1.v5)(profile.id, uuid_1.v5.URL),
         uname: profile.username,
         email: email,
         password: '',
         role: 'user',
         avatar: avatar
     };
-    //db: 6325cf1a-8d56-4963-8129-c3b7eb3d2d90
     try {
         const getUser = yield (0, userController_1.getUserByUnameOrEmail)(githubUser.uname, email);
-        // console.log(`getUser @githubStrategy: `,getUser)
         if (!getUser) {
             console.log(`User not found. started to add the github user to database.`);
             yield (0, userController_1.addUser)(githubUser.uname, githubUser.email, githubUser.password, avatar);
@@ -75,7 +70,6 @@ passport_1.default.serializeUser(function (user, done) {
 });
 passport_1.default.deserializeUser((id, done) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        // console.log(`DESERIALIZEUSER GOT TRIGGERED at last`)
         let user = yield (0, userController_1.getUserById)(id);
         console.log(`github user @deserializeUser: `, user);
         if (user) {

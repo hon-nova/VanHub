@@ -72,5 +72,5 @@ app.use("/user/profile", userRoute);
 
 
 app.listen(port, () => {
-  console.log(`🚀 Social Media Server has started at http://localhost:${port}`);
+  console.log(`🚀 Social Media Server has started at ${process.env.REACT_APP_BACKEND_BASEURL}`);
 });
