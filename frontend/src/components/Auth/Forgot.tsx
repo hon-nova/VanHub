@@ -50,7 +50,7 @@ const Forgot = () => {
          return;
       }
       try {
-         const response = await fetch("http://localhost:8000/auth/forgot", {
+         const response = await fetch(`${process.env.REACT_APP_BACKEND_BASEURL}/auth/forgot`, {
          method: "POST",
          headers: {
             "Content-Type": "application/json",

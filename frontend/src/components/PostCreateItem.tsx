@@ -28,7 +28,7 @@ const PostCreateItem: React.FC<PostCreateItemProps> = ({onAdd})=>{
 	}
 	const submitAddRequest = async ()=>{
 		try {
-			const response = await fetch('http://localhost:8000/public/posts', {
+			const response = await fetch(`${process.env.REACT_APP_BACKEND_BASEURL}/public/posts`, {
 				method: "POST",
 				headers: {
 					'Content-Type': 'application/json'

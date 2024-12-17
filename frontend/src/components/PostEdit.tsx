@@ -29,7 +29,7 @@ const PostEdit: React.FC = ()=>{
 		})
 	} 
 	const submitEditRequest =  async()=>{
-		const response = await fetch(`http://localhost:8000/public/posts/edit/${passedPost.id}`,{
+		const response = await fetch(`${process.env.REACT_APP_BACKEND_BASEURL}/public/posts/edit/${passedPost.id}`,{
 			method: "POST",
 			headers: {
 				'Content-Type': 'application/json'

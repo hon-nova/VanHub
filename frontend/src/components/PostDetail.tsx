@@ -1,4 +1,3 @@
-
 import { useLocation, useNavigate, Link } from 'react-router-dom';
 import { useState,useEffect } from 'react';
 import '../styles/css/post-detail-style.css';
@@ -33,7 +32,7 @@ const PostDetail = ()=>{
 	})
 	const getNetVotesDb = async (id:number)=>{
 		try {			
-			const response = await fetch(`http://localhost:8000/public/posts/show/${id}`,{
+			const response = await fetch(`${process.env.REACT_APP_BACKEND_BASEURL}/public/posts/show/${id}`,{
 				method:'GET',
 				credentials:'include'
 			})
@@ -60,7 +59,7 @@ const PostDetail = ()=>{
 		const handleLogout = async () => {
 			try {
 				console.log(`handleLogout started`)
-				const response = await fetch('http://localhost:8000/auth/logout', {
+				const response = await fetch(`${process.env.REACT_APP_BACKEND_BASEURL}/auth/logout`, {
 						method: 'POST',
 						credentials: 'include', 
 				  });
@@ -80,7 +79,7 @@ const PostDetail = ()=>{
 		};
 		const getComments = async (id:number)=>{
 			
-			const response = await fetch(`http://localhost:8000/public/posts/show/${id}`,{
+			const response = await fetch(`${process.env.REACT_APP_BACKEND_BASEURL}/public/posts/show/${id}`,{
 				method:'GET',
 				credentials:'include'
 			})
@@ -95,7 +94,7 @@ const PostDetail = ()=>{
 		},[post.id])
 		
 		const sendAddCommentRequest = async (id:number)=>{			
-			const response = await fetch(`http://localhost:8000/public/posts/comment-create/${id}`,{
+			const response = await fetch(`${process.env.REACT_APP_BACKEND_BASEURL}/public/posts/comment-create/${id}`,{
 				method:'POST',
 				credentials:'include',
 				headers:{
@@ -129,7 +128,7 @@ const PostDetail = ()=>{
 			getComments(id)
 		}
 		const handleDelComment  = async(id:number)=>{
-			const response = await fetch(`http://localhost:8000/public/posts/comment-delete/${id}`,{				
+			const response = await fetch(`${process.env.REACT_APP_BACKEND_BASEURL}/public/posts/comment-delete/${id}`,{				
 				method:'DELETE',
 				credentials:'include'
 			})
@@ -149,7 +148,7 @@ const PostDetail = ()=>{
 			}
 		}
 		const handleVote = async (postId:number,value:number)=>{			
-			const response = await fetch(`http://localhost:8000/public/posts/vote/${postId}`,{
+			const response = await fetch(`${process.env.REACT_APP_BACKEND_BASEURL}/public/posts/vote/${postId}`,{
 				method:'POST',
 				credentials:'include',
 				headers:{

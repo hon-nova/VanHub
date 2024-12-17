@@ -34,7 +34,7 @@ const Profile: React.FC = ()=>{
 	const handleLogout = async () => {
 		try {
 			console.log(`handleLogout started`)
-			const response = await fetch('http://localhost:8000/auth/logout', {
+			const response = await fetch(`${process.env.REACT_APP_BACKEND_BASEURL}/auth/logout`, {
 					method: 'POST',
 					credentials: 'include', 
 			  });

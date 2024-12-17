@@ -21,7 +21,7 @@ const Settings:React.FC=()=>{
 		setLoading(true);
 		console.log('Sending description:', description);  
 		try {
-			const response = await fetch('http://localhost:8000/user/profile/settings', {
+			const response = await fetch(`${process.env.REACT_APP_BACKEND_BASEURL}/user/profile/settings`, {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',

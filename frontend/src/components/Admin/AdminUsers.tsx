@@ -7,7 +7,7 @@ const AdminUsers: React.FC = () => {
 
 	useEffect(()=>{
 		const fetchUsers = async () => {
-			const response = await fetch('http://localhost:8000/auth/admin/users');
+			const response = await fetch(`${process.env.REACT_APP_BACKEND_BASEURL}/auth/admin/users`);
 			const data = await response.json();
 			console.log(`data.users: `,data.users)
 			setUsers(data.users);

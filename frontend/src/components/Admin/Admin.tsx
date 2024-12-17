@@ -13,7 +13,7 @@ const Admin =()=>{
 	})
 	const getAdminInfo = async ()=>{
 		try {
-			const response = await fetch('http://localhost:8000/auth/admin', {
+			const response = await fetch(`${process.env.REACT_APP_BACKEND_BASEURL}/auth/admin`, {
 				method: "GET",
 				credentials: "include",
 				
@@ -30,7 +30,7 @@ const Admin =()=>{
 	const handleLogout = async () => {
 		try {
 			console.log(`handleLogout started`)
-			const response = await fetch('http://localhost:8000/auth/logout', {
+			const response = await fetch(`${process.env.REACT_APP_BACKEND_BASEURL}/auth/logout`, {
 					method: 'POST',
 					credentials: 'include', 
 			  });

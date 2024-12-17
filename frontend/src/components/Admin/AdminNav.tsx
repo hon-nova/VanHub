@@ -30,13 +30,10 @@ const AdminNav:React.FC<AdminNavProps> = ({ user, handleLogout }) => {
           <span className="navbar-toggler-icon"></span>
         </button>
 
-        {/* Navbar Content */}
+        
         <div className="collapse navbar-collapse" id="navbarNav">
           <ul className="navbar-nav me-auto mb-2 mb-lg-0">
-            {/* Posts Link */}
-            {/*  <Route path="/auth/admin/" element={<Admin />}>
-                  <Route path="posts" element={<AdminPosts />} /> */}          
-				              
+            
           </ul>
 			 <ul className="navbar-nav ms-auto">
             {/* Profile Dropdown */}

@@ -37,7 +37,7 @@ const AdminPosts: React.FC = ()=>{
 	
 	useEffect(() => {
 		const fetchSentimentData = async () => {
-			const response = await fetch('http://localhost:8000/auth/admin/posts', {
+			const response = await fetch(`${process.env.REACT_APP_BACKEND_BASEURL}/auth/admin/posts`, {
 				method: 'GET',
 				credentials: 'include',
 			})

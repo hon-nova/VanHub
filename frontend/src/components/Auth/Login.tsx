@@ -15,7 +15,7 @@ const Login =()=>{
 	})
 	async function sendRequestLogin(){
 		try {
-			const response = await fetch('http://localhost:8000/auth/login',{
+			const response = await fetch(`${process.env.REACT_APP_BACKEND_BASEURL}/auth/login`,{
 				method:"POST",				
 				headers:{
 					"Content-Type":"application/json"
@@ -65,7 +65,7 @@ const Login =()=>{
 		setFormData((formDataObj)=>({...formDataObj, [name]:value}))
 	} 	
 	function handleGitHubLogin(){
-		window.location.href = 'http://localhost:8000/auth/github'
+		window.location.href = `${process.env.REACT_APP_BACKEND_BASEURL}/auth/github`
 	}
 	return (
 		<div className="login-container">
