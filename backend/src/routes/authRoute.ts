@@ -97,9 +97,9 @@ router.get("/github/callback",passport.authenticate("github", { session: true}),
 			  return res.status(500).send({ error: 'Failed to save session.' });
 			}
 			if(req.user?.role === 'admin'){
-				res.redirect("http://localhost:3000/auth/admin");
+				res.redirect(`${process.env.REACT_APP_FRONTEND_BASEURL}/auth/admin`);
 			} else {
-				res.redirect("http://localhost:3000/public/posts");
+				res.redirect(`${process.env.REACT_APP_FRONTEND_BASEURL}/public/posts`);
 			}			  		
 	});
 })
